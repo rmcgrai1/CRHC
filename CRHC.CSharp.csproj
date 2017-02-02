@@ -5,7 +5,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{97E342D8-B434-D834-E705-4452D071CE03}</ProjectGuid>
+    <ProjectGuid>{8F316778-690F-29B3-EE3C-719CCED41ACC}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AssemblyName>Assembly-CSharp</AssemblyName>
     <FileAlignment>512</FileAlignment>
@@ -68,19 +68,30 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Scripts\Action.cs" />
     <Compile Include="Assets\Scripts\AppRunner.cs" />
     <Compile Include="Assets\Scripts\CoroutineManager.cs" />
-    <Compile Include="Assets\Scripts\Experience.cs" />
-    <Compile Include="Assets\Scripts\Landmark.cs" />
     <Compile Include="Assets\Scripts\MapServer.cs" />
-    <Compile Include="Assets\Scripts\Server.cs" />
-    <Compile Include="Assets\Scripts\Tour.cs" />
     <Compile Include="Assets\Scripts\WebAudio.cs" />
-    <Compile Include="Assets\Scripts\WebResource.cs" />
+    <Compile Include="Assets\Scripts\WebLoadable.cs" />
     <Compile Include="Assets\Scripts\WebString.cs" />
     <Compile Include="Assets\Scripts\WebTexture.cs" />
     <Compile Include="Assets\Scripts\WebVideo.cs" />
+    <Compile Include="Assets\Scripts\crhc\Action.cs" />
+    <Compile Include="Assets\Scripts\crhc\Experience.cs" />
+    <Compile Include="Assets\Scripts\crhc\JsonChildList.cs" />
+    <Compile Include="Assets\Scripts\crhc\Landmark.cs" />
+    <Compile Include="Assets\Scripts\crhc\Server.cs" />
+    <Compile Include="Assets\Scripts\crhc\Tour.cs" />
+    <Compile Include="Assets\Scripts\loadable\ByteStreamLoader.cs" />
+    <Compile Include="Assets\Scripts\loadable\Loadable.cs" />
+    <Compile Include="Assets\Scripts\menu\Menu.cs" />
+    <Compile Include="Assets\Scripts\menu\MenuButton.cs" />
+    <Compile Include="Assets\Scripts\menu\MenuItem.cs" />
+    <Compile Include="Assets\Scripts\menu\MenuText.cs" />
+    <Compile Include="Assets\Scripts\resource\Resource.cs" />
+    <Compile Include="Assets\Scripts\resource\ResourceEventListener.cs" />
+    <Compile Include="Assets\Scripts\stream\ByteStream.cs" />
+    <Compile Include="Assets\Scripts\stream\WebStream.cs" />
     <Compile Include="Assets\UnityPackages\JsonNetSample\JsonNetSample.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2015\UnityVS.CSharp.targets" />
