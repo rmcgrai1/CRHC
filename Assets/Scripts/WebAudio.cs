@@ -1,44 +1,48 @@
 ﻿using System;
+using System.Collections;
 using UnityEngine;
 
-public class WebAudio : WebResource<AudioClip> {
-    private AudioClip audio;
+public class WebAudio : WebLoadable<AudioClip> {
+    private AudioClip audioClip;
+
+    private GameObject obj;
+    private AudioSource audioSource;
+
 
     public WebAudio(string url) : base(url) {
         load();
     }
 
-    /*protected override AudioClip convert(byte[] byteData) {
-        // TODO: Verify this works??
-        // TODO: Get # of channels/frequency??
-
-        //http://stackoverflow.com/questions/16078254/create-audioclip-from-byte
-        float[] data = new float[byteData.Length / 4];
-        for (int i = 0; i < data.Length; i++) {
-            if (BitConverter.IsLittleEndian)
-                Array.Reverse(byteData, i * 4, 4);
-            data[i] = BitConverter.ToSingle(byteData, i * 4);
-        }
-
-        AudioClip audio = AudioClip.Create(getUrl(), data.Length, 1, 44100, false, false);
-        audio.SetData(data, 0);
-
-        return audio;
-    }*/
-
     protected override AudioClip convert(WWW data) {
-        return data.audioClip;
+        return data.GetAudioClip(false, true, AudioType.WAV);
     }
 
-    protected override void onLoad(AudioClip returnedData) {
-        audio = returnedData;
+    protected override void onLoadCoroutineSuccess(AudioClip returnedData) {
+        obj = new GameObject("Audio source");
+        audioSource = obj.gameObject.AddComponent<AudioSource>();
+        audioSource.clip = audioClip = returnedData;
+
+        play();
     }
-    protected override void onUnload() {
-        if (audio != null)
-            AudioClip.DestroyImmediate(audio, true);
+    protected override IEnumerator onUnloadCoroutine() {
+        if (audioClip != null)
+            AudioClip.DestroyImmediate(audioClip, true);
+        yield return null;
     }
 
     public AudioClip getAudio() {
-        return audio;
+        return audioClip;
+    }
+
+    public void play() {
+        audioSource.Play();
+    }
+
+    public void stop() {
+        audioSource.Stop();
+    }
+
+    public override string ToString() {
+        return "Audio[" + getUrl() + "]";
     }
 }

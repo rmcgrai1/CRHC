@@ -1,23 +1,39 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 
-public class WebVideo : WebResource<MovieTexture> {
+public class WebVideo : WebLoadable<MovieTexture> {
     private MovieTexture video;
 
+
+    /*=======================================================**=======================================================*/
+    /*=========================================== CONSTRUCTOR/DECONSTRUCTOR ==========================================*/
+    /*=======================================================**=======================================================*/
     public WebVideo(string url) : base(url) {
     }
+
 
     protected override MovieTexture convert(WWW data) {
         return data.movie;
     }
 
-    protected override void onLoad(MovieTexture returnedData) {
+    protected override void onLoadCoroutineSuccess(MovieTexture returnedData) {
         video = returnedData;
     }
-    protected override void onUnload() {
-        if (video != null)
-            MovieTexture.DestroyImmediate(video, true);
+    protected override IEnumerator onUnloadCoroutine() {
+        Object.DestroyImmediate(video, true);
+        yield return null;
     }
 
+    public void play() {
+        video.Play();
+    }
+    public void stop() {
+        video.Stop();
+    }
+
+    /*=======================================================**=======================================================*/
+    /*============================================== ACCESSORS/MUTATORS ==============================================*/
+    /*=======================================================**=======================================================*/
     public MovieTexture getVideo() {
         return video;
     }
