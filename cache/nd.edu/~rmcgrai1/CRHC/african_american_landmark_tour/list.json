@@ -1,0 +1,50 @@
+[
+	{
+		"id": "engman_natatorium",
+		"name": "Engman Natatorium",
+		"description": "Formerly Indiana's largest indoor pool, built in 1921-22. Denied access to African Americans until segregated admission was granted in 1937. The pool was desegregated and equal access granted to all in 1950.",
+		"latitude": 41.676278,
+		"longitude": -86.265103,
+		"audioUrl": "www3.nd.edu/~rmcgrai1/CRHC/audio/pannen.mp3"
+	},
+	{
+		"id": "st_joseph_courthouse",
+		"name": "St. Joseph Courthouse",
+		"description": "Two landmark cases heard here regarding fugitive slaves eventually made it to the U.S. Supreme Court.",
+		"latitude": 41.675837,
+		"longitude": -86.252518,
+		"audioUrl": "www3.nd.edu/~rmcgrai1/CRHC/audio/pannen.ogg"
+	},
+	{
+		"id": "robertsons_department_store",
+		"name": "Robertson's Department Store",
+		"description": "Once the premier shopping location in downtown South Bend and one of the few that allowed African Americans to try on clothing.",
+		"latitude": 41.674463,
+		"longitude": -86.250594,
+		"audioUrl": "www3.nd.edu/~rmcgrai1/CRHC/audio/pannen.wav"
+	},
+	{
+		"id": "hering_house",
+		"name": "Hering House",
+		"description": "Opened in 1925, this \"House of Hope\" for the African American community provided a place of safety, culture and recreation for young people.",
+		"latitude": 41.676278,
+		"longitude": -86.265103,
+		"audioUrl": "www3.nd.edu/~rmcgrai1/CRHC/audio/pannen.mp3"
+	},
+	{
+		"id": "central_highschool",
+		"name": "Central Highschool",
+		"description": "Dedicated in 1913 as South Bend High School, this integrated school graduated many of South Bend's African American leaders from the 1930s onward.",
+		"latitude": 41.676278,
+		"longitude": -86.265103,
+		"audioUrl": "www3.nd.edu/~rmcgrai1/CRHC/audio/pannen.ogg"
+	},
+	{
+		"id": "linden_school",
+		"name": "Linden School",
+		"description": "Opened in 1890, the school hired the first African American teachers beginning in 1950 and the first African American principal in 1959.",
+		"latitude": 41.676278,
+		"longitude": -86.265103,
+		"audioUrl": "www3.nd.edu/~rmcgrai1/CRHC/audio/pannen.ogg"
+	}
+]

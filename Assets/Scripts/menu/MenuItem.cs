@@ -1,5 +1,6 @@
-﻿public interface MenuItem {
+﻿public abstract class MenuItem {
 
-    void draw(float x, float y, float w);
-    float getHeight(float w);
+    public abstract bool draw(float w);
+    public abstract float getHeight(float w);
+    public virtual void onClick() {}
 }

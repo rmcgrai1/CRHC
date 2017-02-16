@@ -1,13 +1,20 @@
-﻿using System;
+﻿/*using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-public class LoadableCollection : Loadable, LoadableObserver {
+public class LoadableCollection : Loadable {
     private ICollection<Loadable> children;
+    private ChildObserver myObserver;
+
+    public LoadableCollection() {
+        observers = new List<LoadableObserver>();
+        children = new List<Loadable>();
+        myObserver = new ChildObserver();
+    }
 
     public void load() {
-        foreach(Loadable child in children) {
+        foreach (Loadable child in children) {
             child.load();
         }
     }
@@ -18,38 +25,45 @@ public class LoadableCollection : Loadable, LoadableObserver {
     }
 
     public bool isLoaded() {
-        throw new NotImplementedException();
+        bool success = true;
+        foreach (Loadable child in children) {
+            success = success && child.isLoaded();
+        }
+        return success;
     }
 
     public void addObserver(LoadableObserver obj) {
-        throw new NotImplementedException();
+        observers.Add(obj);
+
+        foreach (Loadable child in children) {
+            child.registerObserver(obj);
+        }
     }
 
     public void notifyLoadSuccess() {
-        throw new NotImplementedException();
     }
-
     public void notifyLoadFailure() {
-        throw new NotImplementedException();
     }
-
     public void notifyUnloadSuccess() {
-        throw new NotImplementedException();
     }
-
     public void notifyUnloadFailure() {
-        throw new NotImplementedException();
     }
 
-    public void onLoadFailure(Loadable obj) {
-    }
+    private class ChildObserver : LoadableObserver {
+        public void onLoadFailure(Loadable obj) {
+            throw new NotImplementedException();
+        }
 
-    public void onLoadSuccess(Loadable obj) {
-    }
+        public void onLoadSuccess(Loadable obj) {
+            throw new NotImplementedException();
+        }
 
-    public void onUnloadFailure(Loadable obj) {
-    }
+        public void onUnloadFailure(Loadable obj) {
+            throw new NotImplementedException();
+        }
 
-    public void onUnloadSuccess(Loadable obj) {
+        public void onUnloadSuccess(Loadable obj) {
+            throw new NotImplementedException();
+        }
     }
-}
+}*/

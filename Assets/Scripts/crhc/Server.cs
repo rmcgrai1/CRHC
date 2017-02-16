@@ -1,56 +1,26 @@
 ﻿using Newtonsoft.Json.Linq;
 using System.Collections;
 using System.Collections.Generic;
+using System;
 
-public class Server : Loadable {
+public class Server : CrchFolder<Tour> {
     private string url;
-
-    private WebString jsonInfo;
-    private List<Tour> tourList;
-
-    private LoadableCollection collection;
-
 
     /*=======================================================**=======================================================*/
     /*=========================================== CONSTRUCTOR/DECONSTRUCTOR ==========================================*/
     /*=======================================================**=======================================================*/
-    public Server(string url) {
+    public Server(string url) : base(null, null) {
         this.url = url;
-
-        jsonInfo = new WebString(url + "list.json");
-        tourList = new List<Tour>();
     }
-
-    protected override IEnumerator onLoadCoroutine() {
-        yield return jsonInfo.loadCoroutine();
-
-        string returnedString = jsonInfo.getString();
-
-        JsonChildList childList = new JsonChildList(returnedString);
-        foreach (JsonChildList.JsonChild child in childList) {
-            Tour tour = new Tour(this, child["id"], child["name"], child["description"], child["imagePath"]);
-            tourList.Add(tour);
-        }
-    }
-
-    protected override IEnumerator onUnloadCoroutine() {
-        yield return jsonInfo.unloadCoroutine();
-
-        foreach (Tour child in tourList) {
-            yield return child.unloadCoroutine();
-        }
-        tourList.Clear();
-    }
-
 
     /*=======================================================**=======================================================*/
     /*============================================== ACCESSORS/MUTATORS ==============================================*/
     /*=======================================================**=======================================================*/
-    public string getUrl() {
+    public override string getUrl() {
         return url;
     }
 
-    public List<Tour> getTourList() {
-        return tourList;
+    public override IMenu buildMenu() {
+        throw new NotImplementedException();
     }
 }

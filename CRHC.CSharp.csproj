@@ -13,13 +13,11 @@
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>Unity Subset v3.5</TargetFrameworkProfile>
-    <CompilerResponseFile>
-    </CompilerResponseFile>
+    <CompilerResponseFile></CompilerResponseFile>
     <UnityProjectType>Game:1</UnityProjectType>
     <UnityBuildTarget>StandaloneWindows:5</UnityBuildTarget>
     <UnityVersion>5.4.1f1</UnityVersion>
-    <RootNamespace>
-    </RootNamespace>
+    <RootNamespace></RootNamespace>
     <LangVersion Condition=" '$(VisualStudioVersion)' != '10.0' ">4</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -66,33 +64,103 @@
     <Reference Include="Newtonsoft.Json">
       <HintPath>Assets\UnityPackages\JsonNet\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="Vuforia.UnityExtensions">
+      <HintPath>Assets\Vuforia\Scripts\Internal\Vuforia.UnityExtensions.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\AppRunner.cs" />
     <Compile Include="Assets\Scripts\CoroutineManager.cs" />
+    <Compile Include="Assets\Scripts\GUIX.cs" />
     <Compile Include="Assets\Scripts\MapServer.cs" />
-    <Compile Include="Assets\Scripts\WebAudio.cs" />
-    <Compile Include="Assets\Scripts\WebLoadable.cs" />
-    <Compile Include="Assets\Scripts\WebString.cs" />
-    <Compile Include="Assets\Scripts\WebTexture.cs" />
-    <Compile Include="Assets\Scripts\WebVideo.cs" />
     <Compile Include="Assets\Scripts\crhc\Action.cs" />
+    <Compile Include="Assets\Scripts\crhc\Class1.cs" />
+    <Compile Include="Assets\Scripts\crhc\CrchFolder.cs" />
     <Compile Include="Assets\Scripts\crhc\Experience.cs" />
     <Compile Include="Assets\Scripts\crhc\JsonChildList.cs" />
     <Compile Include="Assets\Scripts\crhc\Landmark.cs" />
     <Compile Include="Assets\Scripts\crhc\Server.cs" />
     <Compile Include="Assets\Scripts\crhc\Tour.cs" />
-    <Compile Include="Assets\Scripts\loadable\ByteStreamLoader.cs" />
+    <Compile Include="Assets\Scripts\data_conversion\CachedLoader.cs" />
+    <Compile Include="Assets\Scripts\data_conversion\IConvertible.cs" />
+    <Compile Include="Assets\Scripts\data_conversion\datatypes\intermediate_data\X_ByteArray.cs" />
+    <Compile Include="Assets\Scripts\data_conversion\datatypes\intermediate_data\X_WWW.cs" />
+    <Compile Include="Assets\Scripts\data_conversion\datatypes\resource\X_AudioClip.cs" />
+    <Compile Include="Assets\Scripts\data_conversion\datatypes\resource\X_Double.cs" />
+    <Compile Include="Assets\Scripts\data_conversion\datatypes\resource\X_MovieTexture.cs" />
+    <Compile Include="Assets\Scripts\data_conversion\datatypes\resource\X_String.cs" />
+    <Compile Include="Assets\Scripts\data_conversion\datatypes\resource\X_Texture2D.cs" />
     <Compile Include="Assets\Scripts\loadable\Loadable.cs" />
+    <Compile Include="Assets\Scripts\loadable\LoadableCollection.cs" />
+    <Compile Include="Assets\Scripts\loadable\LoadableObserver.cs" />
+    <Compile Include="Assets\Scripts\menu\IMenu.cs" />
+    <Compile Include="Assets\Scripts\menu\IRow.cs" />
     <Compile Include="Assets\Scripts\menu\Menu.cs" />
-    <Compile Include="Assets\Scripts\menu\MenuButton.cs" />
+    <Compile Include="Assets\Scripts\menu\MenuImage.cs" />
     <Compile Include="Assets\Scripts\menu\MenuItem.cs" />
+    <Compile Include="Assets\Scripts\menu\MenuSpace.cs" />
     <Compile Include="Assets\Scripts\menu\MenuText.cs" />
-    <Compile Include="Assets\Scripts\resource\Resource.cs" />
-    <Compile Include="Assets\Scripts\resource\ResourceEventListener.cs" />
-    <Compile Include="Assets\Scripts\stream\ByteStream.cs" />
-    <Compile Include="Assets\Scripts\stream\WebStream.cs" />
+    <Compile Include="Assets\Scripts\menu\PaneRow.cs" />
+    <Compile Include="Assets\Scripts\menu\Row.cs" />
+    <Compile Include="Assets\Scripts\menu\ScrollMenu.cs" />
+    <Compile Include="Assets\Scripts\resource\LoadableAudio.cs" />
+    <Compile Include="Assets\Scripts\resource\LoadableResource.cs" />
+    <Compile Include="Assets\Scripts\resource\LoadableString.cs" />
+    <Compile Include="Assets\Scripts\resource\LoadableTexture.cs" />
+    <Compile Include="Assets\Scripts\resource\LoadableVideo.cs" />
     <Compile Include="Assets\UnityPackages\JsonNetSample\JsonNetSample.cs" />
+    <Compile Include="Assets\Vuforia\Scripts\BackgroundPlaneBehaviour.cs" />
+    <Compile Include="Assets\Vuforia\Scripts\CloudRecoBehaviour.cs" />
+    <Compile Include="Assets\Vuforia\Scripts\CylinderTargetBehaviour.cs" />
+    <Compile Include="Assets\Vuforia\Scripts\DefaultInitializationErrorHandler.cs" />
+    <Compile Include="Assets\Vuforia\Scripts\DefaultSmartTerrainEventHandler.cs" />
+    <Compile Include="Assets\Vuforia\Scripts\DefaultTrackableEventHandler.cs" />
+    <Compile Include="Assets\Vuforia\Scripts\GLErrorHandler.cs" />
+    <Compile Include="Assets\Vuforia\Scripts\HideExcessAreaBehaviour.cs" />
+    <Compile Include="Assets\Vuforia\Scripts\ImageTargetBehaviour.cs" />
+    <Compile Include="Assets\Vuforia\Scripts\Internal\AndroidUnityPlayer.cs" />
+    <Compile Include="Assets\Vuforia\Scripts\Internal\ComponentFactoryStarterBehaviour.cs" />
+    <Compile Include="Assets\Vuforia\Scripts\Internal\IOSUnityPlayer.cs" />
+    <Compile Include="Assets\Vuforia\Scripts\Internal\VuforiaBehaviourComponentFactory.cs" />
+    <Compile Include="Assets\Vuforia\Scripts\Internal\WSAUnityPlayer.cs" />
+    <Compile Include="Assets\Vuforia\Scripts\MaskOutBehaviour.cs" />
+    <Compile Include="Assets\Vuforia\Scripts\MultiTargetBehaviour.cs" />
+    <Compile Include="Assets\Vuforia\Scripts\ObjectTargetBehaviour.cs" />
+    <Compile Include="Assets\Vuforia\Scripts\PropBehaviour.cs" />
+    <Compile Include="Assets\Vuforia\Scripts\ReconstructionBehaviour.cs" />
+    <Compile Include="Assets\Vuforia\Scripts\ReconstructionFromTargetBehaviour.cs" />
+    <Compile Include="Assets\Vuforia\Scripts\SurfaceBehaviour.cs" />
+    <Compile Include="Assets\Vuforia\Scripts\TextRecoBehaviour.cs" />
+    <Compile Include="Assets\Vuforia\Scripts\TurnOffBehaviour.cs" />
+    <Compile Include="Assets\Vuforia\Scripts\TurnOffWordBehaviour.cs" />
+    <Compile Include="Assets\Vuforia\Scripts\UserDefinedTargetBuildingBehaviour.cs" />
+    <Compile Include="Assets\Vuforia\Scripts\Utilities\VRIntegrationHelper.cs" />
+    <Compile Include="Assets\Vuforia\Scripts\VideoBackgroundBehaviour.cs" />
+    <Compile Include="Assets\Vuforia\Scripts\VirtualButtonBehaviour.cs" />
+    <Compile Include="Assets\Vuforia\Scripts\VuMarkBehaviour.cs" />
+    <Compile Include="Assets\Vuforia\Scripts\VuforiaBehaviour.cs" />
+    <Compile Include="Assets\Vuforia\Scripts\VuforiaConfiguration.cs" />
+    <Compile Include="Assets\Vuforia\Scripts\VuforiaRuntimeInitialization.cs" />
+    <Compile Include="Assets\Vuforia\Scripts\WireframeBehaviour.cs" />
+    <Compile Include="Assets\Vuforia\Scripts\WireframeTrackableEventHandler.cs" />
+    <Compile Include="Assets\Vuforia\Scripts\WordBehaviour.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Assets\Plugins\Android\AndroidManifest.xml" />
+    <None Include="Assets\Vuforia\Editor\Scripts\Vuforia.UnityExtensions.Editor.XML" />
+    <None Include="Assets\Vuforia\Editor\WebcamProfiles\profiles.xml" />
+    <None Include="Assets\Vuforia\Scripts\Internal\Vuforia.UnityExtensions.XML" />
+    <None Include="Assets\Vuforia\Shaders\BrightTexture.shader" />
+    <None Include="Assets\Vuforia\Shaders\ClippingMask.shader" />
+    <None Include="Assets\Vuforia\Shaders\ColoredLines.shader" />
+    <None Include="Assets\Vuforia\Shaders\DepthMask.shader" />
+    <None Include="Assets\Vuforia\Shaders\RenderVideoBackground.shader" />
+    <None Include="Assets\Vuforia\Shaders\Text3D.shader" />
+    <None Include="Assets\Vuforia\Shaders\VertexLitWithZ.shader" />
+    <None Include="Assets\Vuforia\Shaders\VideoBackground.shader" />
+    <None Include="Assets\license_3rdpartynotice.txt" />
+    <None Include="Assets\link.xml" />
+    <None Include="Assets\readme_SDK.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2015\UnityVS.CSharp.targets" />
 </Project>

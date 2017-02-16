@@ -7,7 +7,7 @@ public class MapServer {
     public static void show(double latitude, double longitude) {
         if (!isOpen) {
             isOpen = true;
-            string url = BASE_URL + (latitude+","+longitude);
+            string url = BASE_URL + (latitude + "," + longitude);
 
             Application.OpenURL(url);
         }
@@ -16,7 +16,7 @@ public class MapServer {
     public static void showRoute(double latitude, double longitude) {
         if (!isOpen) {
             isOpen = true;
-            string url = "http://maps.google.com/maps?saddr=" + ("Current%20Location") + "&daddr=" + (latitude+","+longitude);
+            string url = "http://maps.google.com/maps?saddr=" + ("Current%20Location") + "&daddr=" + (latitude + "," + longitude);
 
             Application.OpenURL(url);
         }

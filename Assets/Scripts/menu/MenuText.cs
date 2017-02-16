@@ -3,32 +3,43 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class MenuText : MenuItem {
-    private static GUIStyle style;
-    private string text;
+    private GUIStyle style;
+    private GUIContent content;
 
-    static MenuText() {
+    public MenuText(string text) {
+        content = new GUIContent("");
+
         style = new GUIStyle();
         style.fixedHeight = 0;
         style.clipping = TextClipping.Overflow;
         style.wordWrap = true;
-    }
 
-    public MenuText(string text) {
         setText(text);
     }
 
-    public void draw(float x, float y, float w) {
+    public override bool draw(float w) {
         float h = getHeight(w);
 
-        GUI.Label(new Rect(x, y, w, h), text, style);
+        Rect rect = new Rect(0, 0, w, h);
+        GUIX.Label(rect, content, style);
+        if (GUIX.isMouseInsideRect(rect)) {
+            onClick();
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 
     public void setText(string text) {
-        this.text = text;
+        content.text = text;
     }
 
-    public float getHeight(float w) {
-        GUIContent content = new GUIContent(text);
+    public void setColor(Color color) {
+        style.normal.textColor = color;
+    }
+
+    public override float getHeight(float w) {
         float h = style.CalcHeight(content, w);
 
         return h;
