@@ -2,8 +2,39 @@
 using System.Collections.Generic;
 using System.Collections;
 using System;
+using generic;
+using Vuforia;
 
 public class Landmark : CrchFolder<Experience> {
+    private Reference<byte[]> dat;
+    private Reference<string> xml;
+
+    public IEnumerator loadCoroutine() {
+        ILoader loader = ServiceLocator.getILoader();
+        dat = loader.getReference<byte[]>(getUrl() + "vuforia/" + getId() + ".dat");
+        xml = loader.getReference<string>(getUrl() + "vuforia/" + getId() + ".xml");
+
+        yield return loader.loadCoroutine(dat);
+        yield return loader.loadCoroutine(xml);
+    }
+
+    public override void onDispose() {
+        base.onDispose();
+
+        dat.removeOwner();
+        xml.removeOwner();
+        dat = null;
+        xml = null;
+    }
+
+    public Reference<byte[]> getDat() {
+        return dat;
+    }
+
+    public Reference<string> getXML() {
+        return xml;
+    }
+
     /*=======================================================**=======================================================*/
     /*=========================================== CONSTRUCTOR/DECONSTRUCTOR ==========================================*/
     /*=======================================================**=======================================================*/
@@ -20,12 +51,20 @@ public class Landmark : CrchFolder<Experience> {
     /*=======================================================**=======================================================*/
     /*============================================== ACCESSORS/MUTATORS ==============================================*/
     /*=======================================================**=======================================================*/
+    public Tour getTour() {
+        return getParent() as Tour;
+    }
+
     public string getName() {
         return getData("name");
     }
 
     public string getDescription() {
         return getData("description");
+    }
+
+    public string getLongDescription() {
+        return getData("longDescription");
     }
 
     public double getLatitude() {
@@ -36,61 +75,95 @@ public class Landmark : CrchFolder<Experience> {
         return double.Parse(getData("longitude"));
     }
 
-    public string getAudioUrl() {
-        return getData("audioUrl");
+    public bool hasAudio() {
+        return bool.Parse(getData("hasAudio"));
     }
 
     public override IMenu buildMenu() {
+        CoroutineManager.startCoroutine(loadCoroutine());
+
         Menu menu = new Menu();
 
-        MenuSpace padding = new MenuSpace();
+        SpaceItem padding = new SpaceItem();
 
         Row backRow = new Row();
         backRow.addItem(new BackButton(this), 1);
         menu.addRow(backRow);
 
         Row titleRow = new Row();
-        MenuText titleText = new MenuText(getName().ToUpper());
+        titleRow.setPadding(true, true, false);
+
+        TextItem titleText = new TextItem(getName().ToUpper());
         titleText.setColor(Crch.COLOR_RED);
+        titleText.setFont(Crch.FONT_SUBTITLE);
         titleRow.addItem(titleText, 1);
-        titleRow.setColor(Crch.COLOR_BLUE_LIGHT);
 
         menu.addRow(titleRow);
 
         Row descRow = new Row();
-        MenuText descText = new MenuText(getDescription());
+        descRow.setPadding(true, false, true);
+
+        TextItem descText = new TextItem(getDescription());
         descRow.addItem(descText, 1);
-        descRow.setColor(Crch.COLOR_BLUE_LIGHT);
 
         menu.addRow(descRow);
 
-        int inRow = 0;
-        Row curRow = null;
+        int inRow = 0, i = 0;
+        Row curRow = null, sourceRow = null;
+
+        Row paddingRow = new Row(30);
+
         foreach (Experience child in this) {
             // Add image.
-            if(inRow == 0) {
+            if (inRow == 0) {
                 inRow++;
+
+                if (i++ > 0) {
+                    menu.addRow(paddingRow);
+                }
+
                 curRow = new Row();
-                curRow.setColor(Crch.COLOR_BLUE_LIGHT);
+                curRow.setPadding(true, false, false);
+                sourceRow = new Row();
+                sourceRow.setPadding(true, false, false);
 
                 menu.addRow(curRow);
+                menu.addRow(sourceRow);
             }
             else {
+                curRow.addItem(new SpaceItem(), .2f);
+                sourceRow.addItem(new SpaceItem(), .2f);
                 inRow = 0;
             }
 
-            MenuImage img = new ARButton(child);
+            ImageItem img = new ARButton(child);
             curRow.addItem(img, 1);
+
+            TextItem sourceText = new TextItem(child.getSource());
+            sourceText.setFont(Crch.FONT_SOURCE);
+            sourceText.setTextVerticalAlignment(TextVerticalAlignment.TOP);
+            sourceRow.addItem(sourceText, 1);
         }
 
-        if(inRow == 1) {
-            curRow.addItem(new MenuSpace(), 1);
+        if (inRow == 1) {
+            curRow.addItem(new SpaceItem(), 1.2f);
+            sourceRow.addItem(new SpaceItem(), 1.2f);
         }
 
-        return new ScrollMenu(menu);
+        Row row = new Row();
+        row.addItem(new TextItem(getLongDescription()), 1);
+        menu.addRow(row);
+        row.setPadding(true, true, true);
+
+        IMenu scrollMenu = new ScrollMenu(menu);
+        IMenu fadeInMenu = new FadeInMenu(scrollMenu, Crch.FADE_IN_SPEED);
+
+        fadeInMenu.setColor(Crch.COLOR_BLUE_LIGHT);
+
+        return fadeInMenu;
     }
 
-    private class BackButton : MenuRect {
+    private class BackButton : RectItem {
         private Landmark owner;
 
         public BackButton(Landmark owner) : base(Color.red) {
@@ -98,18 +171,44 @@ public class Landmark : CrchFolder<Experience> {
         }
 
         public override void onClick() {
-            owner.unload();            
+            owner.unload();
+        }
+
+        public override void onDispose() {
+            base.onDispose();
+
+            owner = null;
         }
     }
 
-    private class ARButton : MenuImage {
+    private class ARButton : ImageItem {
         private Experience exp;
+        private Reference<Texture2D> tex;
+
         public ARButton(Experience exp) : base(exp.getUrl() + "img.jpg") {
             this.exp = exp;
+            tex = ServiceLocator.getILoader().load<Texture2D>("http://www3.nd.edu/~rmcgrai1/CRHC/icons/ar_icon.png");
         }
 
         public override void onClick() {
             exp.load();
+        }
+
+        public override bool draw(float w, float h) {
+            bool output = base.draw(w, h);
+
+            if (tex.isLoaded()) {
+                GUIX.Texture(new Rect(0, 0, w / 4, w / 4), tex.getResource());
+            }
+
+            return output;
+        }
+
+        public override void onDispose() {
+            base.onDispose();
+            tex.removeOwner();
+            tex = null;
+            exp = null;
         }
     }
 }

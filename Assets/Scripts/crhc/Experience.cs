@@ -1,19 +1,27 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 
 public class Experience : CrchItem {
-    private Action action;
-
     public Experience(CrchItem parent, JsonChildList.JsonChild data) : base(parent, data) {
+    }
+
+    public override void onDispose() {
+    }
+
+    public Landmark getLandmark() {
+        return getParent() as Landmark;
     }
 
     public string getTargetId() {
         return getData("targetId");
     }
 
+    public string getSource() {
+        return getData("source");
+    }
+
     protected override IEnumerator tryLoad() {
-        AppRunner.getVuforiaManager().activate(getId());
+        AppRunner.getVuforiaManager().activate(this);
 
         Menu menu = new Menu();
 
@@ -32,7 +40,7 @@ public class Experience : CrchItem {
         yield return null;
     }
 
-    private class BackButton : MenuRect {
+    private class BackButton : RectItem {
         private Experience owner;
 
         public BackButton(Experience owner) : base(Color.red) {

@@ -1,0 +1,138 @@
+********************************************************************************
+*                    Tuesday, February 28, 2017 2:54:31 AM                     *
+********************************************************************************
+CSharpCompilerWrapper.exe version: 2.0.3.30
+Platform: Windows
+Target assembly: Assembly-CSharp.dll
+Project directory: C:\Users\Ryan\Documents\GitHub\CRHC
+Target profile directory: C:\Program Files (x86)\Unity\Editor\Data\Mono\lib\mono\unity
+Unity 'Data' or 'Frameworks' directory: C:/Program Files (x86)/Unity/Editor/Data
+Compiler: Microsoft C# 6.0
+
+- Compilation -----------------------------------------------
+
+Process: C:\Users\Ryan\Documents\GitHub\CRHC\CSharp60Support\Roslyn\csc.exe
+Arguments: -nostdlib+ -noconfig -nologo -r:"C:\Program Files (x86)\Unity\Editor\Data\Mono\lib\mono\unity\mscorlib.dll" -r:"C:\Program Files (x86)\Unity\Editor\Data\Mono\lib\mono\unity\System.dll" -r:"C:\Program Files (x86)\Unity\Editor\Data\Mono\lib\mono\unity\System.Core.dll" -r:"C:\Program Files (x86)\Unity\Editor\Data\Mono\lib\mono\unity\System.Xml.dll" @Temp/UnityTempFile-dc0309bb060db7d478f887dbb23c9278 
+Exit code: 0
+Elapsed time: 2.64 sec
+
+- Compiler output (0 lines):
+
+- Compiler errors (9 lines):
+0: Assets\Scripts\crhc\Tour.cs(59,13): warning CS0219: The variable 'i' is assigned but its value is never used
+1: Assets\Scripts\loadable\Loadable.cs(47,48): warning CS0168: The variable 'curSize' is declared but never used
+2: Assets\Scripts\menu\menus\Menu.cs(32,13): warning CS0219: The variable 'i' is assigned but its value is never used
+3: Assets\Vuforia\Scripts\Utilities\VRIntegrationHelper.cs(99,17): warning CS0618: 'Camera.SetStereoProjectionMatrices(Matrix4x4, Matrix4x4)' is obsolete: 'SetStereoProjectionMatrices is deprecated. Use SetStereoProjectionMatrix(StereoscopicEye eye) instead.'
+4: Assets\Vuforia\Scripts\Utilities\VRIntegrationHelper.cs(100,17): warning CS0618: 'Camera.SetStereoProjectionMatrices(Matrix4x4, Matrix4x4)' is obsolete: 'SetStereoProjectionMatrices is deprecated. Use SetStereoProjectionMatrix(StereoscopicEye eye) instead.'
+5: Assets\Scripts\AppRunner.cs(13,20): warning CS0649: Field 'AppRunner.shader' is never assigned to, and will always have its default value null
+6: Assets\Scripts\AppRunner.cs(19,18): warning CS0649: Field 'AppRunner.doDrawLog' is never assigned to, and will always have its default value false
+7: Assets\Scripts\AppRunner.cs(22,18): warning CS0649: Field 'AppRunner._doUseLocalCache' is never assigned to, and will always have its default value false
+8: Assets\Scripts\VuforiaManager.cs(15,18): warning CS0649: Field 'VuforiaManager.isSetup' is never assigned to, and will always have its default value false
+
+- PDB to MDB conversion --------------------------------------
+
+Process: C:\Users\Ryan\Documents\GitHub\CRHC\CSharp60Support\Roslyn\pdb2mdb.exe
+Arguments: Temp\Assembly-CSharp.dll
+Exit code: 0
+Elapsed time: 0.27 sec
+
+- pdb2mdb.exe output (0 lines):
+********************************************************************************
+*                    Tuesday, February 28, 2017 2:54:35 AM                     *
+********************************************************************************
+CSharpCompilerWrapper.exe version: 2.0.3.30
+Platform: Windows
+Target assembly: Assembly-CSharp-Editor.dll
+Project directory: C:\Users\Ryan\Documents\GitHub\CRHC
+Target profile directory: C:\Program Files (x86)\Unity\Editor\Data\Mono\lib\mono\2.0
+Unity 'Data' or 'Frameworks' directory: C:/Program Files (x86)/Unity/Editor/Data
+Compiler: Microsoft C# 6.0
+
+- Compilation -----------------------------------------------
+
+Process: C:\Users\Ryan\Documents\GitHub\CRHC\CSharp60Support\Roslyn\csc.exe
+Arguments: -nostdlib+ -noconfig -nologo -r:"C:\Program Files (x86)\Unity\Editor\Data\Mono\lib\mono\2.0\mscorlib.dll" -r:"C:\Program Files (x86)\Unity\Editor\Data\Mono\lib\mono\2.0\System.dll" -r:"C:\Program Files (x86)\Unity\Editor\Data\Mono\lib\mono\2.0\System.Core.dll" -r:"C:\Program Files (x86)\Unity\Editor\Data\Mono\lib\mono\2.0\System.Xml.dll" @Temp/UnityTempFile-4805e773a77da1744a7a523ca678b016 
+Exit code: 0
+Elapsed time: 2.27 sec
+
+- Compiler output (0 lines):
+
+- Compiler errors (0 lines):
+
+- PDB to MDB conversion --------------------------------------
+
+Process: C:\Users\Ryan\Documents\GitHub\CRHC\CSharp60Support\Roslyn\pdb2mdb.exe
+Arguments: Temp\Assembly-CSharp-Editor.dll
+Exit code: 0
+Elapsed time: 0.11 sec
+
+- pdb2mdb.exe output (0 lines):
+********************************************************************************
+*                    Tuesday, February 28, 2017 2:55:54 AM                     *
+********************************************************************************
+CSharpCompilerWrapper.exe version: 2.0.3.30
+Platform: Windows
+Target assembly: Assembly-CSharp.dll
+Project directory: C:\Users\Ryan\Documents\GitHub\CRHC
+Target profile directory: C:\Program Files (x86)\Unity\Editor\Data\Mono\lib\mono\unity
+Unity 'Data' or 'Frameworks' directory: C:/Program Files (x86)/Unity/Editor/Data
+Compiler: Microsoft C# 6.0
+
+- Compilation -----------------------------------------------
+
+Process: C:\Users\Ryan\Documents\GitHub\CRHC\CSharp60Support\Roslyn\csc.exe
+Arguments: -nostdlib+ -noconfig -nologo -r:"C:\Program Files (x86)\Unity\Editor\Data\Mono\lib\mono\unity\mscorlib.dll" -r:"C:\Program Files (x86)\Unity\Editor\Data\Mono\lib\mono\unity\System.dll" -r:"C:\Program Files (x86)\Unity\Editor\Data\Mono\lib\mono\unity\System.Core.dll" -r:"C:\Program Files (x86)\Unity\Editor\Data\Mono\lib\mono\unity\System.Xml.dll" @Temp/UnityTempFile-a9d165966aace5d4287b5a49e99c2ad6 
+Exit code: 0
+Elapsed time: 2.87 sec
+
+- Compiler output (0 lines):
+
+- Compiler errors (9 lines):
+0: Assets\Scripts\crhc\Tour.cs(59,13): warning CS0219: The variable 'i' is assigned but its value is never used
+1: Assets\Scripts\loadable\Loadable.cs(47,48): warning CS0168: The variable 'curSize' is declared but never used
+2: Assets\Scripts\menu\menus\Menu.cs(32,13): warning CS0219: The variable 'i' is assigned but its value is never used
+3: Assets\Vuforia\Scripts\Utilities\VRIntegrationHelper.cs(99,17): warning CS0618: 'Camera.SetStereoProjectionMatrices(Matrix4x4, Matrix4x4)' is obsolete: 'SetStereoProjectionMatrices is deprecated. Use SetStereoProjectionMatrix(StereoscopicEye eye) instead.'
+4: Assets\Vuforia\Scripts\Utilities\VRIntegrationHelper.cs(100,17): warning CS0618: 'Camera.SetStereoProjectionMatrices(Matrix4x4, Matrix4x4)' is obsolete: 'SetStereoProjectionMatrices is deprecated. Use SetStereoProjectionMatrix(StereoscopicEye eye) instead.'
+5: Assets\Scripts\AppRunner.cs(22,18): warning CS0649: Field 'AppRunner._doUseLocalCache' is never assigned to, and will always have its default value false
+6: Assets\Scripts\AppRunner.cs(19,18): warning CS0649: Field 'AppRunner.doDrawLog' is never assigned to, and will always have its default value false
+7: Assets\Scripts\AppRunner.cs(13,20): warning CS0649: Field 'AppRunner.shader' is never assigned to, and will always have its default value null
+8: Assets\Scripts\VuforiaManager.cs(15,18): warning CS0649: Field 'VuforiaManager.isSetup' is never assigned to, and will always have its default value false
+
+- PDB to MDB conversion --------------------------------------
+
+Process: C:\Users\Ryan\Documents\GitHub\CRHC\CSharp60Support\Roslyn\pdb2mdb.exe
+Arguments: Temp\Assembly-CSharp.dll
+Exit code: 0
+Elapsed time: 0.16 sec
+
+- pdb2mdb.exe output (0 lines):
+********************************************************************************
+*                    Tuesday, February 28, 2017 2:55:57 AM                     *
+********************************************************************************
+CSharpCompilerWrapper.exe version: 2.0.3.30
+Platform: Windows
+Target assembly: Assembly-CSharp-Editor.dll
+Project directory: C:\Users\Ryan\Documents\GitHub\CRHC
+Target profile directory: C:\Program Files (x86)\Unity\Editor\Data\Mono\lib\mono\2.0
+Unity 'Data' or 'Frameworks' directory: C:/Program Files (x86)/Unity/Editor/Data
+Compiler: Microsoft C# 6.0
+
+- Compilation -----------------------------------------------
+
+Process: C:\Users\Ryan\Documents\GitHub\CRHC\CSharp60Support\Roslyn\csc.exe
+Arguments: -nostdlib+ -noconfig -nologo -r:"C:\Program Files (x86)\Unity\Editor\Data\Mono\lib\mono\2.0\mscorlib.dll" -r:"C:\Program Files (x86)\Unity\Editor\Data\Mono\lib\mono\2.0\System.dll" -r:"C:\Program Files (x86)\Unity\Editor\Data\Mono\lib\mono\2.0\System.Core.dll" -r:"C:\Program Files (x86)\Unity\Editor\Data\Mono\lib\mono\2.0\System.Xml.dll" @Temp/UnityTempFile-a05929004a114cc4998d9add0db9243f 
+Exit code: 0
+Elapsed time: 2.32 sec
+
+- Compiler output (0 lines):
+
+- Compiler errors (0 lines):
+
+- PDB to MDB conversion --------------------------------------
+
+Process: C:\Users\Ryan\Documents\GitHub\CRHC\CSharp60Support\Roslyn\pdb2mdb.exe
+Arguments: Temp\Assembly-CSharp-Editor.dll
+Exit code: 0
+Elapsed time: 0.11 sec
+
+- pdb2mdb.exe output (0 lines):

@@ -1,10 +1,11 @@
-﻿using System;
+﻿using generic;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
 
-public abstract class CrchItem : Loadable {
+public abstract class CrchItem : Loadable, IDisposable {
     private CrchItem parent;
     private JsonChildList.JsonChild data;
 
@@ -28,57 +29,53 @@ public abstract class CrchItem : Loadable {
     public virtual string getUrl() {
         return parent.getUrl() + getId() + "/";
     }
+
+    public abstract void onDispose();
+
+    #region IDisposable Support
+    private bool disposedValue = false; // To detect redundant calls
+
+    protected virtual void Dispose(bool disposing) {
+        if (!disposedValue) {
+            if (disposing) {
+                // TODO: dispose managed state (managed objects).
+            }
+
+            // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
+            // TODO: set large fields to null.
+            onDispose();
+
+            data.Dispose();
+            parent = null;
+            data = null;
+
+            disposedValue = true;
+        }
+    }
+
+    // TODO: override a finalizer only if Dispose(bool disposing) above has code to free unmanaged resources.
+    // ~CrchFolder() {
+    //   // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+    //   Dispose(false);
+    // }
+
+    // This code added to correctly implement the disposable pattern.
+    public void Dispose() {
+        // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+        Dispose(true);
+        // TODO: uncomment the following line if the finalizer is overridden above.
+        // GC.SuppressFinalize(this);
+    }
+    #endregion
 }
 
 public abstract class CrchFolder<CHILD_TYPE> : CrchItem, IEnumerable where CHILD_TYPE : CrchItem {
     private ICollection<CHILD_TYPE> children;
-    private LoadableString childInfo;
-    private ChildInfoObserver obs;
+    private Reference<string> childInfo;
     private string targetId;
 
     public CrchFolder(CrchItem parent, JsonChildList.JsonChild data) : base(parent, data) {
-        obs = new ChildInfoObserver(this);
         children = new LinkedList<CHILD_TYPE>();
-    }
-
-    private class ChildInfoObserver : LoadableObserver {
-        private CrchFolder<CHILD_TYPE> owner;
-
-        public ChildInfoObserver(CrchFolder<CHILD_TYPE> owner) {
-            this.owner = owner;
-        }
-
-        public void onLoadSuccess(Loadable obj) {
-            string returnedString = owner.childInfo.getResource();
-
-            // TODO: Change this to a cleaner method.
-            ConstructorInfo constr = typeof(CHILD_TYPE).GetConstructor(new Type[] { typeof(CrchItem), typeof(JsonChildList.JsonChild) });
-
-            JsonChildList dataList = new JsonChildList(returnedString);
-            foreach (JsonChildList.JsonChild data in dataList) {
-                CHILD_TYPE child;
-
-                child = constr.Invoke(new object[] { owner, data }) as CHILD_TYPE;
-                owner.children.Add(child);
-            }
-
-            if(owner.targetId == null) {
-                IMenu menu = owner.buildMenu();
-                AppRunner.enterMenu(menu);
-            }
-            else {
-                owner.getChild(owner.targetId).load();
-            }
-        }
-
-        public void onLoadFailure(Loadable obj) {
-        }
-
-        public void onUnloadSuccess(Loadable obj) {
-        }
-
-        public void onUnloadFailure(Loadable obj) {            
-        }
     }
 
     public IEnumerator GetEnumerator() {
@@ -94,11 +91,35 @@ public abstract class CrchFolder<CHILD_TYPE> : CrchItem, IEnumerable where CHILD
     }
 
     protected override IEnumerator tryLoad() {
-        childInfo = new LoadableString(getUrl() + "list.json");
-        childInfo.registerObserver(obs);
+        ILoader loader = ServiceLocator.getILoader();
 
-        childInfo.load();
-        yield return null;
+        ServiceLocator.getILog().println(LogType.JUNK, "Loading info...");
+        childInfo = loader.getReference<string>(getUrl() + "list.json");
+        yield return loader.loadCoroutine(childInfo);
+
+        string returnedString = childInfo.getResource();
+
+        // TODO: Change this to a cleaner method.
+        ConstructorInfo constr = typeof(CHILD_TYPE).GetConstructor(new Type[] { typeof(CrchItem), typeof(JsonChildList.JsonChild) });
+
+        JsonChildList dataList = new JsonChildList(returnedString);
+        foreach (JsonChildList.JsonChild data in dataList) {
+            CHILD_TYPE child;
+
+            ServiceLocator.getILog().println(LogType.JUNK, "  Adding child...");
+            child = constr.Invoke(new object[] { this, data }) as CHILD_TYPE;
+            children.Add(child);
+        }
+
+        if (targetId == null) {
+            ServiceLocator.getILog().println(LogType.JUNK, "Building menu...");
+            IMenu menu = buildMenu();
+            AppRunner.enterMenu(menu);
+        }
+        else {
+            ServiceLocator.getILog().println(LogType.JUNK, "Entering child menu: " + targetId);
+            getChild(targetId).load();
+        }
     }
 
     protected override IEnumerator tryUnload() {
@@ -111,8 +132,8 @@ public abstract class CrchFolder<CHILD_TYPE> : CrchItem, IEnumerable where CHILD
     }
 
     public CHILD_TYPE getChild(string id) {
-        foreach(CHILD_TYPE poss in this) {
-            if(poss.getId().Equals(id)) {
+        foreach (CHILD_TYPE poss in this) {
+            if (poss.getId().Equals(id)) {
                 return poss;
             }
         }
@@ -125,4 +146,15 @@ public abstract class CrchFolder<CHILD_TYPE> : CrchItem, IEnumerable where CHILD
     }
 
     public abstract IMenu buildMenu();
+
+    public override void onDispose() {
+        foreach (CHILD_TYPE child in children) {
+            child.Dispose();
+        }
+        children.Clear();
+
+        childInfo.removeOwner();
+        childInfo = null;
+        children = null;
+    }
 }
