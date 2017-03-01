@@ -34,7 +34,11 @@ public static class GUIX {
         fillRect(new Rect(x + w - thickness, y - thickness, 2 * thickness, h + 2 * thickness), color);
     }
     public static void fillRect(Rect position, Color color) {
+<<<<<<< HEAD
         if (color == CRHC.COLOR_TRANSPARENT) {
+=======
+        if (color == Crch.COLOR_TRANSPARENT) {
+>>>>>>> 7d8058b78fc3336b912526ca3bdad1b73a459737
             return;
         }
 

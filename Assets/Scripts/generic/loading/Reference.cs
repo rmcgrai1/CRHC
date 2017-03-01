@@ -11,12 +11,16 @@ public class Reference<T> : Reference where T : class {
     private int references = 1;
     private byte[] byteData;
 
+<<<<<<< HEAD
     private WWW www;
 
+=======
+>>>>>>> 7d8058b78fc3336b912526ca3bdad1b73a459737
     public Reference(string path) {
         this.path = path;
     }
 
+<<<<<<< HEAD
     public void setWWW(WWW www) {
         this.www = www;
     }
@@ -25,6 +29,8 @@ public class Reference<T> : Reference where T : class {
         return www.progress;
     }
 
+=======
+>>>>>>> 7d8058b78fc3336b912526ca3bdad1b73a459737
     public bool isLoaded() {
         return _isLoaded;
     }

@@ -1,5 +1,9 @@
 5.5.1f1:2.8.2.0
+<<<<<<< HEAD
 iOS
+=======
+Android
+>>>>>>> 7d8058b78fc3336b912526ca3bdad1b73a459737
 C:/Program Files (x86)/Unity/Editor/Data/Managed/UnityEngine.dll
 C:/Program Files (x86)/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll
 C:/Program Files (x86)/Unity/Editor/Data/UnityExtensions/Unity/Networking/UnityEngine.Networking.dll

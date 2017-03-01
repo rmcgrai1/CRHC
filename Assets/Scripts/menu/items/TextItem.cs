@@ -19,7 +19,11 @@ public class TextItem : IItem {
 
         setText(text);
 
+<<<<<<< HEAD
         setFont(CRHC.FONT_NORMAL);
+=======
+        setFont(Crch.FONT_NORMAL);
+>>>>>>> 7d8058b78fc3336b912526ca3bdad1b73a459737
     }
 
     public override bool draw(float w, float h) {

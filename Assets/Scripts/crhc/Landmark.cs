@@ -94,8 +94,13 @@ public class Landmark : CrchFolder<Experience> {
         titleRow.setPadding(true, true, false);
 
         TextItem titleText = new TextItem(getName().ToUpper());
+<<<<<<< HEAD
         titleText.setColor(CRHC.COLOR_RED);
         titleText.setFont(CRHC.FONT_SUBTITLE);
+=======
+        titleText.setColor(Crch.COLOR_RED);
+        titleText.setFont(Crch.FONT_SUBTITLE);
+>>>>>>> 7d8058b78fc3336b912526ca3bdad1b73a459737
         titleRow.addItem(titleText, 1);
 
         menu.addRow(titleRow);
@@ -140,7 +145,11 @@ public class Landmark : CrchFolder<Experience> {
             curRow.addItem(img, 1);
 
             TextItem sourceText = new TextItem(child.getSource());
+<<<<<<< HEAD
             sourceText.setFont(CRHC.FONT_SOURCE);
+=======
+            sourceText.setFont(Crch.FONT_SOURCE);
+>>>>>>> 7d8058b78fc3336b912526ca3bdad1b73a459737
             sourceText.setTextVerticalAlignment(TextVerticalAlignment.TOP);
             sourceRow.addItem(sourceText, 1);
         }
@@ -156,9 +165,15 @@ public class Landmark : CrchFolder<Experience> {
         row.setPadding(true, true, true);
 
         IMenu scrollMenu = new ScrollMenu(menu);
+<<<<<<< HEAD
         IMenu fadeInMenu = new FadeInMenu(scrollMenu, CRHC.SPEED_FADE_IN);
 
         fadeInMenu.setColor(CRHC.COLOR_BLUE_LIGHT);
+=======
+        IMenu fadeInMenu = new FadeInMenu(scrollMenu, Crch.FADE_IN_SPEED);
+
+        fadeInMenu.setColor(Crch.COLOR_BLUE_LIGHT);
+>>>>>>> 7d8058b78fc3336b912526ca3bdad1b73a459737
 
         return fadeInMenu;
     }
@@ -187,7 +202,11 @@ public class Landmark : CrchFolder<Experience> {
 
         public ARButton(Experience exp) : base(exp.getUrl() + "img.jpg") {
             this.exp = exp;
+<<<<<<< HEAD
             tex = ServiceLocator.getILoader().load<Texture2D>(CachedLoader.SERVER_PATH + "icons/ar_icon.png");
+=======
+            tex = ServiceLocator.getILoader().load<Texture2D>("http://www3.nd.edu/~rmcgrai1/CRHC/icons/ar_icon.png");
+>>>>>>> 7d8058b78fc3336b912526ca3bdad1b73a459737
         }
 
         public override void onClick() {

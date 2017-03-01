@@ -49,7 +49,12 @@ public class AppRunner : MonoBehaviour {
         // Yield until CoroutineManager is instantiated.
         yield return gameObject.AddComponent<CoroutineManager>();
 
+<<<<<<< HEAD
         server = new Server(CachedLoader.SERVER_PATH);
+=======
+        string URL = "http://www3.nd.edu/~rmcgrai1/CRHC/";
+        server = new Server(URL);
+>>>>>>> 7d8058b78fc3336b912526ca3bdad1b73a459737
         server.loadTarget("african_american_landmark_tour");
     }
 

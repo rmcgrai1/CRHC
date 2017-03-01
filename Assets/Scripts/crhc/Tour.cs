@@ -36,18 +36,30 @@ public class Tour : CrchFolder<Landmark> {
 
         Row headerTitle = new Row();
         headerTitle.setPadding(true, true, false);
+<<<<<<< HEAD
         headerTitle.setColor(CRHC.COLOR_BLUE_LIGHT);
 
         TextItem titleText = new TextItem(getName().ToUpper());
         titleText.setColor(CRHC.COLOR_RED);
         titleText.setFont(CRHC.FONT_TITLE);
+=======
+        headerTitle.setColor(Crch.COLOR_BLUE_LIGHT);
+
+        TextItem titleText = new TextItem(getName().ToUpper());
+        titleText.setColor(Crch.COLOR_RED);
+        titleText.setFont(Crch.FONT_TITLE);
+>>>>>>> 7d8058b78fc3336b912526ca3bdad1b73a459737
         headerTitle.addItem(titleText, 1);
 
         menu.addRow(headerTitle);
 
         Row headerDesc = new Row();
         headerDesc.setPadding(true, false, true);
+<<<<<<< HEAD
         headerDesc.setColor(CRHC.COLOR_BLUE_LIGHT);
+=======
+        headerDesc.setColor(Crch.COLOR_BLUE_LIGHT);
+>>>>>>> 7d8058b78fc3336b912526ca3bdad1b73a459737
 
         TextItem descText = new TextItem(getDescription());
         headerDesc.addItem(descText, 1);
@@ -63,7 +75,11 @@ public class Tour : CrchFolder<Landmark> {
             Row row = new Row();
 
             TextItem text = new TextItem(child.getName());
+<<<<<<< HEAD
             text.setFont(CRHC.FONT_SUBTITLE);
+=======
+            text.setFont(Crch.FONT_SUBTITLE);
+>>>>>>> 7d8058b78fc3336b912526ca3bdad1b73a459737
             text.setColor(Color.white);
 
             row.setPadding(true, true, true);
@@ -84,7 +100,11 @@ public class Tour : CrchFolder<Landmark> {
 
             Row subrow = new Row();
             subrow.setPadding(true, true, true);
+<<<<<<< HEAD
             subrow.setColor(CRHC.COLOR_BLUE_LIGHT);
+=======
+            subrow.setColor(Crch.COLOR_BLUE_LIGHT);
+>>>>>>> 7d8058b78fc3336b912526ca3bdad1b73a459737
 
             TextItem subtext = new TextItem(child.getDescription());
 
@@ -92,15 +112,25 @@ public class Tour : CrchFolder<Landmark> {
             submenu.addRow(subrow);
 
             PaneRow panerow = new PaneRow(row, submenu);
+<<<<<<< HEAD
             panerow.setClosedColor(CRHC.COLOR_BLUE_DARK);
             panerow.setOpenColor(CRHC.COLOR_RED);
+=======
+            panerow.setClosedColor(Crch.COLOR_BLUE_DARK);
+            panerow.setOpenColor(Crch.COLOR_RED);
+>>>>>>> 7d8058b78fc3336b912526ca3bdad1b73a459737
 
             menu.addRow(panerow);
         }
 
         IMenu scrollMenu = new ScrollMenu(menu);
+<<<<<<< HEAD
         IMenu fadeInMenu = new FadeInMenu(scrollMenu, CRHC.SPEED_FADE_IN);
         fadeInMenu.setColor(CRHC.COLOR_GRAY_DARK);
+=======
+        IMenu fadeInMenu = new FadeInMenu(scrollMenu, Crch.FADE_IN_SPEED);
+        fadeInMenu.setColor(Crch.COLOR_GRAY_DARK);
+>>>>>>> 7d8058b78fc3336b912526ca3bdad1b73a459737
 
         return new TourMenu(fadeInMenu, getUrl() + "header.jpg");
     }
@@ -113,7 +143,11 @@ public class Tour : CrchFolder<Landmark> {
         };
         private AudioState state = AudioState.UNLOADED;
 
+<<<<<<< HEAD
         public AudioButton(string url) : base(CachedLoader.SERVER_PATH + "icons/sound_icon.png") {
+=======
+        public AudioButton(string url) : base("http://www3.nd.edu/~rmcgrai1/CRHC/icons/sound_icon.png") {
+>>>>>>> 7d8058b78fc3336b912526ca3bdad1b73a459737
             state = AudioState.LOADING;
             audio = ServiceLocator.getILoader().load<AudioClip>(url);
             audioSource = AppRunner.get().AddComponent<AudioSource>();
@@ -153,7 +187,11 @@ public class Tour : CrchFolder<Landmark> {
 
     private class DirectionButton : ImageItem {
         private Landmark landmark;
+<<<<<<< HEAD
         public DirectionButton(Landmark landmark) : base(CachedLoader.SERVER_PATH + "icons/nav_icon.png") {
+=======
+        public DirectionButton(Landmark landmark) : base("http://www3.nd.edu/~rmcgrai1/CRHC/icons/nav_icon.png") {
+>>>>>>> 7d8058b78fc3336b912526ca3bdad1b73a459737
             this.landmark = landmark;
         }
 
@@ -164,7 +202,11 @@ public class Tour : CrchFolder<Landmark> {
 
     private class ARButton : ImageItem {
         private Landmark landmark;
+<<<<<<< HEAD
         public ARButton(Landmark landmark) : base(CachedLoader.SERVER_PATH + "icons/ar_icon.png") {
+=======
+        public ARButton(Landmark landmark) : base("http://www3.nd.edu/~rmcgrai1/CRHC/icons/ar_icon.png") {
+>>>>>>> 7d8058b78fc3336b912526ca3bdad1b73a459737
             this.landmark = landmark;
         }
 

@@ -66,10 +66,13 @@ namespace generic.mobile {
             return _isDown;
         }
 
+<<<<<<< HEAD
         public bool isHeld() {
             throw new NotImplementedException();
         }
 
+=======
+>>>>>>> 7d8058b78fc3336b912526ca3bdad1b73a459737
         public bool checkTap() {
             return _didTap;
         }
@@ -78,10 +81,13 @@ namespace generic.mobile {
             return new Vector2(dragVector.x * coolDownFrac, dragVector.y * coolDownFrac);
         }
 
+<<<<<<< HEAD
         public void clearDragVector() {
             coolDownFrac = 0;
         }
 
+=======
+>>>>>>> 7d8058b78fc3336b912526ca3bdad1b73a459737
         public Vector2 getTouchPosition() {
             return touchPosition;
         }

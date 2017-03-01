@@ -6,8 +6,11 @@ using UnityEngine;
 public class CachedLoader : ILoader {
     private WWWLoader loader = new WWWLoader();
     private static readonly string WWW_PREFIX = "file:///";
+<<<<<<< HEAD
     //private static readonly string SERVER_PATH = "http://www3.nd.edu/~rmcgrai1/CRHC/";
     public static readonly string SERVER_PATH = "http://chrc.s3-website.us-east-2.amazonaws.com/";
+=======
+>>>>>>> 7d8058b78fc3336b912526ca3bdad1b73a459737
 
     public override IEnumerator loadCoroutine<T>(Reference<T> reference, string path) {
         IFileManager iFileManager = ServiceLocator.getIFileManager();

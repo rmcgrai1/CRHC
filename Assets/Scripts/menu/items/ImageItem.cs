@@ -13,6 +13,7 @@ public class ImageItem : IItem {
 
     public override bool draw(float w, float h) {
         Texture2D tex = texture.getResource();
+<<<<<<< HEAD
         float aspect;
 
         if (tex != null) {
@@ -79,6 +80,59 @@ public class ImageItem : IItem {
         }
         else {
             return false;
+=======
+        if (tex != null) {
+            Rect rect;
+
+            if (aspectType == AspectType.FIT_TO_SQUARE) {
+                float aspect, x = 0, y = 0;
+                aspect = 1f * tex.width / tex.height;
+
+                GUIX.fillRect(new Rect(0,0, w,w), Crch.COLOR_GRAY_DARK);
+
+                if (aspect < 1) {
+                    x = w / 2;
+                    w = h * aspect;
+                    x -= w / 2;
+                }
+                else {
+                    y = h / 2;
+                    h = w / aspect;
+                    y -= h / 2;
+                }
+
+                rect = new Rect(x, y, w, h);
+            }
+            else if(aspectType == AspectType.CROP_IN_SQUARE) {
+                float aspect, x = 0, y = 0;
+                aspect = 1f * tex.width / tex.height;
+
+                if (aspect > 1) {
+                    x = w / 2;
+                    w = h * aspect;
+                    x -= w / 2;
+                }
+                else {
+                    y = h / 2;
+                    h = w / aspect;
+                    y -= h / 2;
+                }
+
+                rect = new Rect(x, y, w, h);
+            }
+            else {
+                rect = new Rect(0, 0, w, h);
+            }
+
+            GUIX.Texture(rect, tex);
+            if (GUIX.isMouseInsideRect(rect)) {
+                onClick();
+                return true;
+            }
+            else {
+                return false;
+            }
+>>>>>>> 7d8058b78fc3336b912526ca3bdad1b73a459737
         }
 
         return false;
@@ -87,7 +141,11 @@ public class ImageItem : IItem {
     public override float getHeight(float w) {
         Texture2D tex = texture.getResource();
 
+<<<<<<< HEAD
         if (aspectType == AspectType.HEIGHT_DEPENDENT_ON_WIDTH) {
+=======
+        if(aspectType == AspectType.HEIGHT_DEPENDENT_ON_WIDTH) {
+>>>>>>> 7d8058b78fc3336b912526ca3bdad1b73a459737
             float h = w;
             if (tex != null) {
                 float texW, texH;

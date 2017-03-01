@@ -1,5 +1,9 @@
+<<<<<<< HEAD
 ﻿using generic.number;
 using System;
+=======
+﻿using System;
+>>>>>>> 7d8058b78fc3336b912526ca3bdad1b73a459737
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -25,7 +29,11 @@ public class Row : IRow {
     }
 
     private IList<Pair> items = new List<Pair>();
+<<<<<<< HEAD
     private Color color = CRHC.COLOR_TRANSPARENT;
+=======
+    private Color color = Crch.COLOR_TRANSPARENT;
+>>>>>>> 7d8058b78fc3336b912526ca3bdad1b73a459737
     private bool doXPad, doYPadTop, doYPadBottom;
 
     public void addItem(IItem item, float priority) {
@@ -37,7 +45,11 @@ public class Row : IRow {
     }
 
     public override bool draw(float w) {
+<<<<<<< HEAD
         float x = 0, h = getPixelHeight(w);
+=======
+        float x = 0, h = getHeight(w);
+>>>>>>> 7d8058b78fc3336b912526ca3bdad1b73a459737
 
         bool alreadyClicked = false;
 
@@ -45,7 +57,11 @@ public class Row : IRow {
         GUIX.fillRect(position, color);
 
         if (doXPad) {
+<<<<<<< HEAD
             float pad = CRHC.PADDING_H.getAs(NumberType.PIXELS);
+=======
+            float pad = w * Crch.H_PADDING;
+>>>>>>> 7d8058b78fc3336b912526ca3bdad1b73a459737
 
             w -= 2 * pad;
             x += pad;
@@ -53,11 +69,19 @@ public class Row : IRow {
 
         float y = 0;
         if (doYPadTop) {
+<<<<<<< HEAD
             y += CRHC.PADDING_V.getAs(NumberType.PIXELS);
             h -= CRHC.PADDING_V.getAs(NumberType.PIXELS);
         }
         if (doYPadBottom) {
             h -= CRHC.PADDING_V.getAs(NumberType.PIXELS);
+=======
+            y += Crch.V_PADDING;
+            h -= Crch.V_PADDING;
+        }
+        if (doYPadBottom) {
+            h -= Crch.V_PADDING;
+>>>>>>> 7d8058b78fc3336b912526ca3bdad1b73a459737
         }
 
         IItem item;
@@ -84,14 +108,22 @@ public class Row : IRow {
         }
     }
 
+<<<<<<< HEAD
     public override float getPixelHeight(float w) {
+=======
+    public override float getHeight(float w) {
+>>>>>>> 7d8058b78fc3336b912526ca3bdad1b73a459737
         float totalPriority = 0, sw;
         foreach (Pair pair in items) {
             totalPriority += pair.priority;
         }
 
         if (doXPad) {
+<<<<<<< HEAD
             float pad = CRHC.PADDING_H.getAs(NumberType.PIXELS);
+=======
+            float pad = w * Crch.H_PADDING;
+>>>>>>> 7d8058b78fc3336b912526ca3bdad1b73a459737
             w -= 2 * pad;
         }
 
@@ -106,10 +138,17 @@ public class Row : IRow {
         }
 
         if (doYPadTop) {
+<<<<<<< HEAD
             h += CRHC.PADDING_V.getAs(NumberType.PIXELS);
         }
         if (doYPadBottom) {
             h += CRHC.PADDING_V.getAs(NumberType.PIXELS);
+=======
+            h += Crch.V_PADDING;
+        }
+        if (doYPadBottom) {
+            h += Crch.V_PADDING;
+>>>>>>> 7d8058b78fc3336b912526ca3bdad1b73a459737
         }
 
         return Math.Max(h, height);
