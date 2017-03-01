@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2015
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CRHC-new", "CRHC-new.csproj", "{F9BD048F-D537-CDB4-377C-E5AC9893D04F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CRHC-new.Editor", "CRHC-new.Editor.csproj", "{DBD8DF97-45CA-F49F-783B-6576C5663C71}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F9BD048F-D537-CDB4-377C-E5AC9893D04F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F9BD048F-D537-CDB4-377C-E5AC9893D04F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F9BD048F-D537-CDB4-377C-E5AC9893D04F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F9BD048F-D537-CDB4-377C-E5AC9893D04F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DBD8DF97-45CA-F49F-783B-6576C5663C71}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DBD8DF97-45CA-F49F-783B-6576C5663C71}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DBD8DF97-45CA-F49F-783B-6576C5663C71}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DBD8DF97-45CA-F49F-783B-6576C5663C71}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
