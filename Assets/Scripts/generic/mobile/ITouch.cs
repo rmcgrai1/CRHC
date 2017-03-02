@@ -12,7 +12,7 @@ namespace generic.mobile {
         private static Vector2 previousTouchPosition, touchPosition, dragVector;
         private static bool _isDown = false, _didTap = false, _isHeld = false;
 
-        private readonly float HOLD_TIME = 100;
+        private readonly float HOLD_TIME = 250;
 
         private static double startTouchTime;
         private static float dragDistance, coolDownFrac;

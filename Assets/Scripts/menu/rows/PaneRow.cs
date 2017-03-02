@@ -50,8 +50,8 @@ public class PaneRow : IRow {
         TextureUtility.drawTexture(arrowRect, arrowTexture, CRHC.COLOR_GRAY_DARK, AspectType.FIT_IN_REGION);
         GUIUtility.RotateAroundPivot(-angle, pivot);
 
-        if(openFrac > .01) {
-            float h = subMenu.getHeight(w) * openFrac;
+        float h = subMenu.getHeight(w) * openFrac;
+        if (h > .01) {
             GUIX.beginClip(new Rect(0, headRow.getPixelHeight(w), w, h));
             subMenu.draw(w, h);
             GUIX.endClip();

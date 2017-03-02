@@ -5,13 +5,13 @@ using System.Collections;
 using UnityEngine;
 
 public class AudioPlayerRow : IRow {
-    private readonly float AUDIO_PLAYER_HEIGHT = 45;
+    private readonly Number AUDIO_PLAYER_HEIGHT = new Number(.5f, NumberType.INCHES);
     private Reference<AudioClip> audioClip;
     private AudioSource audioSource;
     private Texture2D waveformTexture;
     private bool hasWaveformTexture = false;
     private float progress = 0;
-    private int stepsPerFrame = 10;
+    private int stepsPerFrame = 20;
     private bool wasHeld = false, isScrubbing = false;
 
     private PlayState playState = PlayState.STOPPED;
@@ -28,7 +28,11 @@ public class AudioPlayerRow : IRow {
     }
 
     private void AudioClip_onLoad() {
-        CoroutineManager.startCoroutine(createTextureCoroutine((int)(Screen.width - 2 * CRHC.PADDING_H.getAs(NumberType.PIXELS)), (int)getPixelHeight(0)));
+        int iW, iH;
+        iW = (int)(Screen.width - 2 * CRHC.PADDING_H.getAs(NumberType.PIXELS));
+        iH = (int)getPixelHeight(0);
+
+        CoroutineManager.startCoroutine(createTextureCoroutine(iW / 2, iH / 2));
     }
 
     private IEnumerator createTextureCoroutine(int iW, int iH) {
@@ -135,7 +139,7 @@ public class AudioPlayerRow : IRow {
                 }
             }
 
-            if(!audioSource.isPlaying && playState == PlayState.PLAYING) {
+            if (!audioSource.isPlaying && playState == PlayState.PLAYING) {
                 stop();
             }
 
@@ -153,7 +157,7 @@ public class AudioPlayerRow : IRow {
     }
 
     public override float getPixelHeight(float w) {
-        return AUDIO_PLAYER_HEIGHT;
+        return AUDIO_PLAYER_HEIGHT.getAs(NumberType.PIXELS);
     }
 
     public override void onDispose() {
