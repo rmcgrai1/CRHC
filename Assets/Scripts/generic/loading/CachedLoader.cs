@@ -18,19 +18,16 @@ public class CachedLoader : ILoader {
 
         // Check if file already exists in local file storage cache.
         if (relePath != null) {
-            if (AppRunner.doUseLocalCache) {
-                ServiceLocator.getILog().println(LogType.IO, "Checking for file at: " + relePath);
+            ServiceLocator.getILog().print(LogType.IO, "Checking for file at " + relePath + "...");
 
-                ServiceLocator.getILog().println(LogType.IO, "Creating nonexistent folders...");
-                if (File.Exists(relePath)) {
-                    fromCache = true;
-                    path = wwwPath;
-                    ServiceLocator.getILog().println(LogType.IO, "Using cache!");
-                }
-                else {
-                    fromCache = false;
-                    ServiceLocator.getILog().println(LogType.IO, "Not in cache.");
-                }
+            if (iFileManager.fileExists(relePath)) {
+                fromCache = true;
+                path = wwwPath;
+                ServiceLocator.getILog().println(LogType.IO, "Using cache!");
+            }
+            else {
+                fromCache = false;
+                ServiceLocator.getILog().println(LogType.IO, "Not in cache.");
             }
         }
         else {
@@ -40,7 +37,7 @@ public class CachedLoader : ILoader {
         yield return loader.loadCoroutine(reference, path);
 
         // Backup file in cache if not from there.
-        if (AppRunner.doUseLocalCache && !fromCache) {
+        if (!fromCache) {
             ServiceLocator.getILog().println(LogType.IO, "Backing up " + typeof(T) + " at " + relePath + "...");
             reference.save(relePath);
         }
@@ -86,9 +83,9 @@ public class CachedLoader : ILoader {
     public override void clearCache(bool hardClear) {
         base.clearCache(hardClear);
 
-        if(!hardClear) {
-            IFileManager iFileManager = ServiceLocator.getIFileManager();           
-            iFileManager.deleteDirectory(iFileManager.getBaseDirectory() + "cache");
+        if (hardClear) {
+            IFileManager iFileManager = ServiceLocator.getIFileManager();
+            iFileManager.deleteDirectory(iFileManager.getBaseDirectory() + "cache/");
         }
     }
 }

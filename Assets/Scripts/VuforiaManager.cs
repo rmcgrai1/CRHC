@@ -36,17 +36,19 @@ public class VuforiaManager {
     }
 
     private void Vb_OnDisableEvent() {
+        CoroutineManager.startCoroutine(unloadDatasetCoroutine());
     }
 
     private void Vb_OnEnableEvent() {
-    }
-
-    private void Vb_StartEvent() {
         CoroutineManager.startCoroutine(loadDatasetCoroutine());
     }
 
+    private void Vb_StartEvent() {
+        isSetup = true;
+    }
+
     public IEnumerator loadDatasetCoroutine() {
-        while (!exp.getLandmark().getDat().isLoaded() || !exp.getLandmark().getXML().isLoaded()) {
+        while (!isSetup || !exp.getLandmark().getDat().isLoaded() || !exp.getLandmark().getXML().isLoaded()) {
             yield return null;
         }
 
@@ -99,6 +101,11 @@ public class VuforiaManager {
             }
             iFileManager.popDirectory();
         }
+    }
+
+    private IEnumerator unloadDatasetCoroutine() {
+
+        yield return null;
     }
 
     private class DefaultTrackableEventThing : MonoBehaviour, ITrackableEventHandler {

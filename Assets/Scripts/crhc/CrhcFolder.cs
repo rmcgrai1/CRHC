@@ -1,4 +1,5 @@
 ﻿using generic;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -7,9 +8,9 @@ using UnityEngine;
 
 public abstract class CrhcItem : Loadable, IDisposable {
     private CrhcItem parent;
-    private JsonChildList.JsonChild data;
+    private JObject data;
 
-    public CrhcItem(CrhcItem parent, JsonChildList.JsonChild data) {
+    public CrhcItem(CrhcItem parent, JObject data) {
         this.parent = parent;
         this.data = data;
     }
@@ -18,12 +19,12 @@ public abstract class CrhcItem : Loadable, IDisposable {
         return parent;
     }
 
-    public string getData(string key) {
-        return data[key];
+    public T getData<T>(string key) {
+        return data.Value<T>(key);
     }
 
     public virtual string getId() {
-        return data["id"];
+        return getData<string>("id");
     }
 
     public virtual string getUrl() {
@@ -45,7 +46,7 @@ public abstract class CrhcItem : Loadable, IDisposable {
             // TODO: set large fields to null.
             onDispose();
 
-            data.Dispose();
+            data.ClearItems();
             parent = null;
             data = null;
 
@@ -74,7 +75,7 @@ public abstract class CrhcFolder<CHILD_TYPE> : CrhcItem, IEnumerable where CHILD
     private Reference<string> childInfo;
     private string targetId;
 
-    public CrhcFolder(CrhcItem parent, JsonChildList.JsonChild data) : base(parent, data) {
+    public CrhcFolder(CrhcItem parent, JObject data) : base(parent, data) {
         children = new List<CHILD_TYPE>();
     }
 
@@ -100,10 +101,10 @@ public abstract class CrhcFolder<CHILD_TYPE> : CrhcItem, IEnumerable where CHILD
         string returnedString = childInfo.getResource();
 
         // TODO: Change this to a cleaner method.
-        ConstructorInfo constr = typeof(CHILD_TYPE).GetConstructor(new Type[] { typeof(CrhcItem), typeof(JsonChildList.JsonChild) });
+        ConstructorInfo constr = typeof(CHILD_TYPE).GetConstructor(new Type[] { typeof(CrhcItem), typeof(JObject) });
 
-        JsonChildList dataList = new JsonChildList(returnedString);
-        foreach (JsonChildList.JsonChild data in dataList) {
+        JArray dataList = JArray.Parse(returnedString);
+        foreach (JObject data in dataList) {
             CHILD_TYPE child;
 
             ServiceLocator.getILog().println(LogType.JUNK, "  Adding child...");

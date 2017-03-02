@@ -4,6 +4,7 @@ using System.Collections;
 using System;
 using generic;
 using Vuforia;
+using Newtonsoft.Json.Linq;
 
 public class Landmark : CrhcFolder<Experience>, IComparable<Landmark> {
     private Reference<byte[]> dat;
@@ -38,7 +39,7 @@ public class Landmark : CrhcFolder<Experience>, IComparable<Landmark> {
     /*=======================================================**=======================================================*/
     /*=========================================== CONSTRUCTOR/DECONSTRUCTOR ==========================================*/
     /*=======================================================**=======================================================*/
-    public Landmark(CrhcItem parent, JsonChildList.JsonChild data) : base(parent, data) {
+    public Landmark(CrhcItem parent, JObject data) : base(parent, data) {
     }
 
     public void showMapRoute() {
@@ -53,47 +54,47 @@ public class Landmark : CrhcFolder<Experience>, IComparable<Landmark> {
     }
 
     public string getName() {
-        return getData("name");
+        return getData<string>("name");
     }
 
     public int getNumber() {
-        return int.Parse(getData("number"));
+        return getData<int>("number");
     }
 
     public string getDescription() {
-        return getData("description");
+        return getData<string>("description");
     }
 
     public string getLongDescription() {
-        return getData("longDescription");
+        return getData<string>("longDescription");
     }
 
     public double getLatitude() {
-        return double.Parse(getData("latitude"));
+        return getData<double>("latitude");
     }
 
     public double getLongitude() {
-        return double.Parse(getData("longitude"));
+        return getData<double>("longitude");
     }
 
     public bool hasAR() {
-        return bool.Parse(getData("hasAR"));
+        return getData<bool>("hasAR");
     }
 
     public bool hasAddress() {
-        return bool.Parse(getData("hasAddress"));
+        return getData<bool>("hasAddress");
+    }
+
+    public JArray getAudioClips() {
+        return getData<JArray>("audioClips");
     }
 
     public bool hasAudio() {
-        return bool.Parse(getData("hasAudio"));
-    }
-
-    public string getAudioSource() {
-        return getData("audioSource");
+        return (getAudioClips().Count > 0);
     }
 
     public bool isVisible() {
-        return bool.Parse(getData("isVisible"));
+        return getData<bool>("isVisible");
     }
 
     public override IMenu buildMenu() {

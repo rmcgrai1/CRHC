@@ -11,7 +11,7 @@ public class RectItem : IItem {
         Rect rect = new Rect(0, 0, w, h);
 
         GUIX.fillRect(rect, color);
-        if (GUIX.isMouseInsideRect(rect)) {
+        if (GUIX.didTapInsideRect(rect)) {
             onClick();
             return true;
         }

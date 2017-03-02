@@ -11,7 +11,7 @@ public class Tour : CrhcFolder<Landmark> {
     /*=======================================================**=======================================================*/
     /*=========================================== CONSTRUCTOR/DECONSTRUCTOR ==========================================*/
     /*=======================================================**=======================================================*/
-    public Tour(CrhcItem parent, JsonChildList.JsonChild data) : base(parent, data) {
+    public Tour(CrhcItem parent, JObject data) : base(parent, data) {
     }
 
     //protected override void tryLoad()
@@ -23,11 +23,11 @@ public class Tour : CrhcFolder<Landmark> {
     /*============================================== ACCESSORS/MUTATORS ==============================================*/
     /*=======================================================**=======================================================*/
     public string getName() {
-        return getData("name");
+        return getData<string>("name");
     }
 
     public string getDescription() {
-        return getData("description");
+        return getData<string>("description");
     }
 
     public override IMenu buildMenu() {
@@ -60,7 +60,7 @@ public class Tour : CrhcFolder<Landmark> {
         Row paddingRow = new Row(5);
 
         foreach (Landmark child in this) {
-            if(!child.isVisible()) {
+            if (!child.isVisible()) {
                 continue;
             }
 
@@ -69,16 +69,16 @@ public class Tour : CrhcFolder<Landmark> {
             Row row = new Row();
             row.setPadding(true, true, true);
 
-            if(CRHC.LANDMARK_SORTORDER == SortOrder.NUMBER) {
+            if (CRHC.LANDMARK_SORTORDER == SortOrder.NUMBER) {
                 TextItem number = new TextItem(child.getNumber() + ". ");
                 number.setFont(CRHC.FONT_SUBTITLE);
                 number.setColor(Color.white);
-                row.addItem(number, .05f);
+                row.addItem(number, .1f);
 
                 TextItem text = new TextItem(child.getName());
                 text.setFont(CRHC.FONT_SUBTITLE);
                 text.setColor(Color.white);
-                row.addItem(text, .5f);
+                row.addItem(text, .4f);
             }
             else {
                 TextItem text = new TextItem(child.getName());
@@ -98,17 +98,45 @@ public class Tour : CrhcFolder<Landmark> {
             subrow.addItem(subtext, 1);
             submenu.addRow(subrow);
 
-            if(child.hasAudio()) {
-                submenu.addRow(new AudioPlayerRow(child.getUrl() + "audio.mp3"));
+            if (child.hasAudio()) {
+                JArray audioClips = child.getAudioClips();
 
-                Row audioSourceRow = new Row();
-                audioSourceRow.setPadding(true, false, false);
+                for (int i = 0; i < audioClips.Count; i++) {
+                    JToken audioClip = audioClips.GetItem(i);
 
-                TextItem audioSourceItem = new TextItem(child.getAudioSource());
-                audioSourceItem.setTextAnchor(TextAnchor.UpperLeft);
-                audioSourceRow.addItem(audioSourceItem, 1);
+                    if (i == 0) {
+                        submenu.addRow(new AudioPlayerRow(child.getUrl() + "audio.mp3"));
+                    }
+                    else {
+                        submenu.addRow(new AudioPlayerRow(child.getUrl() + "audio" + i + ".mp3"));
+                    }
 
-                submenu.addRow(audioSourceRow);
+                    Row audioSourceRow = new Row();
+                    audioSourceRow.setPadding(true, false, false);
+
+                    TextItem audioSourceItem = new TextItem(audioClip.Value<string>("audioSource"));
+                    audioSourceItem.setTextAnchor(TextAnchor.UpperLeft);
+                    audioSourceItem.setFont(CRHC.FONT_SOURCE);
+                    audioSourceRow.addItem(audioSourceItem, 1);
+                    submenu.addRow(audioSourceRow);
+
+
+                    Row audioTranscriptionTitleRow = new Row();
+                    TextItem audioTranscriptionTitle = new TextItem("Audio Transcription");
+                    audioTranscriptionTitle.setFont(CRHC.FONT_SUBTITLE);
+                    audioTranscriptionTitleRow.addItem(audioTranscriptionTitle, 1);
+                    audioTranscriptionTitleRow.setPadding(true, true, false);
+                    submenu.addRow(audioTranscriptionTitleRow);
+
+
+                    Row audioTranscriptionRow = new Row();
+                    audioTranscriptionRow.setPadding(true, false, true);
+                    
+                    TextItem audioTranscriptionItem = new TextItem(audioClip.Value<string>("audioTranscription"));
+                    audioTranscriptionItem.setTextAnchor(TextAnchor.UpperLeft);
+                    audioTranscriptionRow.addItem(audioTranscriptionItem, 1);
+                    submenu.addRow(audioTranscriptionRow);
+                }
             }
 
 
@@ -128,11 +156,17 @@ public class Tour : CrhcFolder<Landmark> {
             else {
                 row.addItem(new SpaceItem(), .1f);
 
+                Row subLongDescTitleRow = new Row();
+                TextItem subLongDescTitle = new TextItem("More Info");
+                subLongDescTitle.setFont(CRHC.FONT_SUBTITLE);
+                subLongDescTitleRow.addItem(subLongDescTitle, 1);
+                subLongDescTitleRow.setPadding(true, true, false);
+                submenu.addRow(subLongDescTitleRow);
+
                 Row subLongDescRow = new Row();
                 TextItem subLongDesc = new TextItem(child.getLongDescription());
                 subLongDescRow.addItem(subLongDesc, 1);
-                subLongDescRow.setPadding(true, true, true);
-
+                subLongDescRow.setPadding(true, false, true);
                 submenu.addRow(subLongDescRow);
             }
 
@@ -291,7 +325,7 @@ public class Tour : CrhcFolder<Landmark> {
 
         public override void onClick() {
             ServiceLocator.getILoader().clearCache(true);
-                SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
     }
 }

@@ -100,10 +100,12 @@ public static class GUIX {
 
         colorStack.Push(new Color(r, g, b, a));*/
 
+        toColor.a *= fromColor.a;
+
         setColor(toColor);
         colorStack.Push(toColor);
     }
-    
+
     public static void endColor() {
         if (colorStack.Count > 1) {
             colorStack.Pop();
@@ -135,13 +137,21 @@ public static class GUIX {
         GUI.Label(position, content, style);
     }
 
-    public static bool isMouseInsideRect(Rect position) {
+
+    public static bool isTouchInsideRect(Rect position) {
+
+        ITouch iTouch = ServiceLocator.getITouch();
+
+        Rect acc = new Rect(topLeft + position.position, position.size);
+        return acc.Contains(iTouch.getTouchPosition());
+    }
+
+    public static bool didTapInsideRect(Rect position) {
 
         ITouch iTouch = ServiceLocator.getITouch();
 
         if (iTouch.checkTap()) {
-            Rect acc = new Rect(topLeft + position.position, position.size);
-            return acc.Contains(iTouch.getTouchPosition());
+            return isTouchInsideRect(position);
         }
         else {
             return false;

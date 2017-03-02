@@ -7,6 +7,7 @@ public class OnScreenLog : ILog {
     private LinkedList<string> log = new LinkedList<string>();
 
     public void Start() {
+        clear();
     }
 
     public void clear() {
@@ -18,13 +19,34 @@ public class OnScreenLog : ILog {
     }
 
     public void print(LogType type, object o) {
-        println(type, o);
+        if (allow(type)) {
+            string[] strs = o.ToString().Split('\n');
+
+            for(int i = 0; i < strs.Length; i++) {
+                string str = strs[i];
+
+                if(i+1 == strs.Length) {
+                    if(log.Count == 0) {
+                        log.AddFirst("");
+                    }
+
+                    log.First.Value += str;
+                }
+                else {
+                    log.First.Value += str;
+
+                    log.AddFirst("");
+
+                    if (log.Count > 50) {
+                        log.RemoveLast();
+                    }
+                }
+            }
+        }
     }
 
     public void println(LogType type, object o) {
-        if (allow(type)) {
-            log.AddFirst(o.ToString());
-        }
+        print(type, o.ToString() + '\n');
     }
 
     public void println(LogType type, Exception e) {
@@ -39,21 +61,23 @@ public class OnScreenLog : ILog {
         s.clipping = TextClipping.Clip;
         s.wordWrap = true;
 
-        float y = 0, w = Screen.width, h = 20;
+        float y = 0, w = Screen.width, h, lh = 8;
         Rect r = new Rect(0, 0, 0, 0), rb = new Rect(0, 0, 0, 0);
 
-        GUIX.beginOpacity(.5f);
-        foreach (string str in log) {
+        foreach(string str in log) {
+            GUIX.beginOpacity(.5f);
             c.text = str;
             h = s.CalcHeight(c, w);
+            h += lh;
+
             r.Set(0, y, w, h);
-            rb.Set(0, y, w, h);
+            rb.Set(0, y, w, h-lh);
 
             GUIX.fillRect(rb, Color.black);
-            GUI.Label(r, str);
+            GUI.Label(r, c);
 
-            y += h;
+            y += h-lh;
+            GUIX.endOpacity();
         }
-        GUIX.endOpacity();
     }
 }

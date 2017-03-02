@@ -20,7 +20,9 @@ public class AndroidFileManager : IFileManager {
 
     public override bool deleteDirectory(string path) {
         pushDirectory(getBaseDirectory());
-        Directory.Delete(path, true);
+        if (directoryExists(path)) {
+            Directory.Delete(path, true);
+        }
         popDirectory();
 
         return true;
@@ -40,6 +42,22 @@ public class AndroidFileManager : IFileManager {
         return true;
     }
 
+    public override bool directoryExists(string path) {
+        pushDirectory(getBaseDirectory());
+        bool doesExist = Directory.Exists(path);
+        popDirectory();
+
+        return doesExist;
+    }
+
+    public override bool fileExists(string path) {
+        pushDirectory(getBaseDirectory());
+        bool doesExist = File.Exists(path);
+        popDirectory();
+
+        return doesExist;
+    }
+
     private void createNonexistingFolders(string relativePath) {
         string curDirs = "";
 
@@ -50,24 +68,28 @@ public class AndroidFileManager : IFileManager {
         foreach (string dir in dirs) {
             curDirs += dir + "/";
 
-            iLog.println(LogType.IO, "Checking if " + curDirs + " exists...");
             bool doesntExist = false;
             try {
-                doesntExist = !Directory.Exists(curDirs);
+                iLog.print(LogType.IO, "Checking if " + curDirs + " exists...");
+                doesntExist = !directoryExists(curDirs);
             }
             catch (Exception e) {
                 iLog.println(LogType.IO, e);
             }
 
             if (doesntExist) {
-                iLog.println(LogType.IO, "Creating" + curDirs + "...");
+                iLog.print(LogType.IO, "\n\tCreating " + curDirs + "...");
 
                 try {
                     Directory.CreateDirectory(curDirs);
+                    iLog.println(LogType.IO, "OK!");
                 }
                 catch (Exception e) {
                     iLog.println(LogType.IO, e);
                 }
+            }
+            else {
+                iLog.println(LogType.IO, "OK!");
             }
         }
     }

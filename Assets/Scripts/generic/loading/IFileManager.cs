@@ -12,6 +12,9 @@ public abstract class IFileManager {
     public abstract bool deleteDirectory(string path);
     public abstract bool writeToFile(string path, byte[] data);
 
+    public abstract bool directoryExists(string path);
+    public abstract bool fileExists(string path);
+
     public void pushDirectory(string directory) {
         try {
             directories.Push(Directory.GetCurrentDirectory());

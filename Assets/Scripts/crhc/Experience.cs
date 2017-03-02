@@ -1,8 +1,9 @@
-﻿using System.Collections;
+﻿using Newtonsoft.Json.Linq;
+using System.Collections;
 using UnityEngine;
 
 public class Experience : CrhcItem {
-    public Experience(CrhcItem parent, JsonChildList.JsonChild data) : base(parent, data) {
+    public Experience(CrhcItem parent, JObject data) : base(parent, data) {
     }
 
     public override void onDispose() {
@@ -13,11 +14,11 @@ public class Experience : CrhcItem {
     }
 
     public string getTargetId() {
-        return getData("targetId");
+        return getData<string>("targetId");
     }
 
     public string getSource() {
-        return getData("source");
+        return getData<string>("source");
     }
 
     protected override IEnumerator tryLoad() {

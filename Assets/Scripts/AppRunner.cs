@@ -20,15 +20,6 @@ public class AppRunner : MonoBehaviour {
     [SerializeField]
     private bool doDrawLog;
 
-    [SerializeField]
-    private bool _doUseLocalCache;
-
-    public static bool doUseLocalCache {
-        get {
-            return instance._doUseLocalCache;
-        }
-    }
-
     private static AppRunner instance;
     private VuforiaManager manager;
 
@@ -46,6 +37,12 @@ public class AppRunner : MonoBehaviour {
 
         resolution = new Vector2(Screen.width, Screen.height);
 
+        /*if(doClearCacheOnLaunch) {
+            ServiceLocator.getILog().print(LogType.IO, "Clearing cache... ");
+            ServiceLocator.getILoader().clearCache(true);
+            ServiceLocator.getILog().println(LogType.IO, "OK!");
+        }*/
+
         // Yield until CoroutineManager is instantiated.
         yield return gameObject.AddComponent<CoroutineManager>();
 
@@ -57,6 +54,7 @@ public class AppRunner : MonoBehaviour {
 
         JObject json = JObject.Parse(styleText.getResource());
 
+        ServiceLocator.getILog().print(LogType.IO, "Setting styles... ");
         CRHC.FONT_HEIGHT_NORMAL.set(json.Value<float>("FONT_NORMAL_HEIGHT"), NumberType.INCHES);
         CRHC.FONT_HEIGHT_TITLE.set(json.Value<float>("FONT_TITLE_HEIGHT"), NumberType.INCHES);
         CRHC.FONT_HEIGHT_SUBTITLE.set(json.Value<float>("FONT_SUBTITLE_HEIGHT"), NumberType.INCHES);
@@ -66,10 +64,7 @@ public class AppRunner : MonoBehaviour {
         CRHC.SIZE_HOME_BUTTON.set(json.Value<float>("MAIN_BUTTON_SIZE"), NumberType.INCHES);
 
         CRHC.SIZE_VUFORIA_FRAME.set(json.Value<float>("VUFORIA_FRAME_SIZE"), NumberType.INCHES);
-
-        Debug.Log(CRHC.SIZE_VUFORIA_FRAME.getValue());
-        Debug.Log(CRHC.SIZE_VUFORIA_FRAME.getAs(NumberType.PIXELS));
-        Debug.Log(CRHC.SIZE_VUFORIA_FRAME.getAs(NumberType.INCHES));
+        ServiceLocator.getILog().println(LogType.IO, "OK!");
 
         styleText.removeOwner();
 

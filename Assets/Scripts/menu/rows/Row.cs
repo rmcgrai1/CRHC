@@ -76,7 +76,7 @@ public class Row : IRow {
         }
 
         if (!alreadyClicked) {
-            return GUIX.isMouseInsideRect(position);
+            return GUIX.didTapInsideRect(position);
         }
         else {
             return false;

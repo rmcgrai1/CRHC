@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class WWWLoader : ILoader {
     public override IEnumerator loadCoroutine<T>(Reference<T> reference, string path) {
-        ServiceLocator.getILog().println(LogType.JUNK, "Loading " + typeof(T) + " from \"" + path + "\"...");
+        ServiceLocator.getILog().println(LogType.IO, "Loading " + typeof(T) + " from \"" + path + "\"...");
         WWW www = new WWW(path);
 
         reference.setWWW(www);
@@ -12,16 +12,19 @@ public class WWWLoader : ILoader {
 
         Type type = typeof(T);
         if(type == typeof(byte[])) {
-            ServiceLocator.getILog().println(LogType.JUNK, "Getting byte[] from www...");
+            ServiceLocator.getILog().print(LogType.IO, "Getting byte[] from www...");
             reference.setResource(www.bytes as T, www.bytes);
+            ServiceLocator.getILog().println(LogType.IO, "OK!");
         }
         if (type == typeof(string)) {
-            ServiceLocator.getILog().println(LogType.JUNK, "Getting string from www...");
+            ServiceLocator.getILog().print(LogType.IO, "Getting string from www...");
             reference.setResource(www.text as T, www.bytes);
+            ServiceLocator.getILog().println(LogType.IO, "OK!");
         }
         else if (type == typeof(Texture2D)) {
-            ServiceLocator.getILog().println(LogType.JUNK, "Getting texture from www...");
+            ServiceLocator.getILog().print(LogType.IO, "Getting texture from www...");
             reference.setResource(www.texture as T, www.bytes);
+            ServiceLocator.getILog().println(LogType.IO, "OK!");
         }
         else if(type == typeof(AudioClip)) {
             AudioType atype;
@@ -39,8 +42,9 @@ public class WWWLoader : ILoader {
                 throw new NotSupportedException();
             }
 
-            ServiceLocator.getILog().println(LogType.JUNK, "Getting audio from www...");
+            ServiceLocator.getILog().print(LogType.IO, "Getting audio from www...");
             reference.setResource(www.GetAudioClip(false, false, atype) as T, www.bytes);
+            ServiceLocator.getILog().println(LogType.IO, "OK!");
         }
     }
 }

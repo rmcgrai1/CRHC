@@ -16,7 +16,7 @@ public class ImageItem : IItem {
     public override bool draw(float w, float h) {
         Rect rect = TextureUtility.drawTexture(new Rect(0,0, w,h), texture, color, aspectType);
 
-        if (GUIX.isMouseInsideRect(rect)) {
+        if (GUIX.didTapInsideRect(rect)) {
             onClick();
             return true;
         }
