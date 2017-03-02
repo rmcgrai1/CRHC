@@ -1,4 +1,5 @@
 ﻿using generic;
+using generic.rendering;
 using UnityEngine;
 
 public class TourMenu : IMenu {
@@ -8,7 +9,8 @@ public class TourMenu : IMenu {
     public TourMenu(IMenu menu, string bgPath) {
         this.menu = menu;
 
-        bg = ServiceLocator.getILoader().load<Texture2D>(bgPath);
+        ILoader loader = ServiceLocator.getILoader();
+        bg = loader.load<Texture2D>(bgPath);
     }
 
     public override void addRow(IRow row) {
@@ -23,23 +25,7 @@ public class TourMenu : IMenu {
         float headerFrac = .3f, menuFrac = 1 - headerFrac;
 
         // Draw BG.
-        if (bg.isLoaded()) {
-            Texture2D tex = bg.getResource();
-
-            float headerH, headerW, x, y;
-            headerH = h * headerFrac;
-            headerW = tex.width * headerH / tex.height;
-
-            if (headerW < Screen.width) {
-                headerH *= Screen.width / headerW;
-                headerW = Screen.width;
-            }
-
-            x = Screen.width / 2 - headerW / 2;
-            y = (h * headerFrac) / 2 - headerH / 2;
-
-            GUIX.Texture(new Rect(x, y, headerW, headerH), tex);
-        }
+        TextureUtility.drawTexture(new Rect(0, 0, Screen.width, h * headerFrac), bg, AspectType.CROP_IN_REGION);
 
         GUIX.beginClip(new Rect(0, h * headerFrac, w, h * menuFrac));
         menu.draw(w, h * menuFrac);
@@ -60,7 +46,6 @@ public class TourMenu : IMenu {
 
     public override void onDispose() {
         bg.removeOwner();
-        bg = null;
 
         menu.Dispose();
         menu = null;

@@ -15,11 +15,7 @@ public class Menu : IMenu {
     public override float getHeight(float w) {
         float h = 0;
         foreach (IRow row in rows) {
-<<<<<<< HEAD
             h += row.getPixelHeight(w);
-=======
-            h += row.getHeight(w);
->>>>>>> 7d8058b78fc3336b912526ca3bdad1b73a459737
         }
         return h;
     }
@@ -33,23 +29,14 @@ public class Menu : IMenu {
         float menuH = getHeight(w);
         GUIX.fillRect(new Rect(0, 0, w, menuH), color);
 
-        int i = 0;
         foreach (IRow row in rows) {
-<<<<<<< HEAD
             h = row.getPixelHeight(w);
-=======
-            h = row.getHeight(w);
->>>>>>> 7d8058b78fc3336b912526ca3bdad1b73a459737
 
             GUIX.beginClip(new Rect(0, y, w, h+1));
             row.draw(w);
             GUIX.endClip();
 
-<<<<<<< HEAD
             y += row.getPixelHeight(w);
-=======
-            y += row.getHeight(w);
->>>>>>> 7d8058b78fc3336b912526ca3bdad1b73a459737
         }
     }
 

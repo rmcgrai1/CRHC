@@ -7,10 +7,7 @@ public class WWWLoader : ILoader {
         ServiceLocator.getILog().println(LogType.JUNK, "Loading " + typeof(T) + " from \"" + path + "\"...");
         WWW www = new WWW(path);
 
-<<<<<<< HEAD
         reference.setWWW(www);
-=======
->>>>>>> 7d8058b78fc3336b912526ca3bdad1b73a459737
         yield return www;
 
         Type type = typeof(T);

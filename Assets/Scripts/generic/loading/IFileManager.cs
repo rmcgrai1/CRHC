@@ -9,6 +9,7 @@ public abstract class IFileManager {
 
     public abstract string getBaseDirectory();
     public abstract bool createDirectory(string path);
+    public abstract bool deleteDirectory(string path);
     public abstract bool writeToFile(string path, byte[] data);
 
     public void pushDirectory(string directory) {

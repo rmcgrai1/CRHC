@@ -1,11 +1,11 @@
-﻿using System;
+﻿using generic.number;
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class TextItem : IItem {
     private GUIStyle style;
     private GUIContent content;
-    private TextVerticalAlignment verticalAlignment;
 
     public TextItem(string text) {
         content = new GUIContent("");
@@ -15,37 +15,19 @@ public class TextItem : IItem {
         style.clipping = TextClipping.Overflow;
         style.wordWrap = true;
 
-        verticalAlignment = TextVerticalAlignment.CENTER;
-
+        setTextAnchor(TextAnchor.MiddleLeft);
         setText(text);
 
-<<<<<<< HEAD
         setFont(CRHC.FONT_NORMAL);
-=======
-        setFont(Crch.FONT_NORMAL);
->>>>>>> 7d8058b78fc3336b912526ca3bdad1b73a459737
     }
 
     public override bool draw(float w, float h) {
-        float realH = getHeight(w);
-
         Rect rect;
-        if(verticalAlignment == TextVerticalAlignment.CENTER) {
-            rect = new Rect(0, (h - realH) / 2, w, realH);
-        }
-        else {
-            rect = new Rect(0, 0, w, realH);
-        }
+        rect = new Rect(0, 0, w, h);
 
         GUIX.Label(rect, content, style);
 
-        if (GUIX.isMouseInsideRect(rect)) {
-            //onClick();
-            return false; // true;
-        }
-        else {
-            return false;
-        }
+        return false;
     }
 
     public void setText(string text) {
@@ -58,6 +40,24 @@ public class TextItem : IItem {
 
     public void setFont(Font font) {
         style.font = font;
+
+        Number fontSize = null;
+        if (font == CRHC.FONT_NORMAL) {
+            fontSize = CRHC.FONT_HEIGHT_NORMAL;
+        }
+        else if (font == CRHC.FONT_TITLE) {
+            fontSize = CRHC.FONT_HEIGHT_TITLE;
+        }
+        else if (font == CRHC.FONT_SUBTITLE) {
+            fontSize = CRHC.FONT_HEIGHT_SUBTITLE;
+        }
+        else if (font == CRHC.FONT_SOURCE) {
+            fontSize = CRHC.FONT_HEIGHT_SOURCE;
+        }
+
+        if (fontSize != null) {
+            style.fontSize = (int)fontSize.getAs(NumberType.PIXELS);
+        }
     }
 
     public override float getHeight(float w) {
@@ -71,11 +71,7 @@ public class TextItem : IItem {
         content = null;
     }
 
-    public void setTextVerticalAlignment(TextVerticalAlignment verticalAlignment) {
-        this.verticalAlignment = verticalAlignment;
+    public void setTextAnchor(TextAnchor textAnchor) {
+        style.alignment = textAnchor;
     }
-}
-
-public enum TextVerticalAlignment {
-    TOP, CENTER
 }

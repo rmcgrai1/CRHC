@@ -1,8 +1,8 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-public class Experience : CrchItem {
-    public Experience(CrchItem parent, JsonChildList.JsonChild data) : base(parent, data) {
+public class Experience : CrhcItem {
+    public Experience(CrhcItem parent, JsonChildList.JsonChild data) : base(parent, data) {
     }
 
     public override void onDispose() {

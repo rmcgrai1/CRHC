@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System;
 using UnityEngine.Profiling;
 using generic;
+using Newtonsoft.Json.Linq;
+using generic.number;
 
 public class AppRunner : MonoBehaviour {
     // TODO: Use orientation of screen.
@@ -44,17 +46,34 @@ public class AppRunner : MonoBehaviour {
 
         resolution = new Vector2(Screen.width, Screen.height);
 
-        //ILoader loader = ServiceLocator.getILoader().clearCache(true);
-
         // Yield until CoroutineManager is instantiated.
         yield return gameObject.AddComponent<CoroutineManager>();
 
-<<<<<<< HEAD
+        // Load styles.
+        // TODO: FORCE RELOAD!!
+        ILoader iLoader = ServiceLocator.getILoader();
+        Reference<string> styleText = iLoader.getReference<string>(CachedLoader.SERVER_PATH + "style.json");
+        yield return iLoader.loadCoroutine(styleText);
+
+        JObject json = JObject.Parse(styleText.getResource());
+
+        CRHC.FONT_HEIGHT_NORMAL.set(json.Value<float>("FONT_NORMAL_HEIGHT"), NumberType.INCHES);
+        CRHC.FONT_HEIGHT_TITLE.set(json.Value<float>("FONT_TITLE_HEIGHT"), NumberType.INCHES);
+        CRHC.FONT_HEIGHT_SUBTITLE.set(json.Value<float>("FONT_SUBTITLE_HEIGHT"), NumberType.INCHES);
+        CRHC.FONT_HEIGHT_SOURCE.set(json.Value<float>("FONT_SOURCE_HEIGHT"), NumberType.INCHES);
+
+        CRHC.SIZE_BACK_BUTTON.set(json.Value<float>("BACK_BUTTON_SIZE"), NumberType.INCHES);
+        CRHC.SIZE_HOME_BUTTON.set(json.Value<float>("MAIN_BUTTON_SIZE"), NumberType.INCHES);
+
+        CRHC.SIZE_VUFORIA_FRAME.set(json.Value<float>("VUFORIA_FRAME_SIZE"), NumberType.INCHES);
+
+        Debug.Log(CRHC.SIZE_VUFORIA_FRAME.getValue());
+        Debug.Log(CRHC.SIZE_VUFORIA_FRAME.getAs(NumberType.PIXELS));
+        Debug.Log(CRHC.SIZE_VUFORIA_FRAME.getAs(NumberType.INCHES));
+
+        styleText.removeOwner();
+
         server = new Server(CachedLoader.SERVER_PATH);
-=======
-        string URL = "http://www3.nd.edu/~rmcgrai1/CRHC/";
-        server = new Server(URL);
->>>>>>> 7d8058b78fc3336b912526ca3bdad1b73a459737
         server.loadTarget("african_american_landmark_tour");
     }
 
@@ -62,7 +81,7 @@ public class AppRunner : MonoBehaviour {
         // TODO: REMOVE ME
         ServiceLocator.getITouch().OnGUI();
 
-        if(_exitMenu) {
+        if (_exitMenu) {
             _exitMenu = false;
 
             IMenu menu = instance.menuStack.Pop();
@@ -86,7 +105,7 @@ public class AppRunner : MonoBehaviour {
         GUI.Label(topBar, "Memory: " + (allocMemory / (Math.Pow(10, 6))) + "/" + (totalMemory / (Math.Pow(10, 6))) + " MB");*/
 
         ILog log = ServiceLocator.getILog();
-        if(doDrawLog && log is OnScreenLog) {
+        if (doDrawLog && log is OnScreenLog) {
             (log as OnScreenLog).OnGUI();
         }
     }

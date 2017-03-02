@@ -13,56 +13,64 @@ public static class GUIX {
 
     private static Stack<Color> colorStack;
 
-    private static IDictionary<Color, Texture2D> colorTextureDict = new Dictionary<Color, Texture2D>();
-    private static IDictionary<Color, GUIStyle> colorStyleDict = new Dictionary<Color, GUIStyle>();
+    private static Texture2D whiteTexture;
+    private static GUIStyle whiteTextureStyle;
 
     static GUIX() {
+        whiteTexture = new Texture2D(1, 1);
+        whiteTexture.SetPixel(0, 0, Color.white);
+        whiteTexture.Apply();
+
+        whiteTextureStyle = new GUIStyle();
+        whiteTextureStyle.normal.background = whiteTexture;
+
         colorStack = new Stack<Color>();
         colorStack.Push(Color.white);
     }
 
     // Note that this function is only meant to be called from OnGUI() functions.
-    public static void strokeRect(Rect position, Color color, float thickness) {
-
+    public static void strokeRect(Rect position, float thickness) {
         thickness /= 2;
 
         float x = position.x, y = position.y, w = position.width, h = position.height;
 
-        fillRect(new Rect(x - thickness, y - thickness, w + 2 * thickness, 2 * thickness), color);
-        fillRect(new Rect(x - thickness, y + h - thickness, w + 2 * thickness, 2 * thickness), color);
-        fillRect(new Rect(x - thickness, y - thickness, 2 * thickness, h + 2 * thickness), color);
-        fillRect(new Rect(x + w - thickness, y - thickness, 2 * thickness, h + 2 * thickness), color);
+        fillRect(new Rect(x - thickness, y - thickness, w + 2 * thickness, 2 * thickness));
+        fillRect(new Rect(x - thickness, y + h - thickness, w + 2 * thickness, 2 * thickness));
+        fillRect(new Rect(x - thickness, y - thickness, 2 * thickness, h + 2 * thickness));
+        fillRect(new Rect(x + w - thickness, y - thickness, 2 * thickness, h + 2 * thickness));
     }
-    public static void fillRect(Rect position, Color color) {
-<<<<<<< HEAD
+    public static void strokeRect(Rect position, Color color, float thickness) {
         if (color == CRHC.COLOR_TRANSPARENT) {
-=======
-        if (color == Crch.COLOR_TRANSPARENT) {
->>>>>>> 7d8058b78fc3336b912526ca3bdad1b73a459737
             return;
         }
 
-        GUIStyle style;
+        beginColor(color);
+        strokeRect(position, thickness);
+        endColor();
+    }
 
-        if (colorStyleDict.ContainsKey(color)) {
-            style = colorStyleDict[color];
+    public static void fillRect(Rect position) {
+        GUI.Box(position, GUIContent.none, whiteTextureStyle);
+    }
+    public static void fillRect(Rect position, Color color) {
+        if (color == CRHC.COLOR_TRANSPARENT) {
+            return;
         }
-        else {
-            Texture2D tex = colorTextureDict[color] = new Texture2D(1, 1);
-            tex.SetPixel(0, 0, color);
-            tex.Apply();
 
-            style = colorStyleDict[color] = new GUIStyle();
-            style.normal.background = tex;
-        }
+        beginColor(color);
+        fillRect(position);
+        endColor();
+    }
 
-        GUI.Box(position, GUIContent.none, style);
+    private static void setColor(Color color) {
+        //GUI.contentColor = color;
+        GUI.backgroundColor = color;
     }
 
     public static void beginColor(Color toColor) {
-        /*Color fromColor = colorStack.Peek();
+        Color fromColor = colorStack.Peek();
 
-        float nf = 1 - f;
+        /*float nf = 1 - f;
 
         float fr = fromColor.r, fg = fromColor.g, fb = fromColor.b, fa = fromColor.a;
         float tr = toColor.r, tg = toColor.g, tb = toColor.b, ta = toColor.a;
@@ -74,13 +82,32 @@ public static class GUIX {
 
         colorStack.Push(new Color(r, g, b, a));*/
 
-        colorStack.Push(GUI.color = toColor);
-    }
+        /*float f, nf;
+        f = .5f;
+        nf = 1 - f;
 
+        float fr = fromColor.r, fg = fromColor.g, fb = fromColor.b, fa = fromColor.a;
+        float tr = toColor.r, tg = toColor.g, tb = toColor.b, ta = toColor.a;
+        float r, g, b, a;
+            r = (float)Math.Sqrt(fr * fr * nf + tr * tr * f),
+            g = (float)Math.Sqrt(fg * fg * nf + tg * tg * f),
+            b = (float)Math.Sqrt(fb * fb * nf + tb * tb * f),
+            a = (float)Math.Sqrt(fa * fa * nf + ta * ta * f);
+        r = fr * nf + tr * f;
+        g = fg * nf + tg * f;
+        b = fb * nf + tb * f;
+        a = fa * nf + ta * f;
+
+        colorStack.Push(new Color(r, g, b, a));*/
+
+        setColor(toColor);
+        colorStack.Push(toColor);
+    }
+    
     public static void endColor() {
         if (colorStack.Count > 1) {
             colorStack.Pop();
-            GUI.color = colorStack.Peek();
+            setColor(colorStack.Peek());
         }
     }
 
@@ -88,7 +115,8 @@ public static class GUIX {
         Color opColor = colorStack.Peek();
         opColor.a *= opacity;
 
-        colorStack.Push(GUI.color = opColor);
+        setColor(opColor);
+        colorStack.Push(opColor);
     }
 
     public static void endOpacity() {
@@ -111,7 +139,7 @@ public static class GUIX {
 
         ITouch iTouch = ServiceLocator.getITouch();
 
-        if(iTouch.checkTap()) {
+        if (iTouch.checkTap()) {
             Rect acc = new Rect(topLeft + position.position, position.size);
             return acc.Contains(iTouch.getTouchPosition());
         }

@@ -3,11 +3,7 @@ using UnityEngine;
 
 public abstract class IRow : IDisposable {
     public abstract bool draw(float w);
-<<<<<<< HEAD
     public abstract float getPixelHeight(float w);
-=======
-    public abstract float getHeight(float w);
->>>>>>> 7d8058b78fc3336b912526ca3bdad1b73a459737
 
     #region IDisposable Support
     private bool disposedValue = false; // To detect redundant calls

@@ -2,20 +2,16 @@
 using System.Collections;
 using System.IO;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class CachedLoader : ILoader {
     private WWWLoader loader = new WWWLoader();
     private static readonly string WWW_PREFIX = "file:///";
-<<<<<<< HEAD
-    //private static readonly string SERVER_PATH = "http://www3.nd.edu/~rmcgrai1/CRHC/";
     public static readonly string SERVER_PATH = "http://chrc.s3-website.us-east-2.amazonaws.com/";
-=======
->>>>>>> 7d8058b78fc3336b912526ca3bdad1b73a459737
+    //private static readonly string SERVER_PATH = "http://www3.nd.edu/~rmcgrai1/CRHC/";
 
     public override IEnumerator loadCoroutine<T>(Reference<T> reference, string path) {
         IFileManager iFileManager = ServiceLocator.getIFileManager();
-
-        Type resourceType = typeof(T);
 
         bool fromCache = false;
         string relePath = convertWebToLocalPath(path, PathType.RELATIVE), wwwPath = convertWebToLocalPath(path, PathType.WWW);
@@ -85,6 +81,15 @@ public class CachedLoader : ILoader {
         }
 
         return null;
+    }
+
+    public override void clearCache(bool hardClear) {
+        base.clearCache(hardClear);
+
+        if(!hardClear) {
+            IFileManager iFileManager = ServiceLocator.getIFileManager();           
+            iFileManager.deleteDirectory(iFileManager.getBaseDirectory() + "cache");
+        }
     }
 }
 

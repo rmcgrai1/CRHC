@@ -18,6 +18,14 @@ public class AndroidFileManager : IFileManager {
         return true;
     }
 
+    public override bool deleteDirectory(string path) {
+        pushDirectory(getBaseDirectory());
+        Directory.Delete(path, true);
+        popDirectory();
+
+        return true;
+    }
+
     public override bool writeToFile(string path, byte[] data) {
         pushDirectory(getBaseDirectory());
         createDirectory(Path.GetDirectoryName(path));

@@ -16,7 +16,7 @@ public abstract class ILoader {
             return null;
         }
     }
-    public void clearCache(bool softClear) {
+    public virtual void clearCache(bool hardClear) {
         foreach (KeyValuePair<string, Reference> pair in runTimeCache) {
         }
 

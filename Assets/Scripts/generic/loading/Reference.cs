@@ -3,24 +3,46 @@ using UnityEngine;
 using System;
 using System.IO;
 
-public abstract class Reference { }
+public abstract class Reference {
+    private int references = 1;
+
+    // TODO: Make Reference objects owned by a ReferenceOwner object.
+    public void addOwner() {
+        references++;
+        if (references == 1) {
+            tryLoad();
+        }
+    }
+
+    public void removeOwner() {
+        if (references > 1) {
+            references--;
+        }
+        else {
+            references = 0;
+            unload();
+        }
+    }
+
+    public int getOwnerCount() {
+        return references;
+    }
+
+    protected abstract void tryLoad();
+    protected abstract void unload();
+}
 public class Reference<T> : Reference where T : class {
     private string path;
     private T data;
     private bool _isLoaded;
-    private int references = 1;
     private byte[] byteData;
 
-<<<<<<< HEAD
     private WWW www;
 
-=======
->>>>>>> 7d8058b78fc3336b912526ca3bdad1b73a459737
     public Reference(string path) {
         this.path = path;
     }
 
-<<<<<<< HEAD
     public void setWWW(WWW www) {
         this.www = www;
     }
@@ -29,8 +51,6 @@ public class Reference<T> : Reference where T : class {
         return www.progress;
     }
 
-=======
->>>>>>> 7d8058b78fc3336b912526ca3bdad1b73a459737
     public bool isLoaded() {
         return _isLoaded;
     }
@@ -51,51 +71,33 @@ public class Reference<T> : Reference where T : class {
         return data;
     }
 
-    // TODO: Tweak, so reference has to be owned by reference owner.
-    public void addOwner() {
-        if (references > 0) {
-            references++;
-        }
-        else {
-            references = 1;
-
-            ServiceLocator.getILoader().load(this);
-        }
-    }
-
-    public void removeOwner() {
-        if (references > 1) {
-            references--;
-        }
-        else {
-            references = 0;
-            _isLoaded = false;
-
-            byteData = null;
-
-            Type type = typeof(T);
-            if (type == typeof(Texture2D)) {
-                UnityEngine.Object.Destroy(data as Texture2D);
-            }
-            else if (type == typeof(AudioClip)) {
-                UnityEngine.Object.Destroy(data as AudioClip);
-            }
-            else {
-                data = null;
-            }
-        }
-    }
-
-    public int getOwnerCount() {
-        return references;
-    }
-
     public void save(string localPath) {
         try {
             ServiceLocator.getIFileManager().writeToFile(localPath, byteData);
         }
         catch (Exception e) {
             ServiceLocator.getILog().println(LogType.IO, e);
+        }
+    }
+
+    protected override void tryLoad() {
+        ServiceLocator.getILoader().load(this);
+    }
+
+    protected override void unload() {
+        _isLoaded = false;
+
+        byteData = null;
+
+        Type type = typeof(T);
+        if (type == typeof(Texture2D)) {
+            UnityEngine.Object.Destroy(data as Texture2D);
+        }
+        else if (type == typeof(AudioClip)) {
+            UnityEngine.Object.Destroy(data as AudioClip);
+        }
+        else {
+            data = null;
         }
     }
 }

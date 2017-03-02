@@ -5,7 +5,7 @@ using System;
 using generic;
 using Vuforia;
 
-public class Landmark : CrchFolder<Experience> {
+public class Landmark : CrhcFolder<Experience>, IComparable<Landmark> {
     private Reference<byte[]> dat;
     private Reference<string> xml;
 
@@ -38,12 +38,9 @@ public class Landmark : CrchFolder<Experience> {
     /*=======================================================**=======================================================*/
     /*=========================================== CONSTRUCTOR/DECONSTRUCTOR ==========================================*/
     /*=======================================================**=======================================================*/
-    public Landmark(CrchItem parent, JsonChildList.JsonChild data) : base(parent, data) {
+    public Landmark(CrhcItem parent, JsonChildList.JsonChild data) : base(parent, data) {
     }
 
-    public void showMap() {
-        MapServer.show(getLatitude(), getLongitude());
-    }
     public void showMapRoute() {
         MapServer.showRoute(getLatitude(), getLongitude());
     }
@@ -57,6 +54,10 @@ public class Landmark : CrchFolder<Experience> {
 
     public string getName() {
         return getData("name");
+    }
+
+    public int getNumber() {
+        return int.Parse(getData("number"));
     }
 
     public string getDescription() {
@@ -75,8 +76,24 @@ public class Landmark : CrchFolder<Experience> {
         return double.Parse(getData("longitude"));
     }
 
+    public bool hasAR() {
+        return bool.Parse(getData("hasAR"));
+    }
+
+    public bool hasAddress() {
+        return bool.Parse(getData("hasAddress"));
+    }
+
     public bool hasAudio() {
         return bool.Parse(getData("hasAudio"));
+    }
+
+    public string getAudioSource() {
+        return getData("audioSource");
+    }
+
+    public bool isVisible() {
+        return bool.Parse(getData("isVisible"));
     }
 
     public override IMenu buildMenu() {
@@ -94,13 +111,8 @@ public class Landmark : CrchFolder<Experience> {
         titleRow.setPadding(true, true, false);
 
         TextItem titleText = new TextItem(getName().ToUpper());
-<<<<<<< HEAD
         titleText.setColor(CRHC.COLOR_RED);
         titleText.setFont(CRHC.FONT_SUBTITLE);
-=======
-        titleText.setColor(Crch.COLOR_RED);
-        titleText.setFont(Crch.FONT_SUBTITLE);
->>>>>>> 7d8058b78fc3336b912526ca3bdad1b73a459737
         titleRow.addItem(titleText, 1);
 
         menu.addRow(titleRow);
@@ -145,12 +157,8 @@ public class Landmark : CrchFolder<Experience> {
             curRow.addItem(img, 1);
 
             TextItem sourceText = new TextItem(child.getSource());
-<<<<<<< HEAD
             sourceText.setFont(CRHC.FONT_SOURCE);
-=======
-            sourceText.setFont(Crch.FONT_SOURCE);
->>>>>>> 7d8058b78fc3336b912526ca3bdad1b73a459737
-            sourceText.setTextVerticalAlignment(TextVerticalAlignment.TOP);
+            sourceText.setTextAnchor(TextAnchor.UpperLeft);
             sourceRow.addItem(sourceText, 1);
         }
 
@@ -165,17 +173,20 @@ public class Landmark : CrchFolder<Experience> {
         row.setPadding(true, true, true);
 
         IMenu scrollMenu = new ScrollMenu(menu);
-<<<<<<< HEAD
         IMenu fadeInMenu = new FadeInMenu(scrollMenu, CRHC.SPEED_FADE_IN);
 
         fadeInMenu.setColor(CRHC.COLOR_BLUE_LIGHT);
-=======
-        IMenu fadeInMenu = new FadeInMenu(scrollMenu, Crch.FADE_IN_SPEED);
-
-        fadeInMenu.setColor(Crch.COLOR_BLUE_LIGHT);
->>>>>>> 7d8058b78fc3336b912526ca3bdad1b73a459737
 
         return fadeInMenu;
+    }
+
+    public int CompareTo(Landmark other) {
+        if(CRHC.LANDMARK_SORTORDER == SortOrder.NAME) {
+            return getName().CompareTo(other.getName());
+        }
+        else {
+            return getNumber().CompareTo(other.getNumber());
+        }
     }
 
     private class BackButton : RectItem {
@@ -202,11 +213,7 @@ public class Landmark : CrchFolder<Experience> {
 
         public ARButton(Experience exp) : base(exp.getUrl() + "img.jpg") {
             this.exp = exp;
-<<<<<<< HEAD
             tex = ServiceLocator.getILoader().load<Texture2D>(CachedLoader.SERVER_PATH + "icons/ar_icon.png");
-=======
-            tex = ServiceLocator.getILoader().load<Texture2D>("http://www3.nd.edu/~rmcgrai1/CRHC/icons/ar_icon.png");
->>>>>>> 7d8058b78fc3336b912526ca3bdad1b73a459737
         }
 
         public override void onClick() {

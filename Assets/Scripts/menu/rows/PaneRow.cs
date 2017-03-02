@@ -37,26 +37,16 @@ public class PaneRow : IRow {
         }
 
         float h = subMenu.getHeight(w) * openFrac;
-<<<<<<< HEAD
         GUIX.beginClip(new Rect(0, headRow.getPixelHeight(w), w, h));
-=======
-        GUIX.beginClip(new Rect(0, headRow.getHeight(w), w, h));
->>>>>>> 7d8058b78fc3336b912526ca3bdad1b73a459737
         subMenu.draw(w, h);
         GUIX.endClip();
 
         return false;
     }
 
-<<<<<<< HEAD
     public override float getPixelHeight(float w) {
         float h;
         h = headRow.getPixelHeight(w);
-=======
-    public override float getHeight(float w) {
-        float h;
-        h = headRow.getHeight(w);
->>>>>>> 7d8058b78fc3336b912526ca3bdad1b73a459737
 
         h += subMenu.getHeight(w) * openFrac;
         return h;

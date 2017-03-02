@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 
-public class Server : CrchFolder<Tour> {
+public class Server : CrhcFolder<Tour> {
     private string url;
 
     /*=======================================================**=======================================================*/

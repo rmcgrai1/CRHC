@@ -1,8 +1,6 @@
 ﻿using generic;
-<<<<<<< HEAD
 using generic.number;
-=======
->>>>>>> 7d8058b78fc3336b912526ca3bdad1b73a459737
+using generic.rendering;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -25,11 +23,8 @@ public class VuforiaManager {
     private ObjectTracker t;
     private DataSet ds;
 
-<<<<<<< HEAD
     private IDictionary<Experience, DataSet> dataSets = new Dictionary<Experience, DataSet>();
 
-=======
->>>>>>> 7d8058b78fc3336b912526ca3bdad1b73a459737
     public VuforiaManager(Shader shader) {
         instance = this;
         this.shader = shader;
@@ -47,7 +42,6 @@ public class VuforiaManager {
     }
 
     private void Vb_StartEvent() {
-<<<<<<< HEAD
         CoroutineManager.startCoroutine(loadDatasetCoroutine());
     }
 
@@ -105,46 +99,6 @@ public class VuforiaManager {
             }
             iFileManager.popDirectory();
         }
-
-=======
-        // TODO: Remove race condition!!!!
-        t = TrackerManager.Instance.GetTracker<ObjectTracker>();
-        ds = t.CreateDataSet();
-
-        IFileManager iFileManager = ServiceLocator.getIFileManager();
-        iFileManager.pushDirectory(iFileManager.getBaseDirectory());
-        if (ds.Load(CachedLoader.convertWebToLocalPath(exp.getLandmark().getXML().getPath(), PathType.RELATIVE), VuforiaUnity.StorageType.STORAGE_ABSOLUTE)) {
-            t.Stop();
-
-            t.ActivateDataSet(ds);
-            t.Start();
-
-            IEnumerable<TrackableBehaviour> tbs = TrackerManager.Instance.GetStateManager().GetTrackableBehaviours();
-            foreach (TrackableBehaviour tb in tbs) {
-                // change generic name to include trackable name
-                if ((tb.name = tb.TrackableName) == exp.getId()) {
-                    tb.gameObject.AddComponent<DefaultTrackableEventThing>();
-                    tb.gameObject.AddComponent<TurnOffThing>();
-
-                    GameObject planeGroup = new GameObject("planeGroup");
-                    planeGroup.transform.parent = tb.gameObject.transform;
-                    planeGroup.transform.localPosition = new Vector3(0f, 0f, 0f);
-                    planeGroup.transform.localRotation = Quaternion.identity;
-                    planeGroup.gameObject.SetActive(true);
-
-                    overlayPlane = GameObject.CreatePrimitive(PrimitiveType.Plane);
-                    overlayPlane.transform.parent = planeGroup.gameObject.transform;
-                }
-            }
-
-            debugMessage = "Loaded successfully!";
-        }
-        else {
-            debugMessage = "Failed to load Vuforia!";
-        }
-
-        iFileManager.popDirectory();
->>>>>>> 7d8058b78fc3336b912526ca3bdad1b73a459737
     }
 
     private class DefaultTrackableEventThing : MonoBehaviour, ITrackableEventHandler {
@@ -276,51 +230,33 @@ public class VuforiaManager {
     }
 
     public void OnGUI() {
-        if (!VuforiaBehaviour.Instance.enabled) {
+        if (!VuforiaBehaviour.Instance.enabled || !img.isLoaded()) {
             return;
         }
 
         Texture2D imgTex = img.getResource();
 
         // TODO: Tilt screen.
-<<<<<<< HEAD
         float aspect, scrW, scrH, angle, xOffset, yOffset;
+        float s = CRHC.SIZE_VUFORIA_FRAME.getAs(NumberType.PIXELS), p = 30;
         aspect = 1f * imgTex.width / imgTex.height;
 
-        float s = CRHC.SIZE_VUFORIA_FRAME.getAs(NumberType.PIXELS), x, y, w, h, p = 30;
         if (aspect < 1) {
-            h = s;
-            w = s * aspect;
-
             scrW = Screen.width;
             scrH = Screen.height;
 
             xOffset = yOffset = angle = 0;
-=======
-
-        float aspect, s = 200, x, y, w, h, p = 30;
-        aspect = 1f * imgTex.width / imgTex.height;
-        if (aspect < 1) {
-            w = s * aspect;
-            h = s;
->>>>>>> 7d8058b78fc3336b912526ca3bdad1b73a459737
         }
         else {
-            w = s;
-            h = s / aspect;
-<<<<<<< HEAD
-
             scrW = Screen.height;
             scrH = Screen.width;
 
             angle = 90;
             xOffset = 0;
             yOffset = -scrH;
-=======
->>>>>>> 7d8058b78fc3336b912526ca3bdad1b73a459737
         }
-        x = Screen.width - w - p;
-        y = 30;
+
+        Rect region = TextureUtility.getUseRect(new Rect(xOffset + scrW - s - p, yOffset + p, s, s), imgTex, AspectType.FIT_IN_REGION);
 
         if (didMatch) {
             frameAlpha += (0 - frameAlpha) / 10;
@@ -330,14 +266,10 @@ public class VuforiaManager {
 
         float a = .5f + .5f * Mathf.Sin(alphaAngle);
 
-<<<<<<< HEAD
         Vector2 pivot = Vector2.zero;
         GUIUtility.RotateAroundPivot(angle, pivot);
-
-=======
->>>>>>> 7d8058b78fc3336b912526ca3bdad1b73a459737
         GUIX.beginOpacity(frameAlpha);
-        Rect region = new Rect(x, y, w, h);
+
         if (img != null) {
             if (img.isLoaded()) {
                 GUIX.Texture(region, img.getResource());
@@ -353,13 +285,6 @@ public class VuforiaManager {
         if (outline != null) {
             if (outline.isLoaded()) {
                 GUIX.Texture(region, outline.getResource());
-<<<<<<< HEAD
-
-                if(!isMatching) {
-                    //TODO: Draw on screen too.
-                }
-=======
->>>>>>> 7d8058b78fc3336b912526ca3bdad1b73a459737
             }
         }
         GUIX.endOpacity();
@@ -391,17 +316,19 @@ public class VuforiaManager {
         GUIX.strokeRect(region, Color.white, 3);
         GUIX.endOpacity();
 
+        if (!isMatching) {
+            //TODO: Draw on screen too.
+            TextureUtility.drawTexture(new Rect(xOffset, yOffset, scrW, scrH), outline, AspectType.FIT_IN_REGION);
+        }
+
+        float x, y, w, h;
         w = Screen.width;
         h = 30;
-        x = 0;
-        y = Screen.height - h;
+        x = xOffset;
+        y = yOffset + Screen.height - h;
 
         GUIX.fillRect(new Rect(x, y, w, h), Color.black);
         GUI.Label(new Rect(x, y, w, h), debugMessage);
-<<<<<<< HEAD
-
         GUIUtility.RotateAroundPivot(-angle, pivot);
-=======
->>>>>>> 7d8058b78fc3336b912526ca3bdad1b73a459737
     }
 }

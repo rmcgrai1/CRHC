@@ -35,4 +35,7 @@ public static class CRHC {
 
         PADDING_H = new Number(.08f, NumberType.SCREEN_WIDTH_FRACTION),
         PADDING_V = new Number(15, NumberType.PIXELS);
+
+    public static readonly SortOrder
+        LANDMARK_SORTORDER = SortOrder.NUMBER;
 }
