@@ -1,4 +1,6 @@
-﻿using System;
+﻿using generic.number;
+using generic.rendering;
+using System;
 using UnityEngine;
 
 public class PaneRow : IRow {
@@ -6,10 +8,13 @@ public class PaneRow : IRow {
     private IMenu subMenu;
     private float openFrac = 0, toFrac = 0;
     private Color openColor, closedColor;
+    private Reference<Texture2D> arrowTexture;
 
     public PaneRow(Row headRow, IMenu subMenu) {
         this.headRow = headRow;
         this.subMenu = subMenu;
+
+        arrowTexture = ServiceLocator.getILoader().load<Texture2D>(CachedLoader.SERVER_PATH + "icons/right_icon.png");
     }
 
     public Color blendColor(Color fromColor, Color toColor, float f) {
@@ -36,10 +41,21 @@ public class PaneRow : IRow {
             toFrac = 1 - toFrac;
         }
 
-        float h = subMenu.getHeight(w) * openFrac;
-        GUIX.beginClip(new Rect(0, headRow.getPixelHeight(w), w, h));
-        subMenu.draw(w, h);
-        GUIX.endClip();
+        float headH = headRow.getPixelHeight(w);
+        float padding = CRHC.PADDING_H.getAs(NumberType.PIXELS), s = .6f, arrowW = padding*s;
+        Rect arrowRect = new Rect(padding*(1-s)/2, headH/2 - arrowW/2, arrowW, arrowW);
+        Vector2 pivot = new Vector2(arrowRect.x + arrowRect.width/2, arrowRect.y + arrowRect.height/2);
+        float angle = 90 * openFrac;
+        GUIUtility.RotateAroundPivot(angle, pivot);
+        TextureUtility.drawTexture(arrowRect, arrowTexture, CRHC.COLOR_GRAY_DARK, AspectType.FIT_IN_REGION);
+        GUIUtility.RotateAroundPivot(-angle, pivot);
+
+        if(openFrac > .01) {
+            float h = subMenu.getHeight(w) * openFrac;
+            GUIX.beginClip(new Rect(0, headRow.getPixelHeight(w), w, h));
+            subMenu.draw(w, h);
+            GUIX.endClip();
+        }
 
         return false;
     }
@@ -66,5 +82,8 @@ public class PaneRow : IRow {
 
         subMenu.Dispose();
         subMenu = null;
+
+        arrowTexture.removeOwner();
+        arrowTexture = null;
     }
 }

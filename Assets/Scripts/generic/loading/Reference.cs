@@ -64,6 +64,10 @@ public class Reference<T> : Reference where T : class {
             _isLoaded = true;
             this.data = data;
             this.byteData = byteData;
+
+            if(onLoad != null) {
+                onLoad();
+            }
         }
     }
 
@@ -100,4 +104,7 @@ public class Reference<T> : Reference where T : class {
             data = null;
         }
     }
+
+    public delegate void LoadEventDelegate();
+    public event LoadEventDelegate onLoad;
 }

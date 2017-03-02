@@ -5,6 +5,8 @@ using System;
 using generic;
 using Vuforia;
 using Newtonsoft.Json.Linq;
+using generic.number;
+using generic.rendering;
 
 public class Landmark : CrhcFolder<Experience>, IComparable<Landmark> {
     private Reference<byte[]> dat;
@@ -182,7 +184,7 @@ public class Landmark : CrhcFolder<Experience>, IComparable<Landmark> {
     }
 
     public int CompareTo(Landmark other) {
-        if(CRHC.LANDMARK_SORTORDER == SortOrder.NAME) {
+        if (CRHC.LANDMARK_SORTORDER == SortOrder.NAME) {
             return getName().CompareTo(other.getName());
         }
         else {
@@ -190,21 +192,45 @@ public class Landmark : CrhcFolder<Experience>, IComparable<Landmark> {
         }
     }
 
-    private class BackButton : RectItem {
-        private Landmark owner;
+    public class BackButton : RectItem {
+        private CrhcItem owner;
+        private Reference<Texture2D> arrowTexture;
+        private readonly float PADDING = 8;
 
-        public BackButton(Landmark owner) : base(Color.red) {
+        public BackButton(CrhcItem owner) : base(CRHC.COLOR_TRANSPARENT) {
             this.owner = owner;
+            arrowTexture = ServiceLocator.getILoader().load<Texture2D>(CachedLoader.SERVER_PATH + "icons/right_icon.png");
         }
 
         public override void onClick() {
             owner.unload();
         }
 
+        public override bool draw(float w, float h) {
+            bool output = base.draw(w, h);
+
+            float arrowW = CRHC.SIZE_BACK_BUTTON.getAs(NumberType.PIXELS);
+            float angle = 180;
+            Vector2 pivot = new Vector2(PADDING + arrowW / 2, PADDING + arrowW / 2);
+
+            GUIUtility.RotateAroundPivot(angle, pivot);
+            TextureUtility.drawTexture(new Rect(PADDING, PADDING, arrowW, arrowW), arrowTexture, CRHC.COLOR_GRAY_DARK, AspectType.FIT_IN_REGION);
+            GUIUtility.RotateAroundPivot(-angle, pivot);
+
+            return output;
+        }
+
         public override void onDispose() {
             base.onDispose();
 
             owner = null;
+
+            arrowTexture.removeOwner();
+            arrowTexture = null;
+        }
+
+        public override float getHeight(float w) {
+            return CRHC.SIZE_BACK_BUTTON.getAs(NumberType.PIXELS) + 2 * PADDING;
         }
     }
 

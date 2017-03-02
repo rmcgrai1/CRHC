@@ -10,7 +10,9 @@ namespace generic.mobile {
         // TODO: Enable observer pattern?
 
         private static Vector2 previousTouchPosition, touchPosition, dragVector;
-        private static bool _isDown = false, _didTap = false;
+        private static bool _isDown = false, _didTap = false, _isHeld = false;
+
+        private readonly float HOLD_TIME = 100;
 
         private static double startTouchTime;
         private static float dragDistance, coolDownFrac;
@@ -53,7 +55,7 @@ namespace generic.mobile {
 
                 // TODO: Tweak these values.
                 // TODO: Change to be based on # inches.
-                if (Epoch.MillisElapsed(startTouchTime) < 1000 && dragDistance/Screen.dpi < .5) {
+                if (Epoch.MillisElapsed(startTouchTime) < HOLD_TIME && dragDistance/Screen.dpi < .5) {
                     _didTap = true;
                 }
                 else {
@@ -67,7 +69,7 @@ namespace generic.mobile {
         }
 
         public bool isHeld() {
-            throw new NotImplementedException();
+            return _isDown && Epoch.MillisElapsed(startTouchTime) >= HOLD_TIME;
         }
 
         public bool checkTap() {

@@ -143,7 +143,6 @@ public class VuforiaManager {
                 newStatus == TrackableBehaviour.Status.TRACKED ||
                 newStatus == TrackableBehaviour.Status.EXTENDED_TRACKED) {
                 OnTrackingFound();
-
                 instance.isMatching = instance.didMatch = true;
             }
             else {

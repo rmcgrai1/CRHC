@@ -12,6 +12,7 @@ public class AudioPlayerRow : IRow {
     private bool hasWaveformTexture = false;
     private float progress = 0;
     private int stepsPerFrame = 10;
+    private bool wasHeld = false, isScrubbing = false;
 
     private PlayState playState = PlayState.STOPPED;
 
@@ -20,7 +21,14 @@ public class AudioPlayerRow : IRow {
     }
 
     public AudioPlayerRow(string audioURL) {
-        audioClip = ServiceLocator.getILoader().load<AudioClip>(audioURL);
+        ILoader iLoader = ServiceLocator.getILoader();
+        audioClip = iLoader.getReference<AudioClip>(audioURL);
+        audioClip.onLoad += AudioClip_onLoad;
+        iLoader.load(audioClip);
+    }
+
+    private void AudioClip_onLoad() {
+        CoroutineManager.startCoroutine(createTextureCoroutine((int)(Screen.width - 2 * CRHC.PADDING_H.getAs(NumberType.PIXELS)), (int)getPixelHeight(0)));
     }
 
     private IEnumerator createTextureCoroutine(int iW, int iH) {
@@ -94,26 +102,47 @@ public class AudioPlayerRow : IRow {
         w -= 2 * padding;
         float h = getPixelHeight(w);
 
-        if (audioClip.isLoaded()) {
-            CoroutineManager.startCoroutine(createTextureCoroutine((int)w, (int)h));
-        }
-
         if (hasWaveformTexture) {
             Rect region = new Rect(padding, 0, w, h);
             GUIX.Texture(region, waveformTexture);
 
             ITouch iTouch = ServiceLocator.getITouch();
-            if(GUIX.isTouchInsideRect(region)) {
-                if(iTouch.checkTap()) {
+            if (GUIX.isTouchInsideRect(region)) {
+                if (iTouch.checkTap()) {
                     togglePlayPause();
+                }
+                else if (!wasHeld && iTouch.isHeld()) {
+                    if (!isScrubbing) {
+                        isScrubbing = true;
+                        pause();
+                    }
+                }
+            }
+            wasHeld = iTouch.isHeld();
+
+            if (iTouch.isDown()) {
+                if (isScrubbing) {
+                    float len = audioClip.getResource().length;
+
+                    audioSource.time = Math.Max(0, Math.Min(len * (iTouch.getTouchPosition().x - padding) / w, len));
+                    iTouch.clearDragVector();
+                }
+            }
+            else {
+                if (isScrubbing) {
+                    isScrubbing = false;
+                    play();
                 }
             }
 
+            if(!audioSource.isPlaying && playState == PlayState.PLAYING) {
+                stop();
+            }
 
-            if(playState != PlayState.STOPPED) {
+            if (playState != PlayState.STOPPED) {
                 Color color = (playState == PlayState.PLAYING) ? CRHC.COLOR_RED : CRHC.COLOR_BLUE_DARK;
                 float frac = audioSource.time / audioSource.clip.length, bx = w * frac, bw = 5;
-                GUIX.fillRect(new Rect(padding + bx - bw/2, 0, bw, h), color);
+                GUIX.fillRect(new Rect(padding + bx - bw / 2, 0, bw, h), color);
             }
         }
         else {

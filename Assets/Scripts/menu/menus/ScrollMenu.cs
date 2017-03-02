@@ -7,7 +7,7 @@ public class ScrollMenu : IMenu {
     // TODO: Update scrollFrac if height changes.
 
     private IMenu menu;
-    private float scrollFrac = 0;
+    private float scrollFrac = 0, prevScrollY, prevScrollFrac, prevHeightDiff = float.PositiveInfinity;
     private Color color;
 
     public ScrollMenu(IMenu menu) {
@@ -31,7 +31,12 @@ public class ScrollMenu : IMenu {
 
         if (heightDiff > 0) {
             // Scroll menu.
-            scrollFrac -= (iTouch.getDragVector().y / heightDiff);
+            if(!float.IsInfinity(prevHeightDiff)) {
+                if(heightDiff != prevHeightDiff) {
+                    scrollFrac = -prevScrollY / heightDiff;
+                }
+            }
+
             scrollFrac = Math.Max(0, Math.Min(scrollFrac, 1));
 
             scrollY = -scrollFrac * heightDiff;
@@ -40,11 +45,16 @@ public class ScrollMenu : IMenu {
             scrollY = 0;
         }
 
+        prevHeightDiff = heightDiff;
+        prevScrollY = scrollY;
+        prevScrollFrac = scrollFrac;
+
         Vector2 scrollPosition = new Vector2(0, scrollY);
         GUIX.beginClip(new Rect(0, 0, w, h), scrollPosition, Vector2.zero, false);
-        //GUIX.beginClip(new Rect(0, scrollY, w, h));
         menu.draw(w, h);
         GUIX.endClip();
+
+        scrollFrac -= (iTouch.getDragVector().y / heightDiff);
     }
 
     public override float getHeight(float w) {

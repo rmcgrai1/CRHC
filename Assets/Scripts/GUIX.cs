@@ -14,7 +14,7 @@ public static class GUIX {
     private static Stack<Color> colorStack;
 
     private static Texture2D whiteTexture;
-    private static GUIStyle whiteTextureStyle;
+    private static GUIStyle whiteTextureStyle, standardTextureStyle;
 
     static GUIX() {
         whiteTexture = new Texture2D(1, 1);
@@ -23,6 +23,8 @@ public static class GUIX {
 
         whiteTextureStyle = new GUIStyle();
         whiteTextureStyle.normal.background = whiteTexture;
+
+        standardTextureStyle = new GUIStyle();
 
         colorStack = new Stack<Color>();
         colorStack.Push(Color.white);
@@ -130,7 +132,8 @@ public static class GUIX {
     }
 
     public static void Texture(Rect position, Texture2D tex) {
-        GUI.DrawTexture(position, tex);
+        standardTextureStyle.normal.background = tex;
+        GUI.Box(position, GUIContent.none, standardTextureStyle);
     }
 
     public static void Label(Rect position, GUIContent content, GUIStyle style) {

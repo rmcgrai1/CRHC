@@ -27,7 +27,7 @@ public class Experience : CrhcItem {
         Menu menu = new Menu();
 
         Row backRow = new Row();
-        backRow.addItem(new BackButton(this), 1);
+        backRow.addItem(new Landmark.BackButton(this), 1);
         menu.addRow(backRow);
 
         AppRunner.enterMenu(menu);
@@ -39,17 +39,5 @@ public class Experience : CrhcItem {
         AppRunner.exitMenu();
 
         yield return null;
-    }
-
-    private class BackButton : RectItem {
-        private Experience owner;
-
-        public BackButton(Experience owner) : base(Color.red) {
-            this.owner = owner;
-        }
-
-        public override void onClick() {
-            owner.unload();
-        }
     }
 }
