@@ -15,7 +15,7 @@ public static class CRHC {
         COLOR_GRAY_DARK = new Color32(57, 56, 57, 255);
 
     public static readonly float
-        SPEED_FADE_IN = 30;
+		SPEED_FADE_IN = Time.fixedDeltaTime * 20;
 
     public static readonly Font
         FONT_TITLE = Resources.Load<Font>("Fonts/Roboto-Title"),

@@ -7,7 +7,7 @@ public class ScrollMenu : IMenu {
     // TODO: Update scrollFrac if height changes.
 
     private IMenu menu;
-    private float scrollFrac = 0, prevScrollY, prevScrollFrac, prevHeightDiff = float.PositiveInfinity;
+    private float scrollFrac = 0, prevScrollY, prevHeightDiff = float.PositiveInfinity;
     private Color color;
 
     public ScrollMenu(IMenu menu) {
@@ -30,7 +30,7 @@ public class ScrollMenu : IMenu {
         GUIX.fillRect(new Rect(0, 0, w, h), color);
 
         if (heightDiff > 0) {
-            // Scroll menu.
+			// Scroll menu.
             if(!float.IsInfinity(prevHeightDiff)) {
                 if(heightDiff != prevHeightDiff) {
                     scrollFrac = -prevScrollY / heightDiff;
@@ -38,7 +38,6 @@ public class ScrollMenu : IMenu {
             }
 
             scrollFrac = Math.Max(0, Math.Min(scrollFrac, 1));
-
             scrollY = -scrollFrac * heightDiff;
         }
         else {
@@ -47,10 +46,9 @@ public class ScrollMenu : IMenu {
 
         prevHeightDiff = heightDiff;
         prevScrollY = scrollY;
-        prevScrollFrac = scrollFrac;
 
         Vector2 scrollPosition = new Vector2(0, scrollY);
-        GUIX.beginClip(new Rect(0, 0, w, h), scrollPosition, Vector2.zero, false);
+        GUIX.beginClip(new Rect(0, 0, w, h), scrollPosition);
         menu.draw(w, h);
         GUIX.endClip();
 

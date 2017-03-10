@@ -14,7 +14,7 @@ public class VuforiaManager {
 
     private Reference<Texture2D> img, outline, overlay;
     private GameObject planeGroup, outlinePlane, overlayPlane;
-    private bool isSetup, isMatching, didMatch;
+    private bool isSetup, isOverlaySetup, isMatching, didMatch;
     private float alphaAngle, frameAlpha = 1;
     private Experience exp;
 
@@ -104,7 +104,7 @@ public class VuforiaManager {
     }
 
     private IEnumerator unloadDatasetCoroutine() {
-
+		isOverlaySetup = false;
         yield return null;
     }
 
@@ -299,7 +299,10 @@ public class VuforiaManager {
         if (overlay != null) {
             if (overlay.isLoaded()) {
                 GUIX.Texture(region, overlay.getResource());
-                if (!isSetup && overlayPlane != null) {
+
+                if (isOverlaySetup && overlayPlane != null) {
+					isOverlaySetup = true;
+
                     Texture2D tex = overlay.getResource();
 
                     MeshRenderer renderer = overlayPlane.GetComponent<MeshRenderer>();

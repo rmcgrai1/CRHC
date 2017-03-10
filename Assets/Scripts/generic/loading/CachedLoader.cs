@@ -7,20 +7,21 @@ using UnityEngine.SceneManagement;
 public class CachedLoader : ILoader {
     private WWWLoader loader = new WWWLoader();
     private static readonly string WWW_PREFIX = "file:///";
-    public static readonly string SERVER_PATH = "http://chrc.s3-website.us-east-2.amazonaws.com/";
+	public static readonly string SERVER_PATH = "https://s3.amazonaws.com/crhc/";
+	//public static readonly string SERVER_PATH = "http://chrc.s3-website.us-east-2.amazonaws.com/";
     //private static readonly string SERVER_PATH = "http://www3.nd.edu/~rmcgrai1/CRHC/";
 
-    public override IEnumerator loadCoroutine<T>(Reference<T> reference, string path) {
+	public override IEnumerator loadCoroutine<T>(Reference<T> reference, string path, bool forceReload) {
         IFileManager iFileManager = ServiceLocator.getIFileManager();
 
         bool fromCache = false;
         string relePath = convertWebToLocalPath(path, PathType.RELATIVE), wwwPath = convertWebToLocalPath(path, PathType.WWW);
 
         // Check if file already exists in local file storage cache.
-        if (relePath != null) {
+		if (relePath != null) {
             ServiceLocator.getILog().print(LogType.IO, "Checking for file at " + relePath + "...");
 
-            if (iFileManager.fileExists(relePath)) {
+            if (!forceReload && iFileManager.fileExists(relePath)) {
                 fromCache = true;
                 path = wwwPath;
                 ServiceLocator.getILog().println(LogType.IO, "Using cache!");

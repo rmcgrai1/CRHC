@@ -3,7 +3,7 @@ using System.Collections;
 using UnityEngine;
 
 public class WWWLoader : ILoader {
-    public override IEnumerator loadCoroutine<T>(Reference<T> reference, string path) {
+	public override IEnumerator loadCoroutine<T>(Reference<T> reference, string path, bool forceReload) {
         ServiceLocator.getILog().println(LogType.IO, "Loading " + typeof(T) + " from \"" + path + "\"...");
         WWW www = new WWW(path);
 

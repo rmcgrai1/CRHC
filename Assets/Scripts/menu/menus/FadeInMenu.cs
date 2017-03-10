@@ -9,9 +9,9 @@ public class FadeInMenu : IMenu {
     private float fadeInAmount = 0, fadeSpeed;
     private Color color;
 
-    public FadeInMenu(IMenu menu, float fadeSpeed) {
+	public FadeInMenu(IMenu menu, float fadeInSpeed) {
         this.menu = menu;
-        this.fadeSpeed = fadeSpeed;
+        this.fadeSpeed = fadeInSpeed;
     }
 
     public override void addRow(IRow row) {
@@ -23,15 +23,26 @@ public class FadeInMenu : IMenu {
         // TODO: Incorporate deltaTime.
         // TODO: Make smooth deltaTime variables.
 
-        float fadeDis = menu.getHeight(w), fadeY = -fadeDis * (1 - fadeInAmount), menuH = h - fadeY;
+        float fadeDis = menu.getHeight(w);
 
-        fadeInAmount += (1 - fadeInAmount) / fadeSpeed;
+		float fadeInDelta = ((1 - fadeInAmount) / fadeSpeed) * Time.fixedDeltaTime;
+		if (fadeInDelta * fadeDis < Time.fixedDeltaTime) {
+			fadeInAmount = 1;
+		} else {
+			fadeInAmount += fadeInDelta;
+		}
 
         GUIX.fillRect(new Rect(0, 0, w, h), color);
-
         GUIX.beginOpacity(fadeInAmount);
-        GUIX.beginClip(new Rect(0, fadeY, w, menuH));
-        menu.draw(w, menuH);
+
+
+		float fadeY, menuH;
+		fadeY = -fadeDis * (1 - fadeInAmount);
+		menuH = h - fadeY;
+		Rect menuRect = new Rect(0, fadeY, w, menuH);
+
+		GUIX.beginClip(menuRect);
+		menu.draw(w, menuH);
         GUIX.endClip();
         GUIX.endOpacity();
     }
