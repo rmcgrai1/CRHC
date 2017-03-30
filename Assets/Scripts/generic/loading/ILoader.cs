@@ -57,8 +57,20 @@ public abstract class ILoader {
         CoroutineManager.startCoroutine(loadCoroutine(reference));
     }
 
-    public IEnumerator loadCoroutine<T>(Reference<T> reference) where T : class {
-        yield return loadCoroutine<T>(reference, reference.getPath());
+	public IEnumerator loadCoroutine<T>(Reference<T> reference) where T : class {
+		yield return loadCoroutine<T>(reference, reference.getPath(), false);
     }
-    public abstract IEnumerator loadCoroutine<T>(Reference<T> reference, string path) where T : class;
+	public IEnumerator loadCoroutine<T>(Reference<T> reference, string path) where T : class {
+		yield return loadCoroutine<T>(reference, path, false);
+	}
+
+	public abstract IEnumerator loadCoroutine<T>(Reference<T> reference, string path, bool forceReload) where T : class;
+
+	public IEnumerator reloadCoroutine<T>(Reference<T> reference, string path) where T : class {
+		yield return loadCoroutine<T>(reference, reference.getPath(), true);
+	}
+
+	public IEnumerator reloadCoroutine<T>(Reference<T> reference) where T : class {
+		yield return reloadCoroutine<T>(reference, reference.getPath());
+	}
 }

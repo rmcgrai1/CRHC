@@ -8,8 +8,7 @@ using UnityEngine;
 using UnityEngine.Rendering;
 
 public static class GUIX {
-    private static Stack<Rect> clipStack = new Stack<Rect>();
-    private static Vector2 topLeft = Vector2.zero;
+    private static Stack<Rect> clipStack;
 
     private static Stack<Color> colorStack;
 
@@ -17,6 +16,8 @@ public static class GUIX {
     private static GUIStyle whiteTextureStyle, standardTextureStyle;
 
     static GUIX() {
+		clipStack = new Stack<Rect>();
+
         whiteTexture = new Texture2D(1, 1);
         whiteTexture.SetPixel(0, 0, Color.white);
         whiteTexture.Apply();
@@ -145,7 +146,7 @@ public static class GUIX {
 
         ITouch iTouch = ServiceLocator.getITouch();
 
-        Rect acc = new Rect(topLeft + position.position, position.size);
+		Rect acc = new Rect(getClipRect().position + position.position, position.size);
         return acc.Contains(iTouch.getTouchPosition());
     }
 
@@ -161,23 +162,54 @@ public static class GUIX {
         }
     }
 
+	private static Rect fixRect(Rect inRect) {
+		float x, y, width, height;
+		x = inRect.x;
+		y = inRect.y;
+		width = inRect.width;
+		height = inRect.height;
+
+		if (width < 0) {
+			x += width;
+			width = -width;
+		}
+		if (height < 0) {
+			y += height;
+			height = -height;
+		}
+
+		return new Rect(x, y, width, height);
+	}
+
     public static void beginClip(Rect position) {
-        topLeft += position.position;
-        clipStack.Push(position);
-        GUI.BeginClip(position);
+		beginClip(position, Vector2.zero);
     }
 
-    public static void beginClip(Rect position, Vector2 scrollPosition, Vector2 zero, bool notsure) {
-        Rect tweakPosition = new Rect(position.position + scrollPosition, position.size);
-        clipStack.Push(tweakPosition);
-        topLeft += clipStack.Peek().position;
+	public static void beginClip(Rect newClipRect, Vector2 scrollPosition) {
+		newClipRect = fixRect(newClipRect);
+		GUI.BeginClip(newClipRect, scrollPosition, Vector2.zero, false);
 
-        GUI.BeginClip(position, scrollPosition, zero, notsure);
+		Rect currentClipRect = getClipRect();
+		if (currentClipRect == null) {
+			currentClipRect = new Rect(0, 0, Screen.width, Screen.height);
+		}
+
+		newClipRect.position += currentClipRect.position;
+		newClipRect.position += scrollPosition;
+
+		newClipRect.size = Vector2.Max(Vector2.zero, Vector2.Min(newClipRect.size, newClipRect.size - (currentClipRect.size - newClipRect.position)));
+
+		clipStack.Push(newClipRect);
     }
 
     public static void endClip() {
-        topLeft -= clipStack.Peek().position;
-        clipStack.Pop();
-        GUI.EndClip();
+		if (clipStack.Count > 0) {
+			clipStack.Pop();
+			GUI.EndClip();			
+		}
     }
+
+	public static Rect getClipRect() {
+		return (clipStack.Count > 0) ? clipStack.Peek() : default(Rect);
+	}
 }

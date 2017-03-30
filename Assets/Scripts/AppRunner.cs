@@ -15,9 +15,6 @@ public class AppRunner : MonoBehaviour {
     private Shader shader;
 
     [SerializeField]
-    private bool doClearCacheOnLaunch;
-
-    [SerializeField]
     private bool doDrawLog;
 
     private static AppRunner instance;
@@ -37,12 +34,6 @@ public class AppRunner : MonoBehaviour {
 
         resolution = new Vector2(Screen.width, Screen.height);
 
-        /*if(doClearCacheOnLaunch) {
-            ServiceLocator.getILog().print(LogType.IO, "Clearing cache... ");
-            ServiceLocator.getILoader().clearCache(true);
-            ServiceLocator.getILog().println(LogType.IO, "OK!");
-        }*/
-
         // Yield until CoroutineManager is instantiated.
         yield return gameObject.AddComponent<CoroutineManager>();
 
@@ -50,7 +41,7 @@ public class AppRunner : MonoBehaviour {
         // TODO: FORCE RELOAD!!
         ILoader iLoader = ServiceLocator.getILoader();
         Reference<string> styleText = iLoader.getReference<string>(CachedLoader.SERVER_PATH + "style.json");
-        yield return iLoader.loadCoroutine(styleText);
+        yield return iLoader.reloadCoroutine(styleText);
 
         JObject json = JObject.Parse(styleText.getResource());
 

@@ -45,7 +45,7 @@ public class Landmark : CrhcFolder<Experience>, IComparable<Landmark> {
     }
 
     public void showMapRoute() {
-        MapServer.showRoute(getLatitude(), getLongitude());
+        MapServer.showRoute(this);
     }
 
     /*=======================================================**=======================================================*/

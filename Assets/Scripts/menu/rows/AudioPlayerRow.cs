@@ -150,10 +150,11 @@ public class AudioPlayerRow : IRow {
             }
         }
         else {
-            if (audioClip.isLoaded() && waveformTexture == null) {
-                AudioClip_onLoad();
-            }
+			if(audioClip.isLoaded() && waveformTexture == null) {
+				AudioClip_onLoad();
+			}
 
+			GUIX.strokeRect(new Rect(padding, 0, w, h), CRHC.COLOR_GRAY_DARK, 1);
             GUIX.fillRect(new Rect(padding, 0, w * progress, h), CRHC.COLOR_GRAY_DARK);
         }
 
