@@ -6,7 +6,7 @@ PlayerSettings:
   serializedVersion: 10
   productGUID: 58d448a3e66039148b3c80a0dad20301
   AndroidProfiler: 0
-  defaultScreenOrientation: 4
+  defaultScreenOrientation: 0
   targetDevice: 2
   useOnDemandResources: 0
   accelerometerFrequency: 60
@@ -144,7 +144,7 @@ PlayerSettings:
     serializedVersion: 2
     m_Bits: 238
   iPhoneSdkVersion: 988
-  iOSTargetOSVersionString: 7.0
+  iOSTargetOSVersionString: 8.0
   tvOSSdkVersion: 0
   tvOSRequireExtendedGameController: 0
   tvOSTargetOSVersionString: 
@@ -250,7 +250,7 @@ PlayerSettings:
   enableInternalProfiler: 0
   logObjCUncaughtExceptions: 1
   enableCrashReportAPI: 0
-  cameraUsageDescription: Camera access required for target detection and tracking
+  cameraUsageDescription: ed for target detection and trackingtection and tracking
   locationUsageDescription: 
   microphoneUsageDescription: 
   XboxTitleId: 

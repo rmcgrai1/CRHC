@@ -7,7 +7,8 @@ using UnityEngine.SceneManagement;
 public class CachedLoader : ILoader {
     private WWWLoader loader = new WWWLoader();
     private static readonly string WWW_PREFIX = "file:///";
-    public static readonly string SERVER_PATH = "http://chrc.s3-website.us-east-2.amazonaws.com/";
+    public static readonly string SERVER_PATH = "https://s3.amazonaws.com/crhc/";
+    //public static readonly string SERVER_PATH = "http://chrc.s3-website.us-east-2.amazonaws.com/";
     //private static readonly string SERVER_PATH = "http://www3.nd.edu/~rmcgrai1/CRHC/";
 
     public override IEnumerator loadCoroutine<T>(Reference<T> reference, string path) {
