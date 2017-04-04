@@ -14,10 +14,6 @@ public class Tour : CrhcFolder<Landmark> {
     public Tour(CrhcItem parent, JObject data) : base(parent, data) {
     }
 
-    //protected override void tryLoad()
-    //texture.loadCoroutine();
-    //texture.unload();
-
 
     /*=======================================================**=======================================================*/
     /*============================================== ACCESSORS/MUTATORS ==============================================*/

@@ -144,6 +144,8 @@ public class VuforiaManager {
                 newStatus == TrackableBehaviour.Status.EXTENDED_TRACKED) {
                 OnTrackingFound();
                 instance.isMatching = instance.didMatch = true;
+
+                Debug.Log("MATCHING!!!");
             }
             else {
                 OnTrackingLost();
@@ -298,16 +300,15 @@ public class VuforiaManager {
         GUIX.beginOpacity(1 - a);
         if (overlay != null) {
             if (overlay.isLoaded()) {
-                GUIX.Texture(region, overlay.getResource());
+                Texture2D tex = overlay.getResource();
+                GUIX.Texture(region, tex);
 
-                if (isOverlaySetup && overlayPlane != null) {
-					isOverlaySetup = true;
-
-                    Texture2D tex = overlay.getResource();
+                if (!isOverlaySetup && overlayPlane != null) {
+					//isOverlaySetup = true;
 
                     MeshRenderer renderer = overlayPlane.GetComponent<MeshRenderer>();
-                    renderer.material.mainTexture = tex;
                     renderer.material.shader = shader;
+                    renderer.material.mainTexture = tex;
 
                     float tw = tex.width, th = tex.height, f = tw / th, nf = th / tw;
                     float ss = .1f;
@@ -331,10 +332,10 @@ public class VuforiaManager {
         }
 
         float x, y, w, h;
-        w = Screen.width;
+        w = scrW;
         h = 30;
         x = xOffset;
-        y = yOffset + Screen.height - h;
+        y = yOffset + scrH - h;
 
         GUIX.fillRect(new Rect(x, y, w, h), Color.black);
         GUI.Label(new Rect(x, y, w, h), debugMessage);
