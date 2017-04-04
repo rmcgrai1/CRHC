@@ -218,13 +218,26 @@ public class Landmark : CrhcFolder<Experience>, IComparable<Landmark> {
 
         public override bool draw(float w, float h) {
             bool output = base.draw(w, h);
-
             float arrowW = CRHC.SIZE_BACK_BUTTON.getAs(NumberType.PIXELS);
             float angle = 180;
-            Vector2 pivot = new Vector2(PADDING + arrowW / 2, PADDING + arrowW / 2);
+
+            //Vector2 pivot = ServiceLocator.getITouch().getTouchPosition(); // new Vector2(PADDING + arrowW / 2, AppRunner.getScreenWidth()-PADDING + arrowW / 2);
+            Rect region = new Rect(PADDING, PADDING, arrowW, arrowW);
+
+            float scrH = AppRunner.getScreenHeight();
+
+            //return new Vector2(touchPosition.y, AppRunner.getScreenHeight() - touchPosition.x);
+            Vector2 regionCenter = region.center;
+            Vector2 pivot;
+            if (AppRunner.getIsUpright()) {
+                pivot = regionCenter;
+            }
+            else {
+                pivot = new Vector2(scrH - regionCenter.y, scrH + regionCenter.x);
+            }
 
             GUIUtility.RotateAroundPivot(angle, pivot);
-            TextureUtility.drawTexture(new Rect(PADDING, PADDING, arrowW, arrowW), arrowTexture, CRHC.COLOR_GRAY_DARK, AspectType.FIT_IN_REGION);
+            TextureUtility.drawTexture(region, arrowTexture, CRHC.COLOR_GRAY_DARK, AspectType.FIT_IN_REGION);
             GUIUtility.RotateAroundPivot(-angle, pivot);
 
             return output;

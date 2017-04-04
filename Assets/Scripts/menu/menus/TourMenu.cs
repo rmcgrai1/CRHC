@@ -25,7 +25,7 @@ public class TourMenu : IMenu {
         float headerFrac = .3f, menuFrac = 1 - headerFrac;
 
         // Draw BG.
-        TextureUtility.drawTexture(new Rect(0, 0, Screen.width, h * headerFrac), bg, AspectType.CROP_IN_REGION);
+        TextureUtility.drawTexture(new Rect(0, 0, w, h * headerFrac), bg, AspectType.CROP_IN_REGION);
 
         GUIX.beginClip(new Rect(0, h * headerFrac, w, h * menuFrac));
         menu.draw(w, h * menuFrac);

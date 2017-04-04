@@ -21,7 +21,7 @@ public class WWWLoader : ILoader {
             reference.setResource(www.text as T, www.bytes);
             ServiceLocator.getILog().println(LogType.IO, "OK!");
         }
-        else if (type == typeof(Texture2D)) {
+        else if (type == typeof(Texture2D)) {            
             ServiceLocator.getILog().print(LogType.IO, "Getting texture from www...");
             reference.setResource(www.texture as T, www.bytes);
             ServiceLocator.getILog().println(LogType.IO, "OK!");

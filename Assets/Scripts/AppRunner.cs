@@ -23,19 +23,17 @@ public class AppRunner : MonoBehaviour {
     private static AppRunner instance;
     private VuforiaManager manager;
 
-    private Vector2 resolution;
-
     private Stack<IMenu> menuStack = new Stack<IMenu>();
     private Server server;
 
     private bool _exitMenu = false;
 
+    private bool isUpright = true;
+
     // Use this for initialization
     IEnumerator Start() {
         instance = this;
         manager = new VuforiaManager(shader);
-
-        resolution = new Vector2(Screen.width, Screen.height);
 
         // Yield until CoroutineManager is instantiated.
         yield return gameObject.AddComponent<CoroutineManager>();
@@ -84,7 +82,22 @@ public class AppRunner : MonoBehaviour {
         if (menuStack.Count > 0) {
             IMenu menu = menuStack.Peek();
             if (menu != null) {
-                menu.draw(Screen.width, Screen.height);
+                float angle = 0, scrW, scrH, xOffset = 0, yOffset = 0;
+                Vector2 pivot = Vector2.zero;
+
+                scrW = getScreenWidth();
+                scrH = getScreenHeight();
+
+                if (!isUpright) {
+                    angle = 90;
+                    yOffset = -scrH;
+                }
+
+                GUIUtility.RotateAroundPivot(angle, pivot);
+                GUI.BeginClip(new Rect(xOffset, yOffset, scrW, scrH));
+                menu.draw(scrW, scrH);
+                GUI.EndClip();
+                GUIUtility.RotateAroundPivot(-angle, pivot);
             }
             manager.OnGUI();
         }
@@ -104,12 +117,20 @@ public class AppRunner : MonoBehaviour {
         }
     }
 
+    public static void setUpright(bool isUpright) {
+        instance.isUpright = isUpright;
+    }
+
+    public static bool getIsUpright() {
+        return instance.isUpright;
+    }
+
     public static float getScreenWidth() {
-        return instance.resolution.x;
+        return (getIsUpright()) ? Screen.width : Screen.height;
     }
 
     public static float getScreenHeight() {
-        return instance.resolution.y;
+        return (getIsUpright()) ? Screen.height : Screen.width;
     }
 
     public static float getScreenWidthInches() {

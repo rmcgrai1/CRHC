@@ -48,7 +48,12 @@ public class Reference<T> : Reference where T : class {
     }
 
     public float getLoadFraction() {
-        return www.progress;
+        if(www != null) {
+            return www.progress;
+        }
+        else {
+            return 1;
+        }
     }
 
     public bool isLoaded() {
@@ -103,6 +108,8 @@ public class Reference<T> : Reference where T : class {
         else {
             data = null;
         }
+
+        www = null;
     }
 
     public delegate void LoadEventDelegate();

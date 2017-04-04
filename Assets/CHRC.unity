@@ -313,6 +313,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shader: {fileID: 10753, guid: 0000000000000000f000000000000000, type: 0}
   doDrawLog: 0
+  doDrawMemory: 1
 --- !u!114 &19
 MonoBehaviour:
   m_ObjectHideFlags: 0

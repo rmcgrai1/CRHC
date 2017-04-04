@@ -77,7 +77,12 @@ namespace generic.mobile {
         }
 
         public Vector2 getDragVector() {
-            return new Vector2(dragVector.x * coolDownFrac, dragVector.y * coolDownFrac);
+            if(AppRunner.getIsUpright()) {
+                return new Vector2(dragVector.x * coolDownFrac, dragVector.y * coolDownFrac);
+            }
+            else {
+                return new Vector2(dragVector.y * coolDownFrac, dragVector.x * coolDownFrac);
+            }
         }
 
         public void clearDragVector() {
@@ -85,7 +90,12 @@ namespace generic.mobile {
         }
 
         public Vector2 getTouchPosition() {
-            return touchPosition;
+            if (AppRunner.getIsUpright()) {
+                return touchPosition;
+            }
+            else {
+                return new Vector2(touchPosition.y, AppRunner.getScreenHeight()-touchPosition.x);
+            }
         }
 
         protected abstract Vector2 queryTouchPosition();

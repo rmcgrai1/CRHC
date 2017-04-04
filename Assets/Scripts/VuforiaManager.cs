@@ -262,6 +262,7 @@ public class VuforiaManager {
 
     public void deactivate() {
         VuforiaBehaviour.Instance.enabled = false;
+        AppRunner.setUpright(true);
     }
 
     public void OnGUI() {
@@ -288,6 +289,7 @@ public class VuforiaManager {
         float s = CRHC.SIZE_VUFORIA_FRAME.getAs(NumberType.PIXELS), p = 30;
         aspect = 1f * imgTex.width / imgTex.height;
 
+        AppRunner.setUpright(aspect < 1);
         if (aspect < 1) {
             scrW = Screen.width;
             scrH = Screen.height;
