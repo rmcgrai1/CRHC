@@ -17,6 +17,9 @@ public class AppRunner : MonoBehaviour {
     [SerializeField]
     private bool doDrawLog;
 
+    [SerializeField]
+    private bool doDrawMemory;
+
     private static AppRunner instance;
     private VuforiaManager manager;
 
@@ -38,6 +41,9 @@ public class AppRunner : MonoBehaviour {
         yield return gameObject.AddComponent<CoroutineManager>();
 
         // Load styles.
+
+        // TODO: Handle a lack of wifi gracefully.
+        // TODO: Speed up app loading overall (compress files?).
         // TODO: FORCE RELOAD!!
         ILoader iLoader = ServiceLocator.getILoader();
         Reference<string> styleText = iLoader.getReference<string>(CachedLoader.SERVER_PATH + "style.json");
@@ -83,12 +89,14 @@ public class AppRunner : MonoBehaviour {
             manager.OnGUI();
         }
 
-        /*Rect topBar = new Rect(0, 0, Screen.width, 20);
-        GUIX.fillRect(topBar, new Color32(0,0,0, 128));
+        if (doDrawMemory) {
+            Rect topBar = new Rect(0, 0, Screen.width, 20);
+            GUIX.fillRect(topBar, new Color32(0, 0, 0, 128));
 
-        long allocMemory = Profiler.GetTotalAllocatedMemory(), totalMemory = Profiler.GetTotalReservedMemory();
+            long allocMemory = Profiler.GetTotalAllocatedMemory(), totalMemory = Profiler.GetTotalReservedMemory();
 
-        GUI.Label(topBar, "Memory: " + (allocMemory / (Math.Pow(10, 6))) + "/" + (totalMemory / (Math.Pow(10, 6))) + " MB");*/
+            GUI.Label(topBar, "Memory: " + (allocMemory / (Math.Pow(10, 6))) + "/" + (totalMemory / (Math.Pow(10, 6))) + " MB");
+        }
 
         ILog log = ServiceLocator.getILog();
         if (doDrawLog && log is OnScreenLog) {

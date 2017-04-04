@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Vuforia;
+using generic.unity;
 
 public class VuforiaManager {
     //private ImageTargetBehaviour imageTargetBehaviour;
@@ -12,18 +13,19 @@ public class VuforiaManager {
     private static VuforiaManager instance;
     private Shader shader;
 
-    private Reference<Texture2D> img, outline, overlay;
-    private GameObject planeGroup, outlinePlane, overlayPlane;
-    private bool isSetup, isOverlaySetup, isMatching, didMatch;
+    private GameObject planeGroup, overlayPlane;
+    private bool isSetup, isMatching, didMatch;
     private float alphaAngle, frameAlpha = 1;
+
     private Experience exp;
 
     private string debugMessage;
 
+    private DefaultTrackableEventThing defaultTracker;
     private ObjectTracker t;
     private DataSet ds;
 
-    private IDictionary<Experience, DataSet> dataSets = new Dictionary<Experience, DataSet>();
+    private IDictionary<Landmark, DataSet> dataSets = new Dictionary<Landmark, DataSet>();
 
     public VuforiaManager(Shader shader) {
         instance = this;
@@ -48,14 +50,16 @@ public class VuforiaManager {
     }
 
     public IEnumerator loadDatasetCoroutine() {
-        while (!isSetup || !exp.getLandmark().getDat().isLoaded() || !exp.getLandmark().getXML().isLoaded()) {
+        Landmark landmark = exp.getLandmark();
+
+        while (!isSetup || !landmark.getDat().isLoaded() || !landmark.getXML().isLoaded()) {
             yield return null;
         }
 
         t = TrackerManager.Instance.GetTracker<ObjectTracker>();
 
-        if (dataSets.ContainsKey(exp)) {
-            ds = dataSets[exp];
+        if (dataSets.ContainsKey(landmark)) {
+            ds = dataSets[landmark];
             debugMessage = "Loaded successfully!";
         }
         else {
@@ -64,47 +68,80 @@ public class VuforiaManager {
             IFileManager iFileManager = ServiceLocator.getIFileManager();
             iFileManager.pushDirectory(iFileManager.getBaseDirectory());
             if (ds.Load(CachedLoader.convertWebToLocalPath(exp.getLandmark().getXML().getPath(), PathType.RELATIVE), VuforiaUnity.StorageType.STORAGE_ABSOLUTE)) {
-                t.Stop();
+                dataSets[landmark] = ds;
+            }
+            else {
+                ds = null;
+            }
 
-                t.ActivateDataSet(ds);
-                t.Start();
+            iFileManager.popDirectory();
+        }
 
-                IEnumerable<TrackableBehaviour> tbs = TrackerManager.Instance.GetStateManager().GetTrackableBehaviours();
-                foreach (TrackableBehaviour tb in tbs) {
-                    // change generic name to include trackable name
-                    if (tb.TrackableName == exp.getId()) {
-                        //TODO: Activate.
+        if (ds != null) {
+            t.Stop();
+            t.ActivateDataSet(ds);
+            t.Start();
 
-                        tb.gameObject.AddComponent<DefaultTrackableEventThing>();
-                        tb.gameObject.AddComponent<TurnOffThing>();
+            IEnumerable<TrackableBehaviour> tbs = TrackerManager.Instance.GetStateManager().GetTrackableBehaviours();
+            foreach (TrackableBehaviour tb in tbs) {
+                // change generic name to include trackable name
+                GameObject tbg = tb.gameObject;
 
-                        GameObject planeGroup = new GameObject("planeGroup");
-                        planeGroup.transform.parent = tb.gameObject.transform;
+                DefaultTrackableEventThing dtet = GameObjectUtility.GetComponent<DefaultTrackableEventThing>(tbg);
+                TurnOffThing tot = GameObjectUtility.GetComponent<TurnOffThing>(tbg);
+
+                if (tb.TrackableName == exp.getId()) {
+                    defaultTracker = dtet;
+                    dtet.gameObject.SetActive(true);
+
+                    if (tb.name != tb.TrackableName) {
+                        tb.name = tb.TrackableName;
+
+                        planeGroup = new GameObject("planeGroup");
+                        planeGroup.transform.parent = tbg.transform;
                         planeGroup.transform.localPosition = new Vector3(0f, 0f, 0f);
                         planeGroup.transform.localRotation = Quaternion.identity;
-                        planeGroup.gameObject.SetActive(true);
 
                         overlayPlane = GameObject.CreatePrimitive(PrimitiveType.Plane);
                         overlayPlane.transform.parent = planeGroup.gameObject.transform;
-
-                        tb.name = tb.TrackableName;
                     }
                     else {
-                        // TODO: Deactivate.
+                        planeGroup = GameObjectUtility.GetChild(tbg, "planeGroup");
+                        overlayPlane = GameObjectUtility.GetChild(tbg, "Plane");
+                    }
+
+                    planeGroup.SetActive(true);
+                }
+                else {
+                    dtet.gameObject.SetActive(true);
+                    GameObject planeGroup = GameObjectUtility.GetChild(tbg, "planeGroup");
+                    if (planeGroup != null) {
+                        planeGroup.SetActive(false);
                     }
                 }
+            }
 
-                debugMessage = "Loaded successfully!";
-            }
-            else {
-                debugMessage = "Failed to load Vuforia!";
-            }
-            iFileManager.popDirectory();
+            debugMessage = "Loaded successfully!";
+        }
+        else {
+            debugMessage = "Failed to load Vuforia!";
         }
     }
 
     private IEnumerator unloadDatasetCoroutine() {
-		isOverlaySetup = false;
+        t.Stop();
+        t.DeactivateDataSet(ds);
+        t.Start();
+
+        if(planeGroup != null) {
+            planeGroup.SetActive(false);
+            planeGroup = null;
+        }
+        if(defaultTracker != null) {
+            defaultTracker.enabled = false;
+            defaultTracker = null;
+        }
+        overlayPlane = null;
         yield return null;
     }
 
@@ -220,31 +257,33 @@ public class VuforiaManager {
 
         VuforiaBehaviour.Instance.enabled = true;
 
-        ILoader loader = ServiceLocator.getILoader();
-        img = loader.load<Texture2D>(exp.getUrl() + "img.jpg");
-        outline = loader.load<Texture2D>(exp.getUrl() + "outlineResized.png");
-        overlay = loader.load<Texture2D>(exp.getUrl() + "overlayResized.png");
-
         alphaAngle = 0;
     }
 
     public void deactivate() {
         VuforiaBehaviour.Instance.enabled = false;
-
-        img.removeOwner();
-        outline.removeOwner();
-        overlay.removeOwner();
-        img = outline = overlay = null;
     }
 
     public void OnGUI() {
-        if (!VuforiaBehaviour.Instance.enabled || !img.isLoaded()) {
+        if (!VuforiaBehaviour.Instance.enabled) {
+            return;
+        }
+
+        if(exp == null) {
+            return;
+        }
+
+        Reference<Texture2D> img, overlay, outline;
+        img = exp.getImg();
+        overlay = exp.getOverlay();
+        outline = exp.getOutline();
+
+        if (!img.isLoaded()) {
             return;
         }
 
         Texture2D imgTex = img.getResource();
 
-        // TODO: Tilt screen.
         float aspect, scrW, scrH, angle, xOffset, yOffset;
         float s = CRHC.SIZE_VUFORIA_FRAME.getAs(NumberType.PIXELS), p = 30;
         aspect = 1f * imgTex.width / imgTex.height;
@@ -303,9 +342,7 @@ public class VuforiaManager {
                 Texture2D tex = overlay.getResource();
                 GUIX.Texture(region, tex);
 
-                if (!isOverlaySetup && overlayPlane != null) {
-					//isOverlaySetup = true;
-
+                if (overlayPlane != null) {
                     MeshRenderer renderer = overlayPlane.GetComponent<MeshRenderer>();
                     renderer.material.shader = shader;
                     renderer.material.mainTexture = tex;

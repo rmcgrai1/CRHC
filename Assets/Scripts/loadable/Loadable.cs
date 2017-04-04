@@ -100,6 +100,10 @@ public abstract class Loadable {
         observers.Remove(observer);
     }
 
+    public void unregisterAll() {
+        observers.Clear();
+    }
+
     private void notifyLoadSuccess() {
         foreach (LoadableObserver observer in observers) {
             observer.onLoadSuccess(this);

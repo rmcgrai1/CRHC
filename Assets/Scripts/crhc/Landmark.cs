@@ -21,6 +21,14 @@ public class Landmark : CrhcFolder<Experience>, IComparable<Landmark> {
         yield return loader.loadCoroutine(xml);
     }
 
+    protected override IEnumerator tryUnload() {
+        foreach (Experience child in this) {
+            child.onLandmarkUnload();
+        }
+
+        yield return base.tryUnload();
+    }
+
     public override void onDispose() {
         base.onDispose();
 
@@ -134,6 +142,8 @@ public class Landmark : CrhcFolder<Experience>, IComparable<Landmark> {
         Row paddingRow = new Row(30);
 
         foreach (Experience child in this) {
+            child.onLandmarkLoad();
+
             // Add image.
             if (inRow == 0) {
                 inRow++;

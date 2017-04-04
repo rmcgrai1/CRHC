@@ -46,6 +46,8 @@ public abstract class CrhcItem : Loadable, IDisposable {
             // TODO: set large fields to null.
             onDispose();
 
+            unregisterAll();
+
             data.ClearItems();
             parent = null;
             data = null;
