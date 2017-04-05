@@ -13,9 +13,9 @@ public class Experience : CrhcItem {
 
     public void onLandmarkLoad() {
         ILoader loader = ServiceLocator.getILoader();
-        img = loader.load<Texture2D>(getUrl() + "img.jpg");
-        outline = loader.load<Texture2D>(getUrl() + "outlineResized.png");
-        overlay = loader.load<Texture2D>(getUrl() + "overlayResized.png");
+        img = loader.load<Texture2D>(getUrl() + "image.jpg");
+        outline = loader.load<Texture2D>(getUrl() + "outline.png");
+        overlay = loader.load<Texture2D>(getUrl() + "overlay.png");
     }
 
     public void onLandmarkUnload() {

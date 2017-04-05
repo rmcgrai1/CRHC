@@ -8,8 +8,6 @@ using Vuforia;
 using generic.unity;
 
 public class VuforiaManager {
-    //private ImageTargetBehaviour imageTargetBehaviour;
-
     private static VuforiaManager instance;
     private Shader shader;
 
@@ -129,6 +127,8 @@ public class VuforiaManager {
     }
 
     private IEnumerator unloadDatasetCoroutine() {
+        didMatch = false;
+
         t.Stop();
         t.DeactivateDataSet(ds);
         t.Start();

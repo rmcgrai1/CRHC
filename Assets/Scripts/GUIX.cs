@@ -15,8 +15,10 @@ public static class GUIX {
     private static Texture2D whiteTexture;
     private static GUIStyle whiteTextureStyle, standardTextureStyle;
 
+    private static Color color;
+
     static GUIX() {
-		clipStack = new Stack<Rect>();
+        clipStack = new Stack<Rect>();
 
         whiteTexture = new Texture2D(1, 1);
         whiteTexture.SetPixel(0, 0, Color.white);
@@ -52,8 +54,8 @@ public static class GUIX {
         endColor();
     }
 
-    public static void fillRect(Rect position) {
-        GUI.Box(position, GUIContent.none, whiteTextureStyle);
+    public static void fillRect(Rect region) {
+        GUI.Box(region, GUIContent.none, whiteTextureStyle);
     }
     public static void fillRect(Rect position, Color color) {
         if (color == CRHC.COLOR_TRANSPARENT) {
@@ -67,7 +69,7 @@ public static class GUIX {
 
     private static void setColor(Color color) {
         //GUI.contentColor = color;
-        GUI.backgroundColor = color;
+        GUIX.color = GUI.backgroundColor = color;
     }
 
     public static void beginColor(Color toColor) {
@@ -132,9 +134,9 @@ public static class GUIX {
         GUI.Button(position, content);
     }
 
-    public static void Texture(Rect position, Texture2D tex) {
+    public static void Texture(Rect region, Texture2D tex) {
         standardTextureStyle.normal.background = tex;
-        GUI.Box(position, GUIContent.none, standardTextureStyle);
+        GUI.Box(region, GUIContent.none, standardTextureStyle);
     }
 
     public static void Label(Rect position, GUIContent content, GUIStyle style) {
@@ -146,7 +148,7 @@ public static class GUIX {
 
         ITouch iTouch = ServiceLocator.getITouch();
 
-		Rect acc = new Rect(getClipRect().position + position.position, position.size);
+        Rect acc = new Rect(getClipRect().position + position.position, position.size);
         return acc.Contains(iTouch.getTouchPosition());
     }
 
@@ -162,54 +164,54 @@ public static class GUIX {
         }
     }
 
-	private static Rect fixRect(Rect inRect) {
-		float x, y, width, height;
-		x = inRect.x;
-		y = inRect.y;
-		width = inRect.width;
-		height = inRect.height;
+    private static Rect fixRect(Rect inRect) {
+        float x, y, width, height;
+        x = inRect.x;
+        y = inRect.y;
+        width = inRect.width;
+        height = inRect.height;
 
-		if (width < 0) {
-			x += width;
-			width = -width;
-		}
-		if (height < 0) {
-			y += height;
-			height = -height;
-		}
+        if (width < 0) {
+            x += width;
+            width = -width;
+        }
+        if (height < 0) {
+            y += height;
+            height = -height;
+        }
 
-		return new Rect(x, y, width, height);
-	}
-
-    public static void beginClip(Rect position) {
-		beginClip(position, Vector2.zero);
+        return new Rect(x, y, width, height);
     }
 
-	public static void beginClip(Rect newClipRect, Vector2 scrollPosition) {
-		newClipRect = fixRect(newClipRect);
-		GUI.BeginClip(newClipRect, scrollPosition, Vector2.zero, false);
+    public static void beginClip(Rect position) {
+        beginClip(position, Vector2.zero);
+    }
 
-		Rect currentClipRect = getClipRect();
-		if (currentClipRect == null) {
-			currentClipRect = new Rect(0, 0, Screen.width, Screen.height);
-		}
+    public static void beginClip(Rect newClipRect, Vector2 scrollPosition) {
+        newClipRect = fixRect(newClipRect);
+        GUI.BeginClip(newClipRect, scrollPosition, Vector2.zero, false);
 
-		newClipRect.position += currentClipRect.position;
-		newClipRect.position += scrollPosition;
+        Rect currentClipRect = getClipRect();
+        if (currentClipRect == null) {
+            currentClipRect = new Rect(0, 0, Screen.width, Screen.height);
+        }
 
-		newClipRect.size = Vector2.Max(Vector2.zero, Vector2.Min(newClipRect.size, newClipRect.size - (currentClipRect.size - newClipRect.position)));
+        newClipRect.position += currentClipRect.position;
+        newClipRect.position += scrollPosition;
 
-		clipStack.Push(newClipRect);
+        newClipRect.size = Vector2.Max(Vector2.zero, Vector2.Min(newClipRect.size, newClipRect.size - (currentClipRect.size - newClipRect.position)));
+
+        clipStack.Push(newClipRect);
     }
 
     public static void endClip() {
-		if (clipStack.Count > 0) {
-			clipStack.Pop();
-			GUI.EndClip();			
-		}
+        if (clipStack.Count > 0) {
+            clipStack.Pop();
+            GUI.EndClip();
+        }
     }
 
-	public static Rect getClipRect() {
-		return (clipStack.Count > 0) ? clipStack.Peek() : default(Rect);
-	}
+    public static Rect getClipRect() {
+        return (clipStack.Count > 0) ? clipStack.Peek() : default(Rect);
+    }
 }

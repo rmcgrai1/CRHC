@@ -36,6 +36,7 @@ public class Reference<T> : Reference where T : class {
     private T data;
     private bool _isLoaded;
     private byte[] byteData;
+    private bool _isValid;
 
     private WWW www;
 
@@ -45,6 +46,9 @@ public class Reference<T> : Reference where T : class {
 
     public void setWWW(WWW www) {
         this.www = www;
+    }
+    public WWW getWWW() {
+        return www;
     }
 
     public float getLoadFraction() {
@@ -65,8 +69,9 @@ public class Reference<T> : Reference where T : class {
     }
 
     public void setResource(T data, byte[] byteData) {
-        if (!isLoaded() && data != null) {
+        if ((!_isLoaded || !_isValid) && data != null) {
             _isLoaded = true;
+            _isValid = true;
             this.data = data;
             this.byteData = byteData;
 
@@ -74,6 +79,10 @@ public class Reference<T> : Reference where T : class {
                 onLoad();
             }
         }
+    }
+
+    public void invalidate() {
+        _isValid = false;
     }
 
     public T getResource() {

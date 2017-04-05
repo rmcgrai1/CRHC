@@ -7,18 +7,20 @@ using UnityEngine.SceneManagement;
 public class CachedLoader : ILoader {
     private WWWLoader loader = new WWWLoader();
     private static readonly string WWW_PREFIX = "file:///";
-	public static readonly string SERVER_PATH = "https://s3.amazonaws.com/crhc/";
-	//public static readonly string SERVER_PATH = "http://chrc.s3-website.us-east-2.amazonaws.com/";
+    public static readonly string SERVER_PATH = "https://s3.amazonaws.com/crhc/";
+    //public static readonly string SERVER_PATH = "http://chrc.s3-website.us-east-2.amazonaws.com/";
     //private static readonly string SERVER_PATH = "http://www3.nd.edu/~rmcgrai1/CRHC/";
 
-	public override IEnumerator loadCoroutine<T>(Reference<T> reference, string path, bool forceReload) {
+    public override IEnumerator loadCoroutine<T>(Reference<T> reference, string path, bool forceReload) {
         IFileManager iFileManager = ServiceLocator.getIFileManager();
+
+        string oriPath = path;
 
         bool fromCache = false;
         string relePath = convertWebToLocalPath(path, PathType.RELATIVE), wwwPath = convertWebToLocalPath(path, PathType.WWW);
 
         // Check if file already exists in local file storage cache.
-		if (relePath != null) {
+        if (relePath != null) {
             ServiceLocator.getILog().print(LogType.IO, "Checking for file at " + relePath + "...");
 
             if (!forceReload && iFileManager.fileExists(relePath)) {
@@ -37,11 +39,33 @@ public class CachedLoader : ILoader {
 
         yield return loader.loadCoroutine(reference, path);
 
+        bool valid = verify(reference);
+
         // Backup file in cache if not from there.
-        if (!fromCache) {
+        if (!valid) {
+            Debug.Log(path + " is not valid!");
+            Debug.Log(reference.getWWW().text);
+
+            if(fromCache) {
+                reference.invalidate();
+                yield return loadCoroutine(reference, oriPath, true);
+            }
+        }
+        else if (!fromCache) {
             ServiceLocator.getILog().println(LogType.IO, "Backing up " + typeof(T) + " at " + relePath + "...");
             reference.save(relePath);
         }
+    }
+
+    public static bool verify<T>(Reference<T> refer) where T : class {
+        WWW www = refer.getWWW();
+
+        /*string s = www.text;
+        if(s != null) {
+            return (s[0] != '<');
+        }*/
+
+        return true;
     }
 
     public static string convertWebToLocalPath(string path, PathType type) {

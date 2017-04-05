@@ -261,7 +261,7 @@ public class Landmark : CrhcFolder<Experience>, IComparable<Landmark> {
         private Experience exp;
         private Reference<Texture2D> tex;
 
-        public ARButton(Experience exp) : base(exp.getUrl() + "img.jpg") {
+        public ARButton(Experience exp) : base(exp.getUrl() + "image.jpg") {
             this.exp = exp;
             tex = ServiceLocator.getILoader().load<Texture2D>(CachedLoader.SERVER_PATH + "icons/ar_icon.png");
         }
