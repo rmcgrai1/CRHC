@@ -253,11 +253,13 @@ public class VuforiaManager {
     }
 
     public void activate(Experience exp) {
-        this.exp = exp;
+        if(!VuforiaBehaviour.Instance.enabled) {
+            this.exp = exp;
 
-        VuforiaBehaviour.Instance.enabled = true;
+            VuforiaBehaviour.Instance.enabled = true;
 
-        alphaAngle = 0;
+            alphaAngle = 0;
+        }
     }
 
     public void deactivate() {

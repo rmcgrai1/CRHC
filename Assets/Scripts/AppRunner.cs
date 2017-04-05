@@ -26,7 +26,9 @@ public class AppRunner : MonoBehaviour {
     private Stack<IMenu> menuStack = new Stack<IMenu>();
     private Server server;
 
-    private bool _exitMenu = false;
+    // TODO: Prevent messy stuff from happening w/ race conditions.
+    private bool _enterMenu = false, _exitMenu = false;
+    private IMenu nextMenu;
 
     private bool isUpright = true;
 
@@ -71,17 +73,31 @@ public class AppRunner : MonoBehaviour {
         // TODO: REMOVE ME
         ServiceLocator.getITouch().OnGUI();
 
-        if (_exitMenu) {
-            _exitMenu = false;
-
-            IMenu menu = instance.menuStack.Pop();
-            menu.Dispose();
-            menuStack.Peek().reset();
-        }
-
         if (menuStack.Count > 0) {
             IMenu menu = menuStack.Peek();
+
             if (menu != null) {
+                if (_enterMenu) {
+                    if (menu.exit(false)) {
+                        instance.menuStack.Push(nextMenu);
+                        instance.menuStack.Peek().reset();
+                        _enterMenu = false;
+                    }
+                }
+                else if (_exitMenu) {
+                    if (menu.exit(true)) {
+                        menu.Dispose();
+                        menuStack.Pop();
+
+                        menu = menuStack.Peek();
+                        menu.reset();
+                        _exitMenu = false;
+                    }
+                }
+                else {
+                    menu.enter();
+                }
+
                 float angle = 0, scrW, scrH, xOffset = 0, yOffset = 0;
                 Vector2 pivot = Vector2.zero;
 
@@ -142,8 +158,14 @@ public class AppRunner : MonoBehaviour {
     }
 
     public static void enterMenu(IMenu menu) {
-        instance.menuStack.Push(menu);
-        instance.menuStack.Peek().reset();
+        if (instance.menuStack.Count == 0) {
+            instance.menuStack.Push(menu);
+            instance.menuStack.Peek().reset();
+        }
+        else {
+            instance._enterMenu = true;
+            instance.nextMenu = menu;
+        }
     }
 
     public static void exitMenu() {

@@ -8,10 +8,52 @@ public class FadeInMenu : IMenu {
     private IMenu menu;
     private float fadeInAmount = 0, fadeSpeed;
     private Color color;
+    private float fadeDis;
+    private bool hasEntered = false, isClosing = false;
 
-	public FadeInMenu(IMenu menu, float fadeInSpeed) {
+    public FadeInMenu(IMenu menu, float fadeInSpeed) {
         this.menu = menu;
         this.fadeSpeed = fadeInSpeed;
+    }
+
+    public override bool enter() {
+        bool val = false;
+
+        if(fadeDis == 0) {
+            return menu.enter();
+        }
+
+        float fadeInDelta = ((1 - fadeInAmount) / fadeSpeed) * Time.fixedDeltaTime;
+        if (fadeInDelta * fadeDis < .1) {
+            fadeInAmount = 1;
+            hasEntered = val = true;
+        }
+        else {
+            fadeInAmount += fadeInDelta;
+        }
+
+        return menu.enter() && val;
+    }
+
+    public override bool exit(bool isClosing) {
+        this.isClosing = isClosing;
+
+        bool val = false;
+
+        if (fadeDis == 0) {
+            return menu.exit(isClosing);
+        }
+
+        float fadeInDelta = ((0 - fadeInAmount) / fadeSpeed) * Time.fixedDeltaTime;
+        if (- fadeInDelta * fadeDis < Time.fixedDeltaTime) {
+            fadeInAmount = 0;
+            val = true;
+        }
+        else {
+            fadeInAmount += fadeInDelta;
+        }
+
+        return menu.exit(isClosing) && val;
     }
 
     public override void addRow(IRow row) {
@@ -23,26 +65,33 @@ public class FadeInMenu : IMenu {
         // TODO: Incorporate deltaTime.
         // TODO: Make smooth deltaTime variables.
 
-        float fadeDis = menu.getHeight(w);
-
-		float fadeInDelta = ((1 - fadeInAmount) / fadeSpeed) * Time.fixedDeltaTime;
-		if (fadeInDelta * fadeDis < Time.fixedDeltaTime) {
-			fadeInAmount = 1;
-		} else {
-			fadeInAmount += fadeInDelta;
-		}
+        //float fadeDis = menu.getHeight(w);
+        fadeDis = w;
 
         GUIX.fillRect(new Rect(0, 0, w, h), color);
         GUIX.beginOpacity(fadeInAmount);
 
 
-		float fadeY, menuH;
+        /*float fadeY, menuH;
 		fadeY = -fadeDis * (1 - fadeInAmount);
 		menuH = h - fadeY;
-		Rect menuRect = new Rect(0, fadeY, w, menuH);
+		Rect menuRect = new Rect(0, fadeY, w, menuH);*/
+        float fadeX, menuH;
+        menuH = h;
 
-		GUIX.beginClip(menuRect);
-		menu.draw(w, menuH);
+        Rect menuRect;
+
+        if(!hasEntered || isClosing) {
+            fadeX = -fadeDis * (1 - fadeInAmount);
+            menuRect = new Rect(fadeX, 0, w, menuH);
+        }
+        else {
+            fadeX = fadeDis * (1 - fadeInAmount);
+            menuRect = new Rect(fadeX, 0, w, menuH);
+        }
+
+        GUIX.beginClip(menuRect);
+        menu.draw(w, menuH);
         GUIX.endClip();
         GUIX.endOpacity();
     }

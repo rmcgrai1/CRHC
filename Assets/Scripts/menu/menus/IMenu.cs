@@ -14,6 +14,9 @@ public abstract class IMenu : IDisposable {
     #region IDisposable Support
     private bool disposedValue = false; // To detect redundant calls
 
+    public abstract bool enter();
+    public abstract bool exit(bool isClosing);
+
     protected virtual void Dispose(bool disposing) {
         if (!disposedValue) {
             if (disposing) {

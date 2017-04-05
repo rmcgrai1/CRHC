@@ -13,6 +13,9 @@ public class TourMenu : IMenu {
         bg = loader.load<Texture2D>(bgPath);
     }
 
+    public override bool enter() { return menu.enter(); }
+    public override bool exit(bool isClosing) { return menu.exit(isClosing); }
+
     public override void addRow(IRow row) {
         menu.addRow(row);
     }

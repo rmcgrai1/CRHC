@@ -190,7 +190,7 @@ public class Landmark : CrhcFolder<Experience>, IComparable<Landmark> {
 
         fadeInMenu.setColor(CRHC.COLOR_BLUE_LIGHT);
 
-        return fadeInMenu;
+        return new BlackoutTransitionMenu(fadeInMenu, CRHC.SPEED_FADE_IN);
     }
 
     public int CompareTo(Landmark other) {

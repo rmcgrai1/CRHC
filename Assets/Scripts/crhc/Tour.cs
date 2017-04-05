@@ -183,7 +183,7 @@ public class Tour : CrhcFolder<Landmark> {
         IMenu fadeInMenu = new FadeInMenu(scrollMenu, CRHC.SPEED_FADE_IN);
         fadeInMenu.setColor(CRHC.COLOR_GRAY_DARK);
 
-        return new TourMenu(fadeInMenu, getUrl() + "header.jpg");
+        return new BlackoutTransitionMenu(new TourMenu(fadeInMenu, getUrl() + "header.jpg"), CRHC.SPEED_FADE_IN);
     }
 
     private class AudioButton : ImageItem {

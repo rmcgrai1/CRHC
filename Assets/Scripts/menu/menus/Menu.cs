@@ -8,6 +8,9 @@ public class Menu : IMenu {
     private IList<IRow> rows = new List<IRow>();
     private Color color;
 
+    public override bool enter() { return true; }
+    public override bool exit(bool isClosing) { return true; }
+
     public override void addRow(IRow row) {
         rows.Add(row);
     }
