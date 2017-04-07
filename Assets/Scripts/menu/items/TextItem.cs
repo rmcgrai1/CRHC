@@ -25,7 +25,7 @@ public class TextItem : IItem {
         Rect rect;
         rect = new Rect(0, 0, w, h);
 
-        GUIX.Label(rect, content, style);
+        GUIX.drawLabel(rect, content, style);
 
         return false;
     }

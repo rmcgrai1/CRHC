@@ -44,28 +44,9 @@ public class PaneRow : IRow {
         float headH = headRow.getPixelHeight(w);
         float padding = CRHC.PADDING_H.getAs(NumberType.PIXELS), s = .6f, arrowW = padding*s;
         Rect arrowRect = new Rect(padding*(1-s)/2, headH/2 - arrowW/2, arrowW, arrowW);
-
-        Vector2 regionCenter = arrowRect.center;
-        Vector2 pivot;
-        if (AppRunner.getIsUpright()) {
-            pivot = regionCenter;
-        }
-        else {
-            // TODO: Figure out why this isn't working.
-
-            Vector2 clipPos = GUIX.getClipRect().position;
-            float scrH = AppRunner.getScreenHeight(), cX, cY, pX, pY;
-            cX = regionCenter.x + clipPos.y;
-            cY = regionCenter.y;
-            pivot = ServiceLocator.getITouch().getTouchPosition();//new Vector2(scrH - cY, scrH + cX);
-        }
-
         float angle = 90 * openFrac;
 
-
-        GUIUtility.RotateAroundPivot(angle, pivot);
-        TextureUtility.drawTexture(arrowRect, arrowTexture, CRHC.COLOR_GRAY_DARK, AspectType.FIT_IN_REGION);
-        GUIUtility.RotateAroundPivot(-angle, pivot);
+        TextureUtility.drawTexture(arrowRect, arrowTexture, CRHC.COLOR_GRAY_DARK, AspectType.FIT_IN_REGION, angle);
 
         float h = subMenu.getHeight(w) * openFrac;
         if (h > .01) {

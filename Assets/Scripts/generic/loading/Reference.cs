@@ -38,22 +38,19 @@ public class Reference<T> : Reference where T : class {
     private byte[] byteData;
     private bool _isValid;
 
-    private WWW www;
+    private LoadOperation loadOperation;
 
     public Reference(string path) {
         this.path = path;
     }
 
-    public void setWWW(WWW www) {
-        this.www = www;
-    }
-    public WWW getWWW() {
-        return www;
+    public void setLoadOperation(LoadOperation loadOperation) {
+        this.loadOperation = loadOperation;
     }
 
     public float getLoadFraction() {
-        if(www != null) {
-            return www.progress;
+        if(loadOperation != null) {
+            return loadOperation.getProgress();
         }
         else {
             return 1;
@@ -118,7 +115,7 @@ public class Reference<T> : Reference where T : class {
             data = null;
         }
 
-        www = null;
+        loadOperation = null;
     }
 
     public delegate void LoadEventDelegate();

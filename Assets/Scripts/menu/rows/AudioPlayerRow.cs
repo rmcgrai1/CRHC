@@ -108,7 +108,7 @@ public class AudioPlayerRow : IRow {
 
         if (hasWaveformTexture) {
             Rect region = new Rect(padding, 0, w, h);
-            GUIX.Texture(region, waveformTexture);
+            GUIX.drawTexture(region, waveformTexture);
 
             ITouch iTouch = ServiceLocator.getITouch();
             if (GUIX.isTouchInsideRect(region)) {

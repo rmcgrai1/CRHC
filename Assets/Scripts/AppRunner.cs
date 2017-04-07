@@ -109,11 +109,11 @@ public class AppRunner : MonoBehaviour {
                     yOffset = -scrH;
                 }
 
-                GUIUtility.RotateAroundPivot(angle, pivot);
+                GUIX.beginRotate(pivot, angle);
                 GUI.BeginClip(new Rect(xOffset, yOffset, scrW, scrH));
                 menu.draw(scrW, scrH);
                 GUI.EndClip();
-                GUIUtility.RotateAroundPivot(-angle, pivot);
+                GUIX.endRotate();
             }
             manager.OnGUI();
         }

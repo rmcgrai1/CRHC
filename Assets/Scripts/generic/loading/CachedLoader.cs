@@ -5,7 +5,8 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class CachedLoader : ILoader {
-    private WWWLoader loader = new WWWLoader();
+    private WWWLoader wwwLoader = new WWWLoader();
+    private ResourceLoader resourceLoader = new ResourceLoader();
     private static readonly string WWW_PREFIX = "file:///";
     public static readonly string SERVER_PATH = "https://s3.amazonaws.com/crhc/";
     //public static readonly string SERVER_PATH = "http://chrc.s3-website.us-east-2.amazonaws.com/";
@@ -16,50 +17,54 @@ public class CachedLoader : ILoader {
 
         string oriPath = path;
 
-        bool fromCache = false;
-        string relePath = convertWebToLocalPath(path, PathType.RELATIVE), wwwPath = convertWebToLocalPath(path, PathType.WWW);
+        SourceType defaultSourceType = SourceType.DEFAULT,
+            sourceType = defaultSourceType;
+        string 
+            relePath = convertWebToLocalPath(path, PathType.RELATIVE), 
+            wwwPath = convertWebToLocalPath(path, PathType.WWW),
+            defaultPath = convertWebToLocalPath(path, PathType.RESOURCES);
 
         // Check if file already exists in local file storage cache.
         if (relePath != null) {
             ServiceLocator.getILog().print(LogType.IO, "Checking for file at " + relePath + "...");
 
             if (!forceReload && iFileManager.fileExists(relePath)) {
-                fromCache = true;
+                sourceType = SourceType.CACHE;
                 path = wwwPath;
                 ServiceLocator.getILog().println(LogType.IO, "Using cache!");
             }
             else {
-                fromCache = false;
+                sourceType = defaultSourceType;
                 ServiceLocator.getILog().println(LogType.IO, "Not in cache.");
             }
         }
         else {
-            fromCache = true;
+            sourceType = SourceType.DEFAULT;
         }
 
-        yield return loader.loadCoroutine(reference, path);
+        if(sourceType == SourceType.DEFAULT) {
+            yield return resourceLoader.loadCoroutine(reference, defaultPath);
+        }
+        else {
+            yield return wwwLoader.loadCoroutine(reference, path);
+        }
 
         bool valid = verify(reference);
 
         // Backup file in cache if not from there.
         if (!valid) {
-            Debug.Log(path + " is not valid!");
-            Debug.Log(reference.getWWW().text);
-
-            if(fromCache) {
+            if(sourceType == SourceType.CACHE) {
                 reference.invalidate();
                 yield return loadCoroutine(reference, oriPath, true);
             }
         }
-        else if (!fromCache) {
+        else if (sourceType == SourceType.WEB) {
             ServiceLocator.getILog().println(LogType.IO, "Backing up " + typeof(T) + " at " + relePath + "...");
             reference.save(relePath);
         }
     }
 
     public static bool verify<T>(Reference<T> refer) where T : class {
-        WWW www = refer.getWWW();
-
         /*string s = www.text;
         if(s != null) {
             return (s[0] != '<');
@@ -71,6 +76,7 @@ public class CachedLoader : ILoader {
     public static string convertWebToLocalPath(string path, PathType type) {
         // Check if file already exists in local file storage cache.
         bool isHTTP, isWWW;
+        string oriPath = path;
 
         if (isHTTP = path.StartsWith("http://")) {
             path = path.Substring(7);
@@ -88,15 +94,24 @@ public class CachedLoader : ILoader {
         // If path leads to a website, then convert cache path to a relevant file path!
         if (isHTTP || isWWW) {
             // TODO: Change to double-dashes for certain devices?
-            path = "cache/" + path;
-
             string cwd = ServiceLocator.getIFileManager().getBaseDirectory();
 
             if (type == PathType.ABSOLUTE) {
+                path = "cache/" + path;
                 path = cwd + path;
             }
             else if (type == PathType.WWW) {
+                path = "cache/" + path;
                 path = WWW_PREFIX + cwd + path;
+            }
+            else if(type == PathType.RESOURCES) {
+                path = "DefaultServer/" + oriPath.Replace(SERVER_PATH, "");
+
+                // Remove extension.
+                path = path.Substring(0, path.LastIndexOf('.'));
+            }
+            else {
+                path = "cache/" + path;
             }
 
             return path;
@@ -116,5 +131,9 @@ public class CachedLoader : ILoader {
 }
 
 public enum PathType {
-    WWW, RELATIVE, ABSOLUTE
+    WWW, RELATIVE, ABSOLUTE, RESOURCES
+}
+
+public enum SourceType {
+    WEB, CACHE, DEFAULT
 }

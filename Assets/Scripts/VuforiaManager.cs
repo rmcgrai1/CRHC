@@ -318,12 +318,12 @@ public class VuforiaManager {
         float a = .5f + .5f * Mathf.Sin(alphaAngle);
 
         Vector2 pivot = Vector2.zero;
-        GUIUtility.RotateAroundPivot(angle, pivot);
+        GUIX.beginRotate(pivot, angle);
         GUIX.beginOpacity(frameAlpha);
 
         if (img != null) {
             if (img.isLoaded()) {
-                GUIX.Texture(region, img.getResource());
+                GUIX.drawTexture(region, img.getResource());
             }
         }
 
@@ -335,7 +335,7 @@ public class VuforiaManager {
 
         if (outline != null) {
             if (outline.isLoaded()) {
-                GUIX.Texture(region, outline.getResource());
+                GUIX.drawTexture(region, outline.getResource());
             }
         }
         GUIX.endOpacity();
@@ -344,7 +344,7 @@ public class VuforiaManager {
         if (overlay != null) {
             if (overlay.isLoaded()) {
                 Texture2D tex = overlay.getResource();
-                GUIX.Texture(region, tex);
+                GUIX.drawTexture(region, tex);
 
                 if (overlayPlane != null) {
                     MeshRenderer renderer = overlayPlane.GetComponent<MeshRenderer>();
@@ -380,6 +380,6 @@ public class VuforiaManager {
 
         GUIX.fillRect(new Rect(x, y, w, h), Color.black);
         GUI.Label(new Rect(x, y, w, h), debugMessage);
-        GUIUtility.RotateAroundPivot(-angle, pivot);
+        GUIX.endRotate();
     }
 }

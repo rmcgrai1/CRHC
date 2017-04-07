@@ -3,19 +3,71 @@ using generic.mobile;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using UnityEngine;
 using UnityEngine.Rendering;
 
 public static class GUIX {
+    private static IList<GUIAction> actionList = new List<GUIAction>();
     private static Stack<Rect> clipStack;
-
     private static Stack<Color> colorStack;
 
     private static Texture2D whiteTexture;
     private static GUIStyle whiteTextureStyle, standardTextureStyle;
 
     private static Color color;
+
+    private abstract class GUIAction {
+        public abstract void undo();
+        public abstract void redo();
+    }
+
+    private class GUIClipAction : GUIAction {
+        private Rect clipRect;
+        private Vector2 scrollPosition;
+
+        public GUIClipAction(Rect clipRect, Vector2 scrollPosition) {
+            this.clipRect = clipRect;
+            this.scrollPosition = scrollPosition;
+        }
+
+        public override void undo() {
+            GUI.EndClip();
+        }
+        public override void redo() {
+            GUI.BeginClip(clipRect, scrollPosition, Vector2.zero, false);
+        }
+    }
+
+    private class GUIRotateAction : GUIAction {
+        private Vector2 pivot;
+        private float angle;
+
+        public GUIRotateAction(Vector2 pivot, float angle) {
+            this.pivot = pivot;
+            this.angle = angle;
+        }
+
+        public override void undo() {
+            GUIUtility.RotateAroundPivot(-angle, pivot);
+        }
+        public override void redo() {
+            GUIUtility.RotateAroundPivot(angle, pivot);
+        }
+    }
+
+    public static void undoAllActions() {
+        for (int i = actionList.Count - 1; i >= 0; i--) {
+            actionList[i].undo();
+        }
+    }
+
+    public static void redoAllActions() {
+        for (int i = 0; i < actionList.Count; i++) {
+            actionList[i].redo();
+        }
+    }
 
     static GUIX() {
         clipStack = new Stack<Rect>();
@@ -130,16 +182,34 @@ public static class GUIX {
         endColor();
     }
 
-    public static void Button(Rect position, GUIContent content) {
+    public static void drawButton(Rect position, GUIContent content) {
         GUI.Button(position, content);
     }
 
-    public static void Texture(Rect region, Texture2D tex) {
+    public static void drawTexture(Rect region, Texture2D tex) {
         standardTextureStyle.normal.background = tex;
         GUI.Box(region, GUIContent.none, standardTextureStyle);
     }
 
-    public static void Label(Rect position, GUIContent content, GUIStyle style) {
+    public static void drawTexture(Rect region, Texture2D tex, Rect texCoord) {
+        float
+            tW = tex.width, tH = tex.height,
+            rW = region.width, rH = region.height,
+            tCW = texCoord.width, tCH = texCoord.height,
+            bRW = rW / tCW, bRH = rH / tCH,
+            xS = bRW / rW, yS = bRH / rH;
+        Rect bigRegion = new Rect(-texCoord.x * bRW, -texCoord.y * bRH, bRW, bRH);
+
+        beginClip(region);
+        drawTexture(bigRegion, tex);
+        endClip();
+    }
+
+    public static void drawTexture(Vector2 position, Texture2D tex) {
+        drawTexture(new Rect(position, new Vector2(tex.width, tex.height)), tex);
+    }
+
+    public static void drawLabel(Rect position, GUIContent content, GUIStyle style) {
         GUI.Label(position, content, style);
     }
 
@@ -188,8 +258,11 @@ public static class GUIX {
     }
 
     public static void beginClip(Rect newClipRect, Vector2 scrollPosition) {
+        GUIAction action = new GUIClipAction(newClipRect, scrollPosition);
+        action.redo();
+        actionList.Add(action);
+
         newClipRect = fixRect(newClipRect);
-        GUI.BeginClip(newClipRect, scrollPosition, Vector2.zero, false);
 
         Rect currentClipRect = getClipRect();
         if (currentClipRect == null) {
@@ -205,10 +278,29 @@ public static class GUIX {
     }
 
     public static void endClip() {
+        int lastI = actionList.Count - 1;
+
+        GUIAction action = actionList[lastI];
+        action.undo();
+        actionList.RemoveAt(lastI);
+
         if (clipStack.Count > 0) {
             clipStack.Pop();
-            GUI.EndClip();
         }
+    }
+
+    public static void beginRotate(Vector2 pivot, float angle) {
+        GUIAction action = new GUIRotateAction(pivot, angle);
+        action.redo();
+        actionList.Add(action);
+    }
+
+    public static void endRotate() {
+        int lastI = actionList.Count - 1;
+
+        GUIAction action = actionList[lastI];
+        action.undo();
+        actionList.RemoveAt(lastI);
     }
 
     public static Rect getClipRect() {

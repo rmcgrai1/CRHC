@@ -223,22 +223,7 @@ public class Landmark : CrhcFolder<Experience>, IComparable<Landmark> {
 
             //Vector2 pivot = ServiceLocator.getITouch().getTouchPosition(); // new Vector2(PADDING + arrowW / 2, AppRunner.getScreenWidth()-PADDING + arrowW / 2);
             Rect region = new Rect(PADDING, PADDING, arrowW, arrowW);
-
-            float scrH = AppRunner.getScreenHeight();
-
-            //return new Vector2(touchPosition.y, AppRunner.getScreenHeight() - touchPosition.x);
-            Vector2 regionCenter = region.center;
-            Vector2 pivot;
-            if (AppRunner.getIsUpright()) {
-                pivot = regionCenter;
-            }
-            else {
-                pivot = new Vector2(scrH - regionCenter.y, scrH + regionCenter.x);
-            }
-
-            GUIUtility.RotateAroundPivot(angle, pivot);
-            TextureUtility.drawTexture(region, arrowTexture, CRHC.COLOR_GRAY_DARK, AspectType.FIT_IN_REGION);
-            GUIUtility.RotateAroundPivot(-angle, pivot);
+            TextureUtility.drawTexture(region, arrowTexture, CRHC.COLOR_GRAY_DARK, AspectType.FIT_IN_REGION, angle);
 
             return output;
         }
@@ -274,7 +259,7 @@ public class Landmark : CrhcFolder<Experience>, IComparable<Landmark> {
             bool output = base.draw(w, h);
 
             if (tex.isLoaded()) {
-                GUIX.Texture(new Rect(0, 0, w / 4, w / 4), tex.getResource());
+                GUIX.drawTexture(new Rect(0, 0, w / 4, w / 4), tex.getResource());
             }
 
             return output;
