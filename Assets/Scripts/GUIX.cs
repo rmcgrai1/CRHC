@@ -11,6 +11,7 @@ using UnityEngine.Rendering;
 public static class GUIX {
     private static IList<GUIAction> actionList = new List<GUIAction>();
     private static Stack<Rect> clipStack;
+    private static Stack<Rect> localClipStack;
     private static Stack<Color> colorStack;
 
     private static Texture2D whiteTexture;
@@ -71,6 +72,7 @@ public static class GUIX {
 
     static GUIX() {
         clipStack = new Stack<Rect>();
+        localClipStack = new Stack<Rect>();
 
         whiteTexture = new Texture2D(1, 1);
         whiteTexture.SetPixel(0, 0, Color.white);
@@ -106,8 +108,58 @@ public static class GUIX {
         endColor();
     }
 
-    public static void fillRect(Rect region) {
+    public static void _fillRect(Rect region) {
         GUI.Box(region, GUIContent.none, whiteTextureStyle);
+    }
+
+    public static void _fillRect(Rect position, Color color) {
+        if (color == CRHC.COLOR_TRANSPARENT) {
+            return;
+        }
+
+        beginColor(color);
+        _fillRect(position);
+        endColor();
+    }
+
+    public static void fillRect(Rect region) {
+        _fillRect(region);
+        return;
+
+        float sW = AppRunner.getScreenWidth(), sH = AppRunner.getScreenHeight();
+        float cX = 0, cY = 0, cW = sW, cH = sH, d = GUI.depth;
+
+        if (clipStack.Count > 0) {
+            Rect clipRect = clipStack.Peek();
+            cX = clipRect.x;
+            cY = clipRect.y;
+            cW = clipRect.width;
+            cH = clipRect.height;
+        }
+
+
+        float
+            x = cX + region.x,
+            y = cY + region.y,
+            w = region.width,
+            h = region.height;
+
+        x /= sW;
+        y = 1 - y / sH;
+        w /= sW;
+        h /= -sH;
+
+        GL.LoadOrtho();
+        GL.Begin(GL.QUADS);
+
+        float f = 8;
+
+        GL.Color(new Color(color.r * f, color.g * f, color.b * f));
+        GL.Vertex3(x, y, d);
+        GL.Vertex3(x + w, y, d);
+        GL.Vertex3(x + w, y + h, d);
+        GL.Vertex3(x, y + h, d);
+        GL.End();
     }
     public static void fillRect(Rect position, Color color) {
         if (color == CRHC.COLOR_TRANSPARENT) {
@@ -115,12 +167,11 @@ public static class GUIX {
         }
 
         beginColor(color);
-        fillRect(position);
+        _fillRect(position);
         endColor();
     }
 
     private static void setColor(Color color) {
-        //GUI.contentColor = color;
         GUIX.color = GUI.backgroundColor = color;
     }
 
@@ -180,10 +231,6 @@ public static class GUIX {
 
     public static void endOpacity() {
         endColor();
-    }
-
-    public static void drawButton(Rect position, GUIContent content) {
-        GUI.Button(position, content);
     }
 
     public static void drawTexture(Rect region, Texture2D tex) {
@@ -262,6 +309,8 @@ public static class GUIX {
         action.redo();
         actionList.Add(action);
 
+        localClipStack.Push(newClipRect);
+
         newClipRect = fixRect(newClipRect);
 
         Rect currentClipRect = getClipRect();
@@ -272,7 +321,17 @@ public static class GUIX {
         newClipRect.position += currentClipRect.position;
         newClipRect.position += scrollPosition;
 
-        newClipRect.size = Vector2.Max(Vector2.zero, Vector2.Min(newClipRect.size, newClipRect.size - (currentClipRect.size - newClipRect.position)));
+        float cW = currentClipRect.width, cH = currentClipRect.height,
+            nX = newClipRect.x, nY = newClipRect.y,
+            nW = newClipRect.width, nH = newClipRect.height,
+            dX = (nX + nW) - cW, dY = (nY + nH) - cH;
+
+        if (dX > 0) {
+            nW -= dX;
+        }
+        if (dY > 0) {
+            nH -= dY;
+        }
 
         clipStack.Push(newClipRect);
     }
@@ -286,6 +345,7 @@ public static class GUIX {
 
         if (clipStack.Count > 0) {
             clipStack.Pop();
+            localClipStack.Pop();
         }
     }
 
@@ -305,5 +365,9 @@ public static class GUIX {
 
     public static Rect getClipRect() {
         return (clipStack.Count > 0) ? clipStack.Peek() : default(Rect);
+    }
+
+    public static Rect getLocalClipRect() {
+        return (localClipStack.Count > 0) ? localClipStack.Peek() : default(Rect);
     }
 }

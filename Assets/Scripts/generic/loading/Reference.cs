@@ -104,12 +104,17 @@ public class Reference<T> : Reference where T : class {
 
         byteData = null;
 
-        Type type = typeof(T);
-        if (type == typeof(Texture2D)) {
-            UnityEngine.Object.Destroy(data as Texture2D);
-        }
-        else if (type == typeof(AudioClip)) {
-            UnityEngine.Object.Destroy(data as AudioClip);
+        if(loadOperation.getLoadType() == LoadType.WWW) {
+            Type type = typeof(T);
+            if (type == typeof(Texture2D)) {
+                UnityEngine.Object.Destroy(data as Texture2D);
+            }
+            else if (type == typeof(AudioClip)) {
+                UnityEngine.Object.Destroy(data as AudioClip);
+            }
+            else {
+                data = null;
+            }
         }
         else {
             data = null;

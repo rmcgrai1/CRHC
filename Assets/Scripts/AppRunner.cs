@@ -13,12 +13,16 @@ public class AppRunner : MonoBehaviour {
 
     [SerializeField]
     private Shader shader;
+    private Material material;
 
     [SerializeField]
     private bool doDrawLog;
 
     [SerializeField]
     private bool doDrawMemory;
+
+    [SerializeField]
+    private bool doDrawFPS;
 
     private static AppRunner instance;
     private VuforiaManager manager;
@@ -36,6 +40,7 @@ public class AppRunner : MonoBehaviour {
     IEnumerator Start() {
         instance = this;
         manager = new VuforiaManager(shader);
+        material = new Material(shader);
 
         // Yield until CoroutineManager is instantiated.
         yield return gameObject.AddComponent<CoroutineManager>();
@@ -118,13 +123,18 @@ public class AppRunner : MonoBehaviour {
             manager.OnGUI();
         }
 
-        if (doDrawMemory) {
+        if (doDrawMemory || doDrawFPS) {
             Rect topBar = new Rect(0, 0, Screen.width, 20);
-            GUIX.fillRect(topBar, new Color32(0, 0, 0, 128));
+            GUIX._fillRect(topBar, new Color32(0, 0, 0, 128));
 
             long allocMemory = Profiler.GetTotalAllocatedMemory(), totalMemory = Profiler.GetTotalReservedMemory();
 
-            GUI.Label(topBar, "Memory: " + (allocMemory / (Math.Pow(10, 6))) + "/" + (totalMemory / (Math.Pow(10, 6))) + " MB");
+            if(doDrawMemory) {
+                GUI.Label(topBar, "Memory: " + (allocMemory / (Math.Pow(10, 6))) + "/" + (totalMemory / (Math.Pow(10, 6))) + " MB");
+            }
+            else {
+                GUI.Label(topBar, "FPS: " + (1/Time.deltaTime));
+            }
         }
 
         ILog log = ServiceLocator.getILog();
@@ -178,5 +188,9 @@ public class AppRunner : MonoBehaviour {
 
     public static VuforiaManager getVuforiaManager() {
         return instance.manager;
+    }
+
+    public static Material getMaterial() {
+        return instance.material;
     }
 }

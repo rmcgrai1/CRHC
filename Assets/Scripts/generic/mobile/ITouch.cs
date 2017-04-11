@@ -81,7 +81,7 @@ namespace generic.mobile {
                 return new Vector2(dragVector.x * coolDownFrac, dragVector.y * coolDownFrac);
             }
             else {
-                return new Vector2(dragVector.y * coolDownFrac, dragVector.x * coolDownFrac);
+                return new Vector2(dragVector.y * coolDownFrac, - dragVector.x * coolDownFrac);
             }
         }
 

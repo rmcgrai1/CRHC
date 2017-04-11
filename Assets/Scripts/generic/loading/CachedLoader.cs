@@ -12,13 +12,14 @@ public class CachedLoader : ILoader {
     //public static readonly string SERVER_PATH = "http://chrc.s3-website.us-east-2.amazonaws.com/";
     //private static readonly string SERVER_PATH = "http://www3.nd.edu/~rmcgrai1/CRHC/";
 
+    private SourceType defaultSourceType = SourceType.WEB; //SourceType.DEFAULT;
+
     public override IEnumerator loadCoroutine<T>(Reference<T> reference, string path, bool forceReload) {
         IFileManager iFileManager = ServiceLocator.getIFileManager();
 
         string oriPath = path;
 
-        SourceType defaultSourceType = SourceType.DEFAULT,
-            sourceType = defaultSourceType;
+        SourceType sourceType = defaultSourceType;
         string 
             relePath = convertWebToLocalPath(path, PathType.RELATIVE), 
             wwwPath = convertWebToLocalPath(path, PathType.WWW),

@@ -48,7 +48,7 @@ namespace generic.number {
                 case NumberType.INCHES:
                     return inValue * Screen.dpi;
                 case NumberType.SCREEN_WIDTH_FRACTION:
-                    return inValue * Screen.width;
+                    return inValue * AppRunner.getScreenWidth();
                 default:
                     return default(float);
             }
@@ -61,7 +61,7 @@ namespace generic.number {
                 case NumberType.INCHES:
                     return inValue / Screen.dpi;
                 case NumberType.SCREEN_WIDTH_FRACTION:
-                    return inValue / Screen.width;
+                    return inValue / AppRunner.getScreenWidth();
                 default:
                     return default(float);
             }

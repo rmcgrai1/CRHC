@@ -24,6 +24,8 @@ public class Menu : IMenu {
     }
 
     public override void draw(float w, float h) {
+        bool handleOffscreen = false;
+
         float y = 0;
 
         // TODO: Limit ys to just those onscreen?
@@ -32,12 +34,23 @@ public class Menu : IMenu {
         float menuH = getHeight(w);
         GUIX.fillRect(new Rect(0, 0, w, menuH), color);
 
+        Rect clipRect = GUIX.getClipRect();
+        float cY = clipRect.y, cH = clipRect.height;
+
+        float sH = AppRunner.getScreenHeight();
+
         foreach (IRow row in rows) {
+            if (handleOffscreen && cY+y > sH) {
+                return;
+            }
+
             h = row.getPixelHeight(w);
 
-            GUIX.beginClip(new Rect(0, y, w, h+1));
-            row.draw(w);
-            GUIX.endClip();
+            if (!handleOffscreen || cY + y + h > 0) {
+                GUIX.beginClip(new Rect(0, y, w, h + 1));
+                row.draw(w);
+                GUIX.endClip();
+            }
 
             y += row.getPixelHeight(w);
         }
@@ -51,7 +64,7 @@ public class Menu : IMenu {
     }
 
     public override void onDispose() {
-        for(int i = 0; i < rows.Count; i++) {
+        for (int i = 0; i < rows.Count; i++) {
             rows[i].Dispose();
         }
         rows.Clear();

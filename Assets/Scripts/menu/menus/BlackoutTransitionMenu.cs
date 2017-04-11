@@ -50,8 +50,9 @@ public class BlackoutTransitionMenu : IMenu {
 
     public override void draw(float w, float h) {
         menu.draw(w, h);
+
         GUIX.beginOpacity(1 - fadeInAmount);
-        GUIX.fillRect(new Rect(0, 0, w, h), Color.black);
+        //GUIX.fillRect(new Rect(0, 0, w, h), Color.black);
         GUIX.endOpacity();
     }
 

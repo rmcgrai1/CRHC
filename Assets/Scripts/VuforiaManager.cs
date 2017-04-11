@@ -65,7 +65,10 @@ public class VuforiaManager {
 
             IFileManager iFileManager = ServiceLocator.getIFileManager();
             iFileManager.pushDirectory(iFileManager.getBaseDirectory());
-            if (ds.Load(CachedLoader.convertWebToLocalPath(exp.getLandmark().getXML().getPath(), PathType.RELATIVE), VuforiaUnity.StorageType.STORAGE_ABSOLUTE)) {
+
+            // TODO: FIX ISSUE w/ LOADING FROM RESOURCES
+
+            if (ds.Load(CachedLoader.convertWebToLocalPath(landmark.getXML().getPath(), PathType.RELATIVE), VuforiaUnity.StorageType.STORAGE_ABSOLUTE)) {
                 dataSets[landmark] = ds;
             }
             else {
@@ -287,21 +290,15 @@ public class VuforiaManager {
 
         Texture2D imgTex = img.getResource();
 
-        float aspect, scrW, scrH, angle, xOffset, yOffset;
+        float aspect, scrW = AppRunner.getScreenWidth(), scrH = AppRunner.getScreenHeight(), angle, xOffset, yOffset;
         float s = CRHC.SIZE_VUFORIA_FRAME.getAs(NumberType.PIXELS), p = 30;
         aspect = 1f * imgTex.width / imgTex.height;
 
         AppRunner.setUpright(aspect < 1);
         if (aspect < 1) {
-            scrW = Screen.width;
-            scrH = Screen.height;
-
             xOffset = yOffset = angle = 0;
         }
         else {
-            scrW = Screen.height;
-            scrH = Screen.width;
-
             angle = 90;
             xOffset = 0;
             yOffset = -scrH;

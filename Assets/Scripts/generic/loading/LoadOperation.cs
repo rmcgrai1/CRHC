@@ -20,6 +20,10 @@ public class LoadOperation {
         loadType = LoadType.RESOURCE;
     }
 
+    public LoadType getLoadType() {
+        return loadType;
+    }
+
     public float getProgress() {
         switch (loadType) {
             case LoadType.WWW:

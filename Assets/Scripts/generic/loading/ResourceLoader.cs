@@ -24,23 +24,19 @@ public class ResourceLoader : ILoader {
 
             if (type == typeof(byte[])) {
                 ServiceLocator.getILog().print(LogType.IO, "Getting byte[] from www...");
-                reference.setResource(t.bytes as T, t.bytes);
+                reference.setResource(t.bytes as T, null);
                 ServiceLocator.getILog().println(LogType.IO, "OK!");
             }
             else if (type == typeof(string)) {
                 ServiceLocator.getILog().print(LogType.IO, "Getting string from www...");
-                reference.setResource(t.text as T, t.bytes);
+                reference.setResource(t.text as T, null);
                 ServiceLocator.getILog().println(LogType.IO, "OK!");
             }
         }
         else {
-            TextAsset t = Resources.Load(path, typeof(TextAsset)) as TextAsset;
-
-            ServiceLocator.getILog().print(LogType.IO, "Getting texture from www...");
-            reference.setResource(asset as T, t.bytes);
+            ServiceLocator.getILog().print(LogType.IO, "Getting texture from www...");            
+            reference.setResource(asset as T, null);
             ServiceLocator.getILog().println(LogType.IO, "OK!");
-
-            UnityEngine.Object.Destroy(t);
         }        
     }
 }
