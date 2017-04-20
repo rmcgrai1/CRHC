@@ -310,7 +310,7 @@ public class VuforiaManager {
         Texture2D imgTex = img.getResource();
 
         float aspect, scrW = AppRunner.getScreenWidth(), scrH = AppRunner.getScreenHeight(), angle, xOffset, yOffset;
-        float s = CRHC.SIZE_VUFORIA_FRAME.getAs(NumberType.PIXELS), p = 30;
+        float s = CrhcConstants.SIZE_VUFORIA_FRAME.getAs(NumberType.PIXELS), p = 30;
         aspect = 1f * imgTex.width / imgTex.height;
 
         AppRunner.setUpright(aspect < 1);
@@ -339,7 +339,9 @@ public class VuforiaManager {
 
         if (img != null) {
             if (img.isLoaded()) {
+                GUIX.beginColor(Color.white);
                 GUIX.drawTexture(region, img.getResource());
+                GUIX.endColor();
             }
         }
 
@@ -351,7 +353,9 @@ public class VuforiaManager {
 
         if (outline != null) {
             if (outline.isLoaded()) {
+                GUIX.beginColor(Color.white);
                 GUIX.drawTexture(region, outline.getResource());
+                GUIX.endColor();
             }
         }
         GUIX.endOpacity();
@@ -385,7 +389,9 @@ public class VuforiaManager {
 
         if (!isMatching) {
             //TODO: Draw on screen too.
+            GUIX.beginColor(Color.white);
             TextureUtility.drawTexture(new Rect(xOffset, yOffset, scrW, scrH), outline, AspectType.FIT_IN_REGION);
+            GUIX.endColor();
         }
 
         float x, y, w, h;

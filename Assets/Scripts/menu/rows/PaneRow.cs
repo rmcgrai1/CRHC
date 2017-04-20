@@ -1,4 +1,5 @@
 ﻿using general.number;
+using general.number.smooth;
 using general.rendering;
 using System;
 using UnityEngine;
@@ -6,7 +7,7 @@ using UnityEngine;
 public class PaneRow : IRow {
     private Row headRow;
     private IMenu subMenu;
-    private float openFrac = 0, toFrac = 0;
+    private ISmoothNumber openFrac = new PolynomialNumber(0, 1, 2f, 3);
     private Color openColor, closedColor;
     private Reference<Texture2D> arrowTexture;
 
@@ -34,21 +35,23 @@ public class PaneRow : IRow {
     public override bool draw(float w) {
         // TODO: Move panel bg to draw before and after others...?????? 
 
-        openFrac += (toFrac - openFrac) / 5;
+        openFrac.update();
 
-        headRow.setColor(blendColor(closedColor, openColor, openFrac));
+        float openF = openFrac.get();
+
+        headRow.setColor(blendColor(closedColor, openColor, openF));
         if (headRow.draw(w)) {
-            toFrac = 1 - toFrac;
+            openFrac.setTargetFraction(1 - openFrac.getTargetFraction());
         }
 
         float headH = headRow.getPixelHeight(w);
-        float padding = CRHC.PADDING_H.getAs(NumberType.PIXELS), s = .6f, arrowW = padding * s;
+        float padding = CrhcConstants.PADDING_H.getAs(NumberType.PIXELS), s = .6f, arrowW = padding * s;
         Rect arrowRect = new Rect(padding * (1 - s) / 2, headH / 2 - arrowW / 2, arrowW, arrowW);
-        float angle = 90 * openFrac;
+        float angle = -90 * openF;
 
-        TextureUtility.drawTexture(arrowRect, arrowTexture, CRHC.COLOR_GRAY_DARK, AspectType.FIT_IN_REGION, angle);
+        TextureUtility.drawTexture(arrowRect, arrowTexture, CrhcConstants.COLOR_GRAY_DARK, AspectType.FIT_IN_REGION, angle);
 
-        float h = subMenu.getPixelHeight(w) * openFrac;
+        float h = subMenu.getPixelHeight(w) * openF;
         if (h > .01) {
             GUIX.beginClip(new Rect(0, headRow.getPixelHeight(w), w, h));
             subMenu.draw(w, h);
@@ -64,7 +67,7 @@ public class PaneRow : IRow {
         float h;
         h = headRow.getPixelHeight(w);
 
-        h += subMenu.getPixelHeight(w) * openFrac;
+        h += subMenu.getPixelHeight(w) * openFrac.get();
         return h;
     }
 

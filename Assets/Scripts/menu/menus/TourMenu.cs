@@ -34,7 +34,9 @@ public class TourMenu : IMenu {
         // Draw BG.
         Rect bgRect = new Rect(0, 0, w, h * headerFrac);
         GUIX.beginClip(bgRect);
+        GUIX.beginColor(Color.white);
         TextureUtility.drawTexture(bgRect, bg, AspectType.CROP_IN_REGION);
+        GUIX.endColor();
         GUIX.endClip();
     }
 

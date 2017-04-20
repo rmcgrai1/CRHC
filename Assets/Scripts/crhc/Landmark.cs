@@ -119,8 +119,8 @@ public class Landmark : CrhcFolder<Experience>, IComparable<Landmark> {
         titleRow.setPadding(true, true, false);
 
         TextItem titleText = new TextItem(getName().ToUpper());
-        titleText.setColor(CRHC.COLOR_RED);
-        titleText.setFont(CRHC.FONT_SUBTITLE);
+        titleText.setColor(CrhcConstants.COLOR_RED);
+        titleText.setFont(CrhcConstants.FONT_SUBTITLE);
         titleRow.addItem(titleText, 1);
 
         menu.addRow(titleRow);
@@ -167,7 +167,7 @@ public class Landmark : CrhcFolder<Experience>, IComparable<Landmark> {
             curRow.addItem(img, 1);
 
             TextItem sourceText = new TextItem(child.getSource());
-            sourceText.setFont(CRHC.FONT_SOURCE);
+            sourceText.setFont(CrhcConstants.FONT_SOURCE);
             sourceText.setTextAnchor(TextAnchor.UpperLeft);
             sourceRow.addItem(sourceText, 1);
         }
@@ -185,13 +185,13 @@ public class Landmark : CrhcFolder<Experience>, IComparable<Landmark> {
         IMenu scrollMenu = new ScrollMenu(menu);
         IMenu fadeInMenu = new FadeInMenu(scrollMenu);
 
-        fadeInMenu.setColor(CRHC.COLOR_BLUE_LIGHT);
+        fadeInMenu.setColor(CrhcConstants.COLOR_BLUE_LIGHT);
 
         return new BlackoutTransitionMenu(fadeInMenu);
     }
 
     public int CompareTo(Landmark other) {
-        if (CRHC.LANDMARK_SORTORDER == SortOrder.NAME) {
+        if (CrhcConstants.LANDMARK_SORTORDER == SortOrder.NAME) {
             return getName().CompareTo(other.getName());
         }
         else {
@@ -204,23 +204,39 @@ public class Landmark : CrhcFolder<Experience>, IComparable<Landmark> {
         private Reference<Texture2D> arrowTexture;
         private readonly float PADDING = 8;
 
-        public BackButton(CrhcItem owner) : base(CRHC.COLOR_TRANSPARENT) {
+        public BackButton(CrhcItem owner) : base(CrhcConstants.COLOR_TRANSPARENT) {
             this.owner = owner;
             arrowTexture = ServiceLocator.getILoader().load<Texture2D>(CachedLoader.SERVER_PATH + "icons/right_icon.png");
         }
 
         public override void onClick() {
-            owner.unload();
+            if (owner != null) {
+                owner.unload();
+            }
+            else {
+                AppRunner.exitMenu();
+            }
         }
 
         public override bool draw(float w, float h) {
             bool output = base.draw(w, h);
-            float arrowW = CRHC.SIZE_BACK_BUTTON.getAs(NumberType.PIXELS);
+            float arrowW = CrhcConstants.SIZE_BACK_BUTTON.getAs(NumberType.PIXELS);
             float angle = 180;
 
             //Vector2 pivot = ServiceLocator.getITouch().getTouchPosition(); // new Vector2(PADDING + arrowW / 2, AppRunner.getScreenWidth()-PADDING + arrowW / 2);
             Rect region = new Rect(PADDING, PADDING, arrowW, arrowW);
-            TextureUtility.drawTexture(region, arrowTexture, CRHC.COLOR_GRAY_DARK, AspectType.FIT_IN_REGION, angle);
+
+            int count = (int) Math.Round(w / arrowW / 2);
+            float sw = (w - PADDING * 2) / count;
+
+            for (int i = 0; i < count; i++) {
+                float f = i / (count - 1f), o = (float)Math.Pow(1f / (i + 1), 1.2);
+                Rect subRegion = new Rect(region.x + sw * i + f * (sw - arrowW), region.y, region.width, region.height);
+
+                GUIX.beginOpacity(o);
+                TextureUtility.drawTexture(subRegion, arrowTexture, CrhcConstants.COLOR_GRAY_DARK, AspectType.FIT_IN_REGION, angle);
+                GUIX.endOpacity();
+            }
 
             return output;
         }
@@ -235,7 +251,7 @@ public class Landmark : CrhcFolder<Experience>, IComparable<Landmark> {
         }
 
         protected override float calcPixelHeight(float w) {
-            return CRHC.SIZE_BACK_BUTTON.getAs(NumberType.PIXELS) + 2 * PADDING;
+            return CrhcConstants.SIZE_BACK_BUTTON.getAs(NumberType.PIXELS) + 2 * PADDING;
         }
     }
 
@@ -256,7 +272,9 @@ public class Landmark : CrhcFolder<Experience>, IComparable<Landmark> {
             bool output = base.draw(w, h);
 
             if (tex.isLoaded()) {
+                GUIX.beginColor(Color.white);
                 GUIX.drawTexture(new Rect(0, 0, w / 4, w / 4), tex.getResource());
+                GUIX.endColor();
             }
 
             return output;

@@ -25,7 +25,7 @@ public class Row : IRow {
     }
 
     private IList<Pair> items = new List<Pair>();
-    private Color color = CRHC.COLOR_TRANSPARENT;
+    private Color color = CrhcConstants.COLOR_TRANSPARENT;
     private bool doXPad, doYPadTop, doYPadBottom;
 
     public void addItem(IItem item, float priority) {
@@ -45,18 +45,18 @@ public class Row : IRow {
         GUIX.fillRect(position, color);
 
         if (doXPad) {
-            float pad = CRHC.PADDING_H.getAs(NumberType.PIXELS);
+            float pad = CrhcConstants.PADDING_H.getAs(NumberType.PIXELS);
             w -= 2 * pad;
             x += pad;
         }
 
         float y = 0;
         if (doYPadTop) {
-            y += CRHC.PADDING_V.getAs(NumberType.PIXELS);
-            h -= CRHC.PADDING_V.getAs(NumberType.PIXELS);
+            y += CrhcConstants.PADDING_V.getAs(NumberType.PIXELS);
+            h -= CrhcConstants.PADDING_V.getAs(NumberType.PIXELS);
         }
         if (doYPadBottom) {
-            h -= CRHC.PADDING_V.getAs(NumberType.PIXELS);
+            h -= CrhcConstants.PADDING_V.getAs(NumberType.PIXELS);
         }
 
         IItem item;
@@ -90,7 +90,7 @@ public class Row : IRow {
         }
 
         if (doXPad) {
-            float pad = CRHC.PADDING_H.getAs(NumberType.PIXELS);
+            float pad = CrhcConstants.PADDING_H.getAs(NumberType.PIXELS);
             w -= 2 * pad;
         }
 
@@ -105,10 +105,10 @@ public class Row : IRow {
         }
 
         if (doYPadTop) {
-            h += CRHC.PADDING_V.getAs(NumberType.PIXELS);
+            h += CrhcConstants.PADDING_V.getAs(NumberType.PIXELS);
         }
         if (doYPadBottom) {
-            h += CRHC.PADDING_V.getAs(NumberType.PIXELS);
+            h += CrhcConstants.PADDING_V.getAs(NumberType.PIXELS);
         }
 
         return Math.Max(h, height);

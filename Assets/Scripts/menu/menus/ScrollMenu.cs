@@ -1,5 +1,6 @@
 ﻿using general;
 using general.mobile;
+using general.rendering;
 using System;
 using UnityEngine;
 
@@ -9,9 +10,14 @@ public class ScrollMenu : IMenu {
     private IMenu menu;
     private float scrollFrac = 0, prevScrollY, prevHeightDiff = float.PositiveInfinity;
     private Color color;
+    private Reference<Texture2D> arrowTexture;
+
 
     public ScrollMenu(IMenu menu) {
         this.menu = menu;
+
+        ILoader il = ServiceLocator.getILoader();
+        arrowTexture = il.load<Texture2D>(CachedLoader.SERVER_PATH + "icons/right_icon.png");
     }
 
     public override bool enter() { return menu.enter(); }
@@ -33,9 +39,9 @@ public class ScrollMenu : IMenu {
         GUIX.fillRect(new Rect(0, 0, w, h), color);
 
         if (heightDiff > 0) {
-			// Scroll menu.
-            if(!float.IsInfinity(prevHeightDiff)) {
-                if(heightDiff != prevHeightDiff) {
+            // Scroll menu.
+            if (!float.IsInfinity(prevHeightDiff)) {
+                if (heightDiff != prevHeightDiff) {
                     scrollFrac = -prevScrollY / heightDiff;
                 }
             }
@@ -55,7 +61,22 @@ public class ScrollMenu : IMenu {
         menu.draw(w, h);
         GUIX.endClip();
 
-        scrollFrac -= (iTouch.getDragVector().y / heightDiff);
+        // Draw scrollbar.
+        if(heightDiff > 0 && CrhcSettings.doShowScrollbar) {
+            float PADDING = 8, scrollBarWidth = CrhcConstants.PADDING_H.getAs(general.number.NumberType.PIXELS) - PADDING * 2, scrollBarHeight = scrollBarWidth * 2;
+            GUIX.beginClip(new Rect(w - PADDING - scrollBarWidth, 0, scrollBarWidth, h));
+
+            GUIX.beginOpacity(.5f);
+            TextureUtility.drawTexture(new Rect(0, PADDING, scrollBarWidth, scrollBarWidth), arrowTexture, AspectType.FIT_IN_REGION, 90);
+
+            float hh = h - 4 * PADDING - 2 * scrollBarWidth - scrollBarHeight / 2;
+            GUIX.fillRect(new Rect(0, 2 * PADDING + scrollBarWidth + hh * scrollFrac, scrollBarWidth, scrollBarWidth));
+            TextureUtility.drawTexture(new Rect(0, h - PADDING - scrollBarWidth, scrollBarWidth, scrollBarWidth), arrowTexture, AspectType.FIT_IN_REGION, -90);
+            GUIX.endOpacity();
+            GUIX.endClip();
+
+            scrollFrac -= (iTouch.getDragVector().y / heightDiff);
+        }
     }
 
     protected override float calcPixelHeight(float w) {
@@ -73,5 +94,8 @@ public class ScrollMenu : IMenu {
     public override void onDispose() {
         menu.Dispose();
         menu = null;
+
+        arrowTexture.removeOwner();
+        arrowTexture = null;
     }
 }

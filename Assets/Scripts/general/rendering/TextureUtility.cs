@@ -5,16 +5,23 @@ using UnityEngine;
 
 namespace general.rendering {
     public static class TextureUtility {
+        public static Rect getUseRect(Rect drawRect, AspectType aspectType) {
+            return getUseRect(drawRect, new Vector2(1, 1), aspectType);
+        }
+
         public static Rect getUseRect(Rect drawRect, Texture2D texture, AspectType aspectType) {
+            Vector2 contentSize;
+            if (texture != null) { contentSize = new Vector2(texture.width, texture.height); }
+            else { contentSize = new Vector2(1, 1); }
+
+            return getUseRect(drawRect, contentSize, aspectType);
+        }
+
+        public static Rect getUseRect(Rect drawRect, Vector2 contentSize, AspectType aspectType) {
             float x = drawRect.x, y = drawRect.y, w = drawRect.width, h = drawRect.height;
             float texAspect, regionAspect;
 
-            if (texture != null) {
-                texAspect = 1f * texture.width / texture.height;
-            }
-            else {
-                texAspect = 1;
-            }
+            texAspect = 1f * contentSize.x / contentSize.y;
 
             if (h == 0) {
                 regionAspect = 1;
@@ -66,13 +73,13 @@ namespace general.rendering {
 
         private static IDictionary<Texture2D, Texture2D> targetTextures = new Dictionary<Texture2D, Texture2D>();
 
-        private static int INDEX_COUNT = 16;
+        private static int INDEX_COUNT = 45;
         private static int angleToIndex(float angle) {
-            return (int)Math.Round(angle / 90 * (INDEX_COUNT - 1));
+            return (int)Math.Round((angle + 90) / 180 * (INDEX_COUNT - 1));
         }
 
         private static float indexToAngle(int index) {
-            return (1f * index) / (INDEX_COUNT - 1) * 90;
+            return (1f * index) / (INDEX_COUNT - 1) * 180 - 90;
         }
 
         public static Rect drawTexture(Rect drawRect, Texture2D texture, AspectType aspectType, float angle) {
@@ -82,6 +89,8 @@ namespace general.rendering {
                 return drawTexture(drawRect, texture, aspectType);
             }
             else {
+                angle = 360 - angle;
+
                 int w = texture.width,
                     h = texture.height,
                     s = (int)(Math.Sqrt(w * w + h * h)),
@@ -95,7 +104,8 @@ namespace general.rendering {
 
                     float pad = (s - sf) / 2;
                     float xO = pad, yO = pad, f = (1f * sf) / s, xF = f / INDEX_COUNT, yF = f;
-                    if (angle > 270) {
+
+                    /*if (angle > 270) {
                         yF *= -1;
                         angle = 360 - angle;
                     }
@@ -107,13 +117,24 @@ namespace general.rendering {
                     else if (angle > 90) {
                         xF *= -1;
                         angle = 180 - angle;
+                    }*/
+
+                    if (angle > 270) {
+                        angle = angle - 360;
+                    }
+                    else if (angle > 90) {
+                        xF *= -1;
+                        angle = 180 - angle;
                     }
 
                     if (xF < 0) {
                         xO += sf;
                     }
                     if (yF < 0) {
-                        yO += sf;
+                        float ff = -1f;
+
+                        yF = -yF * ff;
+                        yO += sf * ff;
                     }
 
                     xO += angleToIndex(angle) * s;
@@ -129,7 +150,7 @@ namespace general.rendering {
 
                     RenderTexture.active = rotateTexture;
 
-                    GL.Clear(true, true, CRHC.COLOR_TRANSPARENT);
+                    GL.Clear(true, true, CrhcConstants.COLOR_TRANSPARENT);
 
                     GUIX.undoAllActions();
 

@@ -16,14 +16,14 @@ public class BlackoutTransitionMenu : IMenu {
         fadeAmount.setDirection(true);
         fadeAmount.update();
 
-        return menu.enter() && fadeAmount.isDone();
+        return (!CrhcSettings.doShowAnimations) || (menu.enter() && fadeAmount.isDone());
     }
 
     public override bool exit(bool isClosing) {
         fadeAmount.setDirection(false);
         fadeAmount.update();
 
-        return menu.exit(isClosing) && fadeAmount.isDone();
+        return (!CrhcSettings.doShowAnimations) || (menu.exit(isClosing) && fadeAmount.isDone());
     }
 
     public override void addRow(IRow row) {
@@ -33,9 +33,11 @@ public class BlackoutTransitionMenu : IMenu {
     public override void draw(float w, float h) {
         menu.draw(w, h);
 
-        GUIX.beginOpacity(1 - fadeAmount.get());
-        GUIX.fillRect(new Rect(0, 0, w, h), Color.black);
-        GUIX.endOpacity();
+        if(CrhcSettings.doShowAnimations && fadeAmount.get() < 1) {
+            GUIX.beginOpacity(1 - fadeAmount.get());
+            GUIX.fillRect(new Rect(0, 0, w, h), Color.black);
+            GUIX.endOpacity();
+        }
     }
 
     protected override float calcPixelHeight(float w) {

@@ -3,6 +3,24 @@ using System.IO;
 using UnityEngine;
 
 public class AndroidFileManager : IFileManager {
+    private WorkDirectoryType workDirectoryType = WorkDirectoryType.BASE;
+
+    public override void setWorkDirectory(WorkDirectoryType type) {
+        workDirectoryType = type;
+    }
+
+    public override string getWorkDirectory() {
+        switch(workDirectoryType) {
+            case WorkDirectoryType.BASE:
+                return getBaseDirectory();
+            case WorkDirectoryType.STREAMING_ASSETS:
+                return getStreamingAssetsDirectory();
+            default:
+                return "";
+        }
+    }
+
+
     public override string getBaseDirectory() {
         return Application.persistentDataPath + "/";
     }
@@ -38,8 +56,8 @@ public class AndroidFileManager : IFileManager {
         }
     }
 
-public override bool createDirectory(string path) {
-        pushDirectory(getBaseDirectory());
+    public override bool createDirectory(string path) {
+        pushDirectory(getWorkDirectory());
         createNonexistingFolders(path);
         popDirectory();
 
@@ -47,7 +65,7 @@ public override bool createDirectory(string path) {
     }
 
     public override bool deleteDirectory(string path) {
-        pushDirectory(getBaseDirectory());
+        pushDirectory(getWorkDirectory());
         if (directoryExists(path)) {
             Directory.Delete(path, true);
         }
@@ -57,7 +75,7 @@ public override bool createDirectory(string path) {
     }
 
     public override bool deleteFile(string path) {
-        pushDirectory(getBaseDirectory());
+        pushDirectory(getWorkDirectory());
         if (fileExists(path)) {
             File.Delete(path);
         }
@@ -66,9 +84,23 @@ public override bool createDirectory(string path) {
         return true;
     }
 
+    public override string readFromFile(string path) {
+        string text = "";
+
+        pushDirectory(getWorkDirectory());
+        try {
+            text = File.ReadAllText(path);
+        }
+        catch (Exception e) {
+            ServiceLocator.getILog().println(LogType.IO, e);
+        }
+        popDirectory();
+
+        return text;
+    }
 
     public override bool writeToFile(string path, byte[] data) {
-        pushDirectory(getBaseDirectory());
+        pushDirectory(getWorkDirectory());
         createDirectory(Path.GetDirectoryName(path));
         try {
             File.WriteAllBytes(path, data);
@@ -82,7 +114,7 @@ public override bool createDirectory(string path) {
     }
 
     public override bool writeToFile(string path, string data) {
-        pushDirectory(getBaseDirectory());
+        pushDirectory(getWorkDirectory());
         createDirectory(Path.GetDirectoryName(path));
         try {
             File.WriteAllText(path, data);
@@ -96,7 +128,7 @@ public override bool createDirectory(string path) {
     }
 
     public override bool directoryExists(string path) {
-        pushDirectory(getBaseDirectory());
+        pushDirectory(getWorkDirectory());
         bool doesExist = Directory.Exists(path);
         popDirectory();
 
@@ -104,7 +136,7 @@ public override bool createDirectory(string path) {
     }
 
     public override bool fileExists(string path) {
-        pushDirectory(getBaseDirectory());
+        pushDirectory(getWorkDirectory());
         bool doesExist = File.Exists(path);
         popDirectory();
 

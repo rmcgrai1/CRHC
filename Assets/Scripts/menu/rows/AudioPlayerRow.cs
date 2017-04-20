@@ -29,7 +29,7 @@ public class AudioPlayerRow : IRow {
 
 	private void AudioClip_onLoad() {
 		int iW, iH;
-		iW = (int)(Screen.width - 2 * CRHC.PADDING_H.getAs(NumberType.PIXELS));
+		iW = (int)(Screen.width - 2 * CrhcConstants.PADDING_H.getAs(NumberType.PIXELS));
 		iH = (int)getPixelHeight(0);
 
 		CoroutineManager.startCoroutine(createTextureCoroutine(iW / 2, iH / 2));
@@ -81,10 +81,10 @@ public class AudioPlayerRow : IRow {
 					float relAmp = 2 * (1f * y / iH - .5f);
 
 					if (Math.Abs(relAmp) <= Math.Abs(amp)) {
-						waveformTexture.SetPixel(x, y, CRHC.COLOR_GRAY_DARK);
+						waveformTexture.SetPixel(x, y, CrhcConstants.COLOR_GRAY_DARK);
 					}
 					else {
-						waveformTexture.SetPixel(x, y, CRHC.COLOR_TRANSPARENT);
+						waveformTexture.SetPixel(x, y, CrhcConstants.COLOR_TRANSPARENT);
 					}
 				}
 
@@ -102,7 +102,7 @@ public class AudioPlayerRow : IRow {
 	public override bool draw(float w) {
 		// Create player.
 
-		float padding = CRHC.PADDING_H.getAs(NumberType.PIXELS);
+		float padding = CrhcConstants.PADDING_H.getAs(NumberType.PIXELS);
 		w -= 2 * padding;
 		float h = getPixelHeight(w);
 
@@ -144,7 +144,7 @@ public class AudioPlayerRow : IRow {
 			}
 
 			if (playState != PlayState.STOPPED) {
-				Color color = (playState == PlayState.PLAYING) ? CRHC.COLOR_RED : CRHC.COLOR_BLUE_DARK;
+				Color color = (playState == PlayState.PLAYING) ? CrhcConstants.COLOR_RED : CrhcConstants.COLOR_BLUE_DARK;
 				float frac = audioSource.time / audioSource.clip.length, bx = w * frac, bw = 5;
 				GUIX.fillRect(new Rect(padding + bx - bw / 2, 0, bw, h), color);
 			}
@@ -154,8 +154,8 @@ public class AudioPlayerRow : IRow {
 				AudioClip_onLoad();
 			}
 
-			GUIX.strokeRect(new Rect(padding, 0, w, h), CRHC.COLOR_GRAY_DARK, 1);
-			GUIX.fillRect(new Rect(padding, 0, w * progress, h), CRHC.COLOR_GRAY_DARK);
+			GUIX.strokeRect(new Rect(padding, 0, w, h), CrhcConstants.COLOR_GRAY_DARK, 1);
+			GUIX.fillRect(new Rect(padding, 0, w * progress, h), CrhcConstants.COLOR_GRAY_DARK);
 		}
 
 		return false;

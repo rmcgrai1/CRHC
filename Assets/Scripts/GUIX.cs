@@ -12,7 +12,9 @@ public static class GUIX {
     private static Texture2D whiteTexture;
     private static GUIStyle whiteTextureStyle, standardTextureStyle;
 
-    private static Color color;
+    // TODO: Alpha blending not working.
+    // TODO: Outline drawn after frame gone.
+    // TODO: White box in camera view????
 
     private abstract class GUIAction {
         public abstract void undo();
@@ -94,7 +96,7 @@ public static class GUIX {
         fillRect(new Rect(x + w - thickness, y - thickness, 2 * thickness, h + 2 * thickness));
     }
     public static void strokeRect(Rect position, Color color, float thickness) {
-        if (color == CRHC.COLOR_TRANSPARENT) {
+        if (color == CrhcConstants.COLOR_TRANSPARENT) {
             return;
         }
 
@@ -103,21 +105,21 @@ public static class GUIX {
         endColor();
     }
 
-    public static void _fillRect(Rect region) {
+    public static void fillRect(Rect region) {
         GUI.Box(region, GUIContent.none, whiteTextureStyle);
     }
 
-    public static void _fillRect(Rect position, Color color) {
-        if (color == CRHC.COLOR_TRANSPARENT) {
+    public static void fillRect(Rect position, Color color) {
+        if (color == null || color == CrhcConstants.COLOR_TRANSPARENT) {
             return;
         }
 
         beginColor(color);
-        _fillRect(position);
+        fillRect(position);
         endColor();
     }
 
-    public static void fillRect(Rect region) {
+    /*public static void fillRect(Rect region) {
         _fillRect(region);
         return;
 
@@ -164,10 +166,10 @@ public static class GUIX {
         beginColor(color);
         fillRect(position);
         endColor();
-    }
+    }*/
 
     private static void setColor(Color color) {
-        GUIX.color = GUI.backgroundColor = color;
+        GUI.backgroundColor = color;
     }
 
     public static void beginColor(Color toColor) {
@@ -203,25 +205,30 @@ public static class GUIX {
 
         colorStack.Push(new Color(r, g, b, a));*/
 
-        toColor.a *= fromColor.a;
-
-        setColor(toColor);
-        colorStack.Push(toColor);
+        Color newColor = new Color(toColor.r, toColor.g, toColor.b, toColor.a*fromColor.a);
+        setColor(newColor);
+        colorStack.Push(newColor);
     }
 
     public static void endColor() {
-        if (colorStack.Count > 1) {
+        if (colorStack.Count > 0) {
             colorStack.Pop();
+        }
+
+        if(colorStack.Count > 0) {
             setColor(colorStack.Peek());
+        }
+        else {
+            setColor(Color.white);
         }
     }
 
     public static void beginOpacity(float opacity) {
         Color opColor = colorStack.Peek();
-        opColor.a *= opacity;
 
-        setColor(opColor);
-        colorStack.Push(opColor);
+        Color newColor = new Color(opColor.r, opColor.g, opColor.b, opColor.a * opacity);
+        setColor(newColor);
+        colorStack.Push(newColor);
     }
 
     public static void endOpacity() {

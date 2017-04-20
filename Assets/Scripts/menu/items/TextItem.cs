@@ -16,7 +16,7 @@ public class TextItem : IItem {
         setTextAnchor(TextAnchor.MiddleLeft);
         setText(text);
 
-        setFont(CRHC.FONT_NORMAL);
+        setFont(CrhcConstants.FONT_NORMAL);
     }
 
     public override bool draw(float w, float h) {
@@ -41,17 +41,17 @@ public class TextItem : IItem {
         style.font = font;
 
         DistanceMeasure fontSize = null;
-        if (font == CRHC.FONT_NORMAL) {
-            fontSize = CRHC.FONT_HEIGHT_NORMAL;
+        if (font == CrhcConstants.FONT_NORMAL) {
+            fontSize = CrhcConstants.FONT_HEIGHT_NORMAL;
         }
-        else if (font == CRHC.FONT_TITLE) {
-            fontSize = CRHC.FONT_HEIGHT_TITLE;
+        else if (font == CrhcConstants.FONT_TITLE) {
+            fontSize = CrhcConstants.FONT_HEIGHT_TITLE;
         }
-        else if (font == CRHC.FONT_SUBTITLE) {
-            fontSize = CRHC.FONT_HEIGHT_SUBTITLE;
+        else if (font == CrhcConstants.FONT_SUBTITLE) {
+            fontSize = CrhcConstants.FONT_HEIGHT_SUBTITLE;
         }
-        else if (font == CRHC.FONT_SOURCE) {
-            fontSize = CRHC.FONT_HEIGHT_SOURCE;
+        else if (font == CrhcConstants.FONT_SOURCE) {
+            fontSize = CrhcConstants.FONT_HEIGHT_SOURCE;
         }
 
         if (fontSize != null) {

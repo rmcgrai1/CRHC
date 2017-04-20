@@ -24,7 +24,7 @@ public class FadeInMenu : IMenu {
 		hasEntered |= output;
 
 
-		return menu.enter() && output;
+		return (!CrhcSettings.doShowAnimations) || (menu.enter() && output);
 	}
 
 	public override bool exit(bool isClosing) {
@@ -37,7 +37,7 @@ public class FadeInMenu : IMenu {
 		fadeAmount.setDirection(false);
 		fadeAmount.update();
 
-		return menu.enter() && fadeAmount.isDone();
+		return (!CrhcSettings.doShowAnimations) || (menu.enter() && fadeAmount.isDone());
 	}
 
 	public override void addRow(IRow row) {
@@ -55,31 +55,37 @@ public class FadeInMenu : IMenu {
 		float fadeAmount = this.fadeAmount.get();
 
 		GUIX.fillRect(new Rect(0, 0, w, h), color);
-		GUIX.beginOpacity(fadeAmount);
 
+		if (CrhcSettings.doShowAnimations) {
+			GUIX.beginOpacity(fadeAmount);
+		}
 
 		/*float fadeY, menuH;
 		fadeY = -fadeDis * (1 - fadeInAmount);
 		menuH = h - fadeY;
 		Rect menuRect = new Rect(0, fadeY, w, menuH);*/
-		float fadeX, menuH;
+		float fadeX = 0, menuH;
 		menuH = h;
 
 		Rect menuRect;
 
-		if(!hasEntered || isClosing) {
-			fadeX = -fadeDis * (1 - fadeAmount);
-			menuRect = new Rect(fadeX, 0, w, menuH);
+		if (CrhcSettings.doShowAnimations) {
+			if (!hasEntered || isClosing) {
+				fadeX = -fadeDis * (1 - fadeAmount);
+			}
+			else {
+				fadeX = fadeDis * (1 - fadeAmount);
+			}
 		}
-		else {
-			fadeX = fadeDis * (1 - fadeAmount);
-			menuRect = new Rect(fadeX, 0, w, menuH);
-		}
+		menuRect = new Rect(fadeX, 0, w, menuH);
 
 		GUIX.beginClip(menuRect);
 		menu.draw(w, menuH);
 		GUIX.endClip();
-		GUIX.endOpacity();
+
+		if (CrhcSettings.doShowAnimations) {
+			GUIX.endOpacity();
+		}
 	}
 
 	protected override float calcPixelHeight(float w) {

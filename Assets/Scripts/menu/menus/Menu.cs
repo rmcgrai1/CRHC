@@ -21,7 +21,7 @@ public class Menu : IMenu {
     }
 
     public override void draw(float w, float h) {
-        bool handleOffscreen = true;
+        // TODO: Fix offscreen issues.
 
         float y = 0;
 
@@ -37,13 +37,13 @@ public class Menu : IMenu {
         float sH = AppRunner.getScreenHeight();
 
         foreach (IRow row in rows) {
-            if (handleOffscreen && cY+y > sH) {
+            if (AppRunner.doHandleOffscreen && cY+y > sH) {
                 return;
             }
 
             h = row.getPixelHeight(w);
 
-            if (!handleOffscreen || cY + y + h > 0) {
+            if (!AppRunner.doHandleOffscreen || cY + y + h > 0) {
                 GUIX.beginClip(new Rect(0, y, w, h + 1));
                 row.draw(w);
                 GUIX.endClip();

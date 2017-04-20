@@ -14,14 +14,10 @@ public class AppRunner : MonoBehaviour {
     private Shader shader;
     private Material material;
 
-    [SerializeField]
-    private bool doDrawLog;
+    public static readonly bool doDrawLog;
+    public static readonly bool doDrawMemory;
+    public static readonly bool doHandleOffscreen;
 
-    [SerializeField]
-    private bool doDrawMemory;
-
-    [SerializeField]
-    private bool doDrawFPS;
 
     private static AppRunner instance;
     private VuforiaManager manager;
@@ -56,15 +52,15 @@ public class AppRunner : MonoBehaviour {
         JObject json = JObject.Parse(styleText.getResource());
 
         ServiceLocator.getILog().print(LogType.IO, "Setting styles... ");
-        CRHC.FONT_HEIGHT_NORMAL.set(json.Value<float>("FONT_NORMAL_HEIGHT"), NumberType.INCHES);
-        CRHC.FONT_HEIGHT_TITLE.set(json.Value<float>("FONT_TITLE_HEIGHT"), NumberType.INCHES);
-        CRHC.FONT_HEIGHT_SUBTITLE.set(json.Value<float>("FONT_SUBTITLE_HEIGHT"), NumberType.INCHES);
-        CRHC.FONT_HEIGHT_SOURCE.set(json.Value<float>("FONT_SOURCE_HEIGHT"), NumberType.INCHES);
+        CrhcConstants.FONT_HEIGHT_NORMAL.set(json.Value<float>("FONT_NORMAL_HEIGHT"), NumberType.INCHES);
+        CrhcConstants.FONT_HEIGHT_TITLE.set(json.Value<float>("FONT_TITLE_HEIGHT"), NumberType.INCHES);
+        CrhcConstants.FONT_HEIGHT_SUBTITLE.set(json.Value<float>("FONT_SUBTITLE_HEIGHT"), NumberType.INCHES);
+        CrhcConstants.FONT_HEIGHT_SOURCE.set(json.Value<float>("FONT_SOURCE_HEIGHT"), NumberType.INCHES);
 
-        CRHC.SIZE_BACK_BUTTON.set(json.Value<float>("BACK_BUTTON_SIZE"), NumberType.INCHES);
-        CRHC.SIZE_HOME_BUTTON.set(json.Value<float>("MAIN_BUTTON_SIZE"), NumberType.INCHES);
+        CrhcConstants.SIZE_BACK_BUTTON.set(json.Value<float>("BACK_BUTTON_SIZE"), NumberType.INCHES);
+        CrhcConstants.SIZE_HOME_BUTTON.set(json.Value<float>("MAIN_BUTTON_SIZE"), NumberType.INCHES);
 
-        CRHC.SIZE_VUFORIA_FRAME.set(json.Value<float>("VUFORIA_FRAME_SIZE"), NumberType.INCHES);
+        CrhcConstants.SIZE_VUFORIA_FRAME.set(json.Value<float>("VUFORIA_FRAME_SIZE"), NumberType.INCHES);
         ServiceLocator.getILog().println(LogType.IO, "OK!");
 
         styleText.removeOwner();
@@ -122,9 +118,9 @@ public class AppRunner : MonoBehaviour {
             manager.OnGUI();
         }
 
-        if (doDrawMemory || doDrawFPS) {
+        if (doDrawMemory || CrhcSettings.doShowFps) {
             Rect topBar = new Rect(0, 0, Screen.width, 20);
-            GUIX._fillRect(topBar, new Color32(0, 0, 0, 128));
+            GUIX.fillRect(topBar, new Color32(0, 0, 0, 128));
 
             long allocMemory = Profiler.GetTotalAllocatedMemory(), totalMemory = Profiler.GetTotalReservedMemory();
 

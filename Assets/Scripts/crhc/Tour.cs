@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -31,18 +33,18 @@ public class Tour : CrhcFolder<Landmark> {
 
         Row headerTitle = new Row();
         headerTitle.setPadding(true, true, false);
-        headerTitle.setColor(CRHC.COLOR_BLUE_LIGHT);
+        headerTitle.setColor(CrhcConstants.COLOR_BLUE_LIGHT);
 
         TextItem titleText = new TextItem(getName().ToUpper());
-        titleText.setColor(CRHC.COLOR_RED);
-        titleText.setFont(CRHC.FONT_TITLE);
+        titleText.setColor(CrhcConstants.COLOR_RED);
+        titleText.setFont(CrhcConstants.FONT_TITLE);
         headerTitle.addItem(titleText, 1);
 
         menu.addRow(headerTitle);
 
         Row headerDesc = new Row();
         headerDesc.setPadding(true, false, true);
-        headerDesc.setColor(CRHC.COLOR_BLUE_LIGHT);
+        headerDesc.setColor(CrhcConstants.COLOR_BLUE_LIGHT);
 
         TextItem descText = new TextItem(getDescription());
         headerDesc.addItem(descText, 1);
@@ -61,26 +63,26 @@ public class Tour : CrhcFolder<Landmark> {
             Row row = new Row();
             row.setPadding(true, true, true);
 
-            if (CRHC.LANDMARK_SORTORDER == SortOrder.NUMBER) {
+            if (CrhcConstants.LANDMARK_SORTORDER == SortOrder.NUMBER) {
                 TextItem number = new TextItem(child.getNumber() + ". ");
-                number.setFont(CRHC.FONT_SUBTITLE);
+                number.setFont(CrhcConstants.FONT_SUBTITLE);
                 number.setColor(Color.white);
                 row.addItem(number, .1f);
 
                 TextItem text = new TextItem(child.getName());
-                text.setFont(CRHC.FONT_SUBTITLE);
+                text.setFont(CrhcConstants.FONT_SUBTITLE);
                 text.setColor(Color.white);
                 row.addItem(text, .4f);
             }
             else {
                 TextItem text = new TextItem(child.getName());
-                text.setFont(CRHC.FONT_SUBTITLE);
+                text.setFont(CrhcConstants.FONT_SUBTITLE);
                 text.setColor(Color.white);
                 row.addItem(text, .55f);
             }
 
             Menu submenu = new Menu();
-            submenu.setColor(CRHC.COLOR_BLUE_LIGHT);
+            submenu.setColor(CrhcConstants.COLOR_BLUE_LIGHT);
 
             Row subrow = new Row();
             subrow.setPadding(true, true, true);
@@ -108,14 +110,14 @@ public class Tour : CrhcFolder<Landmark> {
 
                     TextItem audioSourceItem = new TextItem(audioClip.Value<string>("audioSource"));
                     audioSourceItem.setTextAnchor(TextAnchor.UpperLeft);
-                    audioSourceItem.setFont(CRHC.FONT_SOURCE);
+                    audioSourceItem.setFont(CrhcConstants.FONT_SOURCE);
                     audioSourceRow.addItem(audioSourceItem, 1);
                     submenu.addRow(audioSourceRow);
 
 
                     Row audioTranscriptionTitleRow = new Row();
                     TextItem audioTranscriptionTitle = new TextItem("Audio Transcription");
-                    audioTranscriptionTitle.setFont(CRHC.FONT_SUBTITLE);
+                    audioTranscriptionTitle.setFont(CrhcConstants.FONT_SUBTITLE);
                     audioTranscriptionTitleRow.addItem(audioTranscriptionTitle, 1);
                     audioTranscriptionTitleRow.setPadding(true, true, false);
                     submenu.addRow(audioTranscriptionTitleRow);
@@ -150,7 +152,7 @@ public class Tour : CrhcFolder<Landmark> {
 
                 Row subLongDescTitleRow = new Row();
                 TextItem subLongDescTitle = new TextItem("More Info");
-                subLongDescTitle.setFont(CRHC.FONT_SUBTITLE);
+                subLongDescTitle.setFont(CrhcConstants.FONT_SUBTITLE);
                 subLongDescTitleRow.addItem(subLongDescTitle, 1);
                 subLongDescTitleRow.setPadding(true, true, false);
                 submenu.addRow(subLongDescTitleRow);
@@ -164,20 +166,20 @@ public class Tour : CrhcFolder<Landmark> {
 
 
             PaneRow panerow = new PaneRow(row, submenu);
-            panerow.setClosedColor(CRHC.COLOR_BLUE_DARK);
-            panerow.setOpenColor(CRHC.COLOR_RED);
+            panerow.setClosedColor(CrhcConstants.COLOR_BLUE_DARK);
+            panerow.setOpenColor(CrhcConstants.COLOR_RED);
 
             menu.addRow(panerow);
         }
 
         menu.addRow(paddingRow);
-        menu.addRow(new SurveyRow());
+        menu.addRow(new SettingsRow());
         menu.addRow(paddingRow);
-        menu.addRow(new ClearCacheRow());
+        menu.addRow(new SurveyRow());
 
         IMenu scrollMenu = new ScrollMenu(menu);
         IMenu fadeInMenu = new FadeInMenu(scrollMenu);
-        fadeInMenu.setColor(CRHC.COLOR_GRAY_DARK);
+        fadeInMenu.setColor(CrhcConstants.COLOR_GRAY_DARK);
 
         return new BlackoutTransitionMenu(new TourMenu(fadeInMenu, getUrl() + "header.jpg"));
     }
@@ -233,7 +235,7 @@ public class Tour : CrhcFolder<Landmark> {
         public DirectionButton(Landmark landmark) : base(CachedLoader.SERVER_PATH + "icons/nav_icon.png") {
             this.landmark = landmark;
 
-            setColor(CRHC.COLOR_BLUE_LIGHT);
+            setColor(CrhcConstants.COLOR_BLUE_LIGHT);
             setAspectType(AspectType.FIT_IN_REGION);
         }
 
@@ -247,7 +249,7 @@ public class Tour : CrhcFolder<Landmark> {
         public ARButton(Landmark landmark) : base(CachedLoader.SERVER_PATH + "icons/ar_icon.png") {
             this.landmark = landmark;
 
-            setColor(CRHC.COLOR_BLUE_LIGHT);
+            setColor(CrhcConstants.COLOR_BLUE_LIGHT);
             setAspectType(AspectType.FIT_IN_REGION);
         }
 
@@ -256,44 +258,7 @@ public class Tour : CrhcFolder<Landmark> {
         }
     }
 
-    private abstract class ButtonRow : Row {
-        public ButtonRow() {
-            setColor(CRHC.COLOR_BLUE_MEDIUM);
-            setPadding(true, true, true);
-        }
-
-        public override bool draw(float w) {
-            if (base.draw(w)) {
-                onClick();
-            }
-
-            return false;
-        }
-
-        public abstract void onClick();
-    }
-
-    private abstract class TextButtonRow : ButtonRow {
-        public TextButtonRow(string text) {
-            TextItem textItem = new TextItem(text);
-            textItem.setTextAnchor(TextAnchor.MiddleCenter);
-            addItem(textItem, 1);
-        }
-    }
-
-    private abstract class ImageButtonRow : ButtonRow {
-        public ImageButtonRow(string imageUrl) {
-            ImageItem imageItem = new ImageItem(imageUrl);
-            imageItem.setAspectType(AspectType.HEIGHT_DEPENDENT_ON_WIDTH);
-            addItem(imageItem, 1);
-        }
-
-        public override void onDispose() {
-            base.onDispose();
-        }
-    }
-
-    private class HomePageRow : ImageButtonRow {
+    private class HomePageRow : IImageButtonRow {
         public HomePageRow() : base(CachedLoader.SERVER_PATH + "logo.png") {
         }
 
@@ -302,7 +267,7 @@ public class Tour : CrhcFolder<Landmark> {
         }
     }
 
-    private class SurveyRow : TextButtonRow {
+    private class SurveyRow : ITextButtonRow {
         public SurveyRow() : base("Survey") {
         }
 
@@ -311,13 +276,69 @@ public class Tour : CrhcFolder<Landmark> {
         }
     }
 
-    private class ClearCacheRow : TextButtonRow {
+    private class ClearCacheRow : ITextButtonRow {
         public ClearCacheRow() : base("Clear Cache") {
+            setColor(CrhcConstants.COLOR_RED);
         }
 
         public override void onClick() {
             ServiceLocator.getILoader().clearCache(true);
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        }
+    }
+
+    private class SettingsBackButton : Landmark.BackButton {
+        public SettingsBackButton() : base(null) { }
+
+        public override void onClick() {
+            base.onClick();
+
+            CrhcSettings.saveSettings();
+        }
+    }
+
+    private class SettingsRow : ITextButtonRow {
+        public SettingsRow() : base("Settings") {
+        }
+
+        public override void onClick() {
+            Menu menu = new Menu();
+
+            SpaceItem padding = new SpaceItem();
+
+            Row backRow = new Row();
+            backRow.addItem(new SettingsBackButton(), 1);
+            menu.addRow(backRow);
+
+            Row titleRow = new Row();
+            titleRow.setPadding(true, true, false);
+
+            TextItem titleText = new TextItem("Settings");
+            titleText.setColor(CrhcConstants.COLOR_RED);
+            titleText.setFont(CrhcConstants.FONT_SUBTITLE);
+            titleRow.addItem(titleText, 1);
+
+            menu.addRow(titleRow);
+
+            Row paddingRow = new Row(5);
+
+            JObject dict = CrhcSettings.getSettingsDict();
+            Dictionary<string, string> jsonData = JsonConvert.DeserializeObject<Dictionary<string, string>>(dict.ToString());
+
+            foreach (string key in jsonData.Keys) {
+                menu.addRow(paddingRow);
+                menu.addRow(new JSONBoolRow(dict, key));
+            }
+
+            menu.addRow(paddingRow);
+            menu.addRow(new ClearCacheRow());
+
+            IMenu scrollMenu = new ScrollMenu(menu);
+            IMenu fadeInMenu = new FadeInMenu(scrollMenu);
+
+            fadeInMenu.setColor(CrhcConstants.COLOR_BLUE_DARK);
+
+            AppRunner.enterMenu(new BlackoutTransitionMenu(fadeInMenu));
         }
     }
 }

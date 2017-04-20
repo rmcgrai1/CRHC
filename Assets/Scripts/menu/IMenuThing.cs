@@ -1,6 +1,9 @@
 ﻿using System;
 
 public abstract class IMenuThing : IDisposable {
+    // Fix issues with height.
+    private static bool doCache = false;
+
     private bool isCacheHValid = false;
     private float cacheHWidth, cacheHHeight;
 
@@ -9,7 +12,7 @@ public abstract class IMenuThing : IDisposable {
     }
     protected abstract float calcPixelHeight(float w);
     public float getPixelHeight(float w) {
-        if (!isCacheHValid || cacheHWidth != w) {
+        if (!doCache || !isCacheHValid || cacheHWidth != w) {
             isCacheHValid = true;
             cacheHWidth = w;
             cacheHHeight = calcPixelHeight(w);
