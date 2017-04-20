@@ -53,6 +53,13 @@ public class Tour : CrhcFolder<Landmark> {
 
         Row paddingRow = new Row(5);
 
+        menu.addRow(paddingRow);
+        menu.addRow(new HomePageRow());
+        menu.addRow(paddingRow);
+        menu.addRow(new SettingsRow());
+        menu.addRow(paddingRow);
+        menu.addRow(new SurveyRow());
+
         foreach (Landmark child in this) {
             if (!child.isVisible()) {
                 continue;
@@ -172,62 +179,11 @@ public class Tour : CrhcFolder<Landmark> {
             menu.addRow(panerow);
         }
 
-        menu.addRow(paddingRow);
-        menu.addRow(new SettingsRow());
-        menu.addRow(paddingRow);
-        menu.addRow(new SurveyRow());
-
         IMenu scrollMenu = new ScrollMenu(menu);
         IMenu fadeInMenu = new FadeInMenu(scrollMenu);
         fadeInMenu.setColor(CrhcConstants.COLOR_GRAY_DARK);
 
         return new BlackoutTransitionMenu(new TourMenu(fadeInMenu, getUrl() + "header.jpg"));
-    }
-
-    private class AudioButton : ImageItem {
-        private Reference<AudioClip> audio;
-        private AudioSource audioSource;
-        private enum AudioState {
-            UNLOADED, LOADING, LOADED, PLAYING, PAUSED
-        };
-        private AudioState state = AudioState.UNLOADED;
-
-        public AudioButton(string url) : base(CachedLoader.SERVER_PATH + "icons/sound_icon.png") {
-            state = AudioState.LOADING;
-            audio = ServiceLocator.getILoader().load<AudioClip>(url);
-            audioSource = AppRunner.get().AddComponent<AudioSource>();
-        }
-
-        public override void onClick() {
-            if (state == AudioState.LOADED) {
-                state = AudioState.PLAYING;
-                audioSource.Play();
-            }
-            else if (state == AudioState.PLAYING) {
-                state = AudioState.PAUSED;
-                audioSource.Pause();
-            }
-            else if (state == AudioState.PAUSED) {
-                state = AudioState.PLAYING;
-                audioSource.UnPause();
-            }
-        }
-
-        public override bool draw(float w, float h) {
-            if (audio.isLoaded()) {
-                state = AudioState.LOADED;
-                audioSource.clip = audio.getResource();
-            }
-
-            return base.draw(w, h);
-        }
-
-        public override void onDispose() {
-            base.onDispose();
-            audio.removeOwner();
-
-            UnityEngine.Object.Destroy(audioSource);
-        }
     }
 
     private class DirectionButton : ImageItem {
@@ -237,9 +193,11 @@ public class Tour : CrhcFolder<Landmark> {
 
             setColor(CrhcConstants.COLOR_BLUE_LIGHT);
             setAspectType(AspectType.FIT_IN_REGION);
+            setTouchable(true);
         }
 
         public override void onClick() {
+            base.onClick();
             landmark.showMapRoute();
         }
     }
@@ -251,9 +209,11 @@ public class Tour : CrhcFolder<Landmark> {
 
             setColor(CrhcConstants.COLOR_BLUE_LIGHT);
             setAspectType(AspectType.FIT_IN_REGION);
+            setTouchable(true);
         }
 
         public override void onClick() {
+            base.onClick();
             landmark.load();
         }
     }
@@ -263,6 +223,7 @@ public class Tour : CrhcFolder<Landmark> {
         }
 
         public override void onClick() {
+            base.onClick();
             Application.OpenURL("https://www.iusb.edu/civil-rights/");
         }
     }
@@ -272,6 +233,7 @@ public class Tour : CrhcFolder<Landmark> {
         }
 
         public override void onClick() {
+            base.onClick();
             Application.OpenURL("https://docs.google.com/forms/d/e/1FAIpQLSciG9ouNTXAjUciVz4xKG0ZAnlaiMXZhgIkqy-gQDy4MJJWSA/viewform");
         }
     }
@@ -282,6 +244,8 @@ public class Tour : CrhcFolder<Landmark> {
         }
 
         public override void onClick() {
+            base.onClick();
+
             ServiceLocator.getILoader().clearCache(true);
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
@@ -302,6 +266,8 @@ public class Tour : CrhcFolder<Landmark> {
         }
 
         public override void onClick() {
+            base.onClick();
+
             Menu menu = new Menu();
 
             SpaceItem padding = new SpaceItem();

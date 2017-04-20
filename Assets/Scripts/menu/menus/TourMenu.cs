@@ -53,6 +53,8 @@ public class TourMenu : IMenu {
     }
 
     public override void onDispose() {
+        base.onDispose();
+
         bg.removeOwner();
 
         menu.Dispose();

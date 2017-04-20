@@ -207,9 +207,11 @@ public class Landmark : CrhcFolder<Experience>, IComparable<Landmark> {
         public BackButton(CrhcItem owner) : base(CrhcConstants.COLOR_TRANSPARENT) {
             this.owner = owner;
             arrowTexture = ServiceLocator.getILoader().load<Texture2D>(CachedLoader.SERVER_PATH + "icons/right_icon.png");
+            setTouchable(true);
         }
 
         public override void onClick() {
+            base.onClick();
             if (owner != null) {
                 owner.unload();
             }
@@ -238,6 +240,8 @@ public class Landmark : CrhcFolder<Experience>, IComparable<Landmark> {
                 GUIX.endOpacity();
             }
 
+            drawTouchRing(new Rect(0, 0, w, h));
+
             return output;
         }
 
@@ -262,9 +266,11 @@ public class Landmark : CrhcFolder<Experience>, IComparable<Landmark> {
         public ARButton(Experience exp) : base(exp.getUrl() + "image.jpg") {
             this.exp = exp;
             tex = ServiceLocator.getILoader().load<Texture2D>(CachedLoader.SERVER_PATH + "icons/ar_icon.png");
+            setTouchable(true);
         }
 
         public override void onClick() {
+            base.onClick();
             exp.load();
         }
 

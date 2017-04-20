@@ -1,11 +1,13 @@
-﻿using general.rendering;
+﻿using general.number.smooth;
+using general.rendering;
 using UnityEngine;
 
 public class CheckboxItem : IItem {
-    private bool isFilled;
+    private ISmoothNumber filledAmount = new PolynomialNumber(0, 1, 2f, 3);
 
     public CheckboxItem(bool isFilled) {
-        this.isFilled = isFilled;
+        filledAmount.setDirection(isFilled);
+        filledAmount.complete();
     }
 
     public override bool draw(float w, float h) {
@@ -15,14 +17,14 @@ public class CheckboxItem : IItem {
         w = rect.width;
         h = rect.height;
 
-        float th = 4, p = th;
+        filledAmount.update();
+
+        float th = 4, p = 1.5f * th, f = filledAmount.get(), sx = (w - 2 * p) * f, sy = (h - 2 * p) * f;
 
         GUIX.fillRect(rect, Color.white);
         GUIX.strokeRect(rect, Color.black, th);
 
-        if (isFilled) {
-            GUIX.fillRect(new Rect(x + th + p, y + th + p, w - 2 * (th + p), h - 2 * (th + p)), Color.black);
-        }
+        GUIX.fillRect(new Rect(x + w/2 - sx/2, y + h/2 - sy/2, sx, sy), Color.black);
 
         return false;
     }
@@ -31,10 +33,11 @@ public class CheckboxItem : IItem {
         return 30;
     }
 
-    public override void onDispose() {
-    }
-
     public void setIsFilled(bool isFilled) {
-        this.isFilled = isFilled;
+        filledAmount.setDirection(isFilled);
+
+        if(!CrhcSettings.showAnimations) {
+            filledAmount.complete();
+        }
     }
 }

@@ -14,16 +14,30 @@ public class BlackoutTransitionMenu : IMenu {
 
     public override bool enter() {
         fadeAmount.setDirection(true);
-        fadeAmount.update();
 
-        return (!CrhcSettings.doShowAnimations) || (menu.enter() && fadeAmount.isDone());
+        if (!CrhcSettings.showAnimations) {
+            menu.enter();
+            fadeAmount.complete();
+            return true;
+        }
+        else {
+            fadeAmount.update();
+            return menu.enter() && fadeAmount.isDone();
+        }
     }
 
     public override bool exit(bool isClosing) {
         fadeAmount.setDirection(false);
-        fadeAmount.update();
 
-        return (!CrhcSettings.doShowAnimations) || (menu.exit(isClosing) && fadeAmount.isDone());
+        if (!CrhcSettings.showAnimations) {
+            menu.exit(isClosing);
+            fadeAmount.complete();
+            return true;
+        }
+        else {
+            fadeAmount.update();
+            return menu.exit(isClosing) && fadeAmount.isDone();
+        }
     }
 
     public override void addRow(IRow row) {
@@ -33,7 +47,7 @@ public class BlackoutTransitionMenu : IMenu {
     public override void draw(float w, float h) {
         menu.draw(w, h);
 
-        if(CrhcSettings.doShowAnimations && fadeAmount.get() < 1) {
+        if(CrhcSettings.showAnimations && fadeAmount.get() < 1) {
             GUIX.beginOpacity(1 - fadeAmount.get());
             GUIX.fillRect(new Rect(0, 0, w, h), Color.black);
             GUIX.endOpacity();
@@ -53,6 +67,8 @@ public class BlackoutTransitionMenu : IMenu {
     }
 
     public override void onDispose() {
+        base.onDispose();
+
         menu.Dispose();
         menu = null;
     }

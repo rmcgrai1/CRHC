@@ -61,6 +61,8 @@ public class Menu : IMenu {
     }
 
     public override void onDispose() {
+        base.onDispose();
+
         for (int i = 0; i < rows.Count; i++) {
             rows[i].Dispose();
         }

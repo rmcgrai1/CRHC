@@ -173,7 +173,14 @@ public static class GUIX {
     }
 
     public static void beginColor(Color toColor) {
-        Color fromColor = colorStack.Peek();
+        Color fromColor;
+
+        if (colorStack.Count == 0) {
+            fromColor = Color.white;
+        }
+        else {
+            fromColor = colorStack.Peek();
+        }
 
         /*float nf = 1 - f;
 
@@ -205,7 +212,7 @@ public static class GUIX {
 
         colorStack.Push(new Color(r, g, b, a));*/
 
-        Color newColor = new Color(toColor.r, toColor.g, toColor.b, toColor.a*fromColor.a);
+        Color newColor = new Color(toColor.r, toColor.g, toColor.b, toColor.a * fromColor.a);
         setColor(newColor);
         colorStack.Push(newColor);
     }
@@ -215,7 +222,7 @@ public static class GUIX {
             colorStack.Pop();
         }
 
-        if(colorStack.Count > 0) {
+        if (colorStack.Count > 0) {
             setColor(colorStack.Peek());
         }
         else {
@@ -224,7 +231,14 @@ public static class GUIX {
     }
 
     public static void beginOpacity(float opacity) {
-        Color opColor = colorStack.Peek();
+        Color opColor;
+
+        if (colorStack.Count == 0) {
+            opColor = Color.white;
+        }
+        else {
+            opColor = colorStack.Peek();
+        }
 
         Color newColor = new Color(opColor.r, opColor.g, opColor.b, opColor.a * opacity);
         setColor(newColor);
@@ -406,5 +420,21 @@ public static class GUIX {
 
     public static Rect getLocalClipRect() {
         return (localClipStack.Count > 0) ? localClipStack.Peek() : default(Rect);
+    }
+
+    public static int getActionListSize() {
+        return actionList.Count;
+    }
+
+    public static int getClipStackSize() {
+        return clipStack.Count;
+    }
+
+    public static int getLocalClipStackSize() {
+        return localClipStack.Count;
+    }
+
+    public static int getColorStackSize() {
+        return colorStack.Count;
     }
 }

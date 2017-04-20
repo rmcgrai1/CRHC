@@ -18,6 +18,11 @@ public abstract class ILoader {
 	}
 	public virtual void clearCache(bool hardClear) {
 		foreach (KeyValuePair<string, Reference> pair in runTimeCache) {
+			Reference r = pair.Value;
+			int c = r.getOwnerCount();
+			for (int i = 0; i < c; i++) {
+				r.removeOwner();
+			}
 		}
 
 		runTimeCache.Clear();
@@ -73,4 +78,8 @@ public abstract class ILoader {
 	public IEnumerator reloadCoroutine<T>(Reference<T> reference) where T : class {
 		yield return reloadCoroutine<T>(reference, reference.getPath());
 	}
+
+	public virtual int getReferenceCount() {
+        return runTimeCache.Count;
+    }
 }

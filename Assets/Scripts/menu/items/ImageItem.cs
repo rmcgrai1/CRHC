@@ -20,6 +20,8 @@ public class ImageItem : IItem {
     public override bool draw(float w, float h) {
         Rect rect = TextureUtility.drawTexture(new Rect(0,0, w,h), texture, color, aspectType);
 
+        drawTouchRing(rect);
+
         if (GUIX.didTapInsideRect(rect)) {
             onClick();
             return true;
@@ -50,6 +52,7 @@ public class ImageItem : IItem {
     }
 
     public override void onDispose() {
+        base.onDispose();
         texture.removeOwner();
     }
 

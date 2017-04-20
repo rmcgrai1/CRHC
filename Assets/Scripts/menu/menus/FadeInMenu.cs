@@ -2,106 +2,125 @@
 using UnityEngine;
 
 public class FadeInMenu : IMenu {
-	private IMenu menu;
-	private ISmoothNumber fadeAmount = new PolynomialNumber(0, 1, .5f, 3);
-	private Color color;
-	private float fadeDis;
-	private bool hasEntered = false, isClosing = false;
+    private IMenu menu;
+    private ISmoothNumber fadeAmount = new PolynomialNumber(0, 1, .5f, 3);
+    private Color color;
+    private float fadeDis;
+    private bool hasEntered = false, isClosing = false;
 
-	public FadeInMenu(IMenu menu) {
-		this.menu = menu;
-	}
+    public FadeInMenu(IMenu menu) {
+        this.menu = menu;
+    }
 
-	public override bool enter() {
-		if(fadeDis == 0) {
-			return menu.enter();
-		}
+    public override bool enter() {
+        fadeAmount.setDirection(true);
 
-		fadeAmount.setDirection(true);
-		fadeAmount.update();
+        if (!CrhcSettings.showAnimations) {
+            menu.enter();
+            fadeAmount.complete();
 
-		bool output = fadeAmount.isDone();
-		hasEntered |= output;
+            return true;
+        }
+        else {
+            if (fadeDis == 0) {
+                return menu.enter();
+            }
 
+            fadeAmount.update();
 
-		return (!CrhcSettings.doShowAnimations) || (menu.enter() && output);
-	}
+            bool output = fadeAmount.isDone();
+            hasEntered |= output;
 
-	public override bool exit(bool isClosing) {
-		this.isClosing = isClosing;
+            return menu.enter() && output;
+        }
+    }
 
-		if (fadeDis == 0) {
-			return menu.exit(isClosing);
-		}
+    public override bool exit(bool isClosing) {
+        this.isClosing = isClosing;
 
-		fadeAmount.setDirection(false);
-		fadeAmount.update();
+        fadeAmount.setDirection(false);
 
-		return (!CrhcSettings.doShowAnimations) || (menu.enter() && fadeAmount.isDone());
-	}
+        if (!CrhcSettings.showAnimations) {
+            menu.exit(isClosing);
+            fadeAmount.complete();
 
-	public override void addRow(IRow row) {
-		menu.addRow(row);
-	}
+            return true;
+        }
+        else {
+            if (fadeDis == 0) {
+                return menu.exit(isClosing);
+            }
 
-	public override void draw(float w, float h) {
-		// TODO: Update outside of draw.
-		// TODO: Incorporate deltaTime.
-		// TODO: Make smooth deltaTime variables.
+            fadeAmount.update();
 
-		//float fadeDis = menu.getHeight(w);
-		fadeDis = w;
+            return menu.enter() && fadeAmount.isDone();
+        }
+    }
 
-		float fadeAmount = this.fadeAmount.get();
+    public override void addRow(IRow row) {
+        menu.addRow(row);
+    }
 
-		GUIX.fillRect(new Rect(0, 0, w, h), color);
+    public override void draw(float w, float h) {
+        // TODO: Update outside of draw.
+        // TODO: Incorporate deltaTime.
+        // TODO: Make smooth deltaTime variables.
 
-		if (CrhcSettings.doShowAnimations) {
-			GUIX.beginOpacity(fadeAmount);
-		}
+        //float fadeDis = menu.getHeight(w);
+        fadeDis = w;
 
-		/*float fadeY, menuH;
-		fadeY = -fadeDis * (1 - fadeInAmount);
-		menuH = h - fadeY;
-		Rect menuRect = new Rect(0, fadeY, w, menuH);*/
-		float fadeX = 0, menuH;
-		menuH = h;
+        float fadeAmount = this.fadeAmount.get();
 
-		Rect menuRect;
+        GUIX.fillRect(new Rect(0, 0, w, h), color);
 
-		if (CrhcSettings.doShowAnimations) {
-			if (!hasEntered || isClosing) {
-				fadeX = -fadeDis * (1 - fadeAmount);
-			}
-			else {
-				fadeX = fadeDis * (1 - fadeAmount);
-			}
-		}
-		menuRect = new Rect(fadeX, 0, w, menuH);
+        if (CrhcSettings.showAnimations) {
+            GUIX.beginOpacity(fadeAmount);
+        }
 
-		GUIX.beginClip(menuRect);
-		menu.draw(w, menuH);
-		GUIX.endClip();
+        /*float fadeY, menuH;
+        fadeY = -fadeDis * (1 - fadeInAmount);
+        menuH = h - fadeY;
+        Rect menuRect = new Rect(0, fadeY, w, menuH);*/
+        float fadeX = 0, menuH;
+        menuH = h;
 
-		if (CrhcSettings.doShowAnimations) {
-			GUIX.endOpacity();
-		}
-	}
+        Rect menuRect;
 
-	protected override float calcPixelHeight(float w) {
-		return menu.getPixelHeight(w);
-	}
+        if (CrhcSettings.showAnimations) {
+            if (!hasEntered || isClosing) {
+                fadeX = -fadeDis * (1 - fadeAmount);
+            }
+            else {
+                fadeX = fadeDis * (1 - fadeAmount);
+            }
+        }
+        menuRect = new Rect(fadeX, 0, w, menuH);
 
-	public override void reset() {
-		menu.reset();
-	}
+        GUIX.beginClip(menuRect);
+        menu.draw(w, menuH);
+        GUIX.endClip();
 
-	public override void setColor(Color color) {
-		this.color = color;
-	}
+        if (CrhcSettings.showAnimations) {
+            GUIX.endOpacity();
+        }
+    }
 
-	public override void onDispose() {
-		menu.Dispose();
-		menu = null;
-	}
+    protected override float calcPixelHeight(float w) {
+        return menu.getPixelHeight(w);
+    }
+
+    public override void reset() {
+        menu.reset();
+    }
+
+    public override void setColor(Color color) {
+        this.color = color;
+    }
+
+    public override void onDispose() {
+        base.onDispose();
+
+        menu.Dispose();
+        menu = null;
+    }
 }

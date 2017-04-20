@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace general.number.smooth {
     public class LinearNumber : ISmoothNumber {
-        private float startValue, endValue, fraction, targetFraction, speed;
+        private float startValue, endValue, fraction, targetFraction = 1, speed;
 
         public LinearNumber(float startValue, float endValue, float speed) {
             setRange(startValue, endValue);
@@ -16,6 +16,8 @@ namespace general.number.smooth {
             this.startValue = startValue;
             this.endValue = endValue;
         }
+
+        public void setFraction(float fraction) { this.fraction = fraction; }
 
         public float getTargetFraction() { return targetFraction; }
         public void setTargetFraction(float targetFraction) { this.targetFraction = targetFraction; }
@@ -38,5 +40,6 @@ namespace general.number.smooth {
         }
 
         public bool isDone() { return (fraction == targetFraction); }
+        public void complete() { fraction = targetFraction; }
     }
 }

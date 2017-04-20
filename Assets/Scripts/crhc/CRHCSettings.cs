@@ -5,19 +5,57 @@ using UnityEngine;
 
 public static class CrhcSettings {
     public static bool
-        doShowAnimations {
-        set { data["doShowAnimations"] = value; }
-        get { return data.Value<bool>("doShowAnimations"); }
+        offlineMode {
+        set { data["offlineMode"] = value; }
+        get { return data.Value<bool>("offlineMode"); }
+    }
+
+    public static bool
+        forceLandscapeOrientation {
+        set { data["forceLandscapeOrientation"] = value; }
+        get { return data.Value<bool>("forceLandscapeOrientation"); }
+    }
+
+    public static bool
+        showAnimations {
+        set { data["showAnimations"] = value; }
+        get { return data.Value<bool>("showAnimations"); }
     }
     public static bool
-        doShowFps {
-        set { data["doShowFps"] = value; }
-        get { return data.Value<bool>("doShowFps"); }
+        showFps {
+        set { data["showFps"] = value; }
+        get { return data.Value<bool>("showFps"); }
     }
     public static bool
-        doShowScrollbar {
-        set { data["doShowScrollbar"] = value; }
-        get { return data.Value<bool>("doShowScrollbar"); }
+        showMemory {
+        set { data["showMemory"] = value; }
+        get { return data.Value<bool>("showMemory"); }
+    }
+    public static bool
+        showGuixStackCounts {
+        set { data["showGuixStackCounts"] = value; }
+        get { return data.Value<bool>("showGuixStackCounts"); }
+    }
+
+    public static bool
+        showFileManagerStackCount {
+        set { data["showFileManagerStackCount"] = value; }
+        get { return data.Value<bool>("showFileManagerStackCount"); }
+    }
+    public static bool
+        showMenuElementCount {
+        set { data["showMenuElementCount"] = value; }
+        get { return data.Value<bool>("showMenuElementCount"); }
+    }
+    public static bool
+        showReferenceCount {
+        set { data["showReferenceCount"] = value; }
+        get { return data.Value<bool>("showReferenceCount"); }
+    }
+    public static bool
+        showScrollbar {
+        set { data["showScrollbar"] = value; }
+        get { return data.Value<bool>("showScrollbar"); }
     }
 
 
@@ -42,9 +80,16 @@ public static class CrhcSettings {
         else {
             data = new JObject();
 
-            doShowAnimations = true;
-            doShowFps = false;
-            doShowScrollbar = true;
+            offlineMode = false;
+            forceLandscapeOrientation = false;
+            showAnimations = true;
+            showFps = false;
+            showMemory = false;
+            showGuixStackCounts = false;
+            showFileManagerStackCount = false;
+            showMenuElementCount = false;
+            showReferenceCount = false;
+            showScrollbar = true;
 
             saveSettings();
         }

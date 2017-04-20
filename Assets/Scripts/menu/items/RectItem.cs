@@ -23,7 +23,4 @@ public class RectItem : IItem {
     protected override float calcPixelHeight(float w) {
         return 30;
     }
-
-    public override void onDispose() {
-    }
 }

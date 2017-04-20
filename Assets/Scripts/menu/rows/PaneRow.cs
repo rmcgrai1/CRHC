@@ -12,8 +12,12 @@ public class PaneRow : IRow {
     private Reference<Texture2D> arrowTexture;
 
     public PaneRow(Row headRow, IMenu subMenu) {
+        openFrac.setTargetFraction(0);
+
         this.headRow = headRow;
         this.subMenu = subMenu;
+
+        headRow.setTouchable(true);
 
         arrowTexture = ServiceLocator.getILoader().load<Texture2D>(CachedLoader.SERVER_PATH + "icons/right_icon.png");
     }
@@ -42,6 +46,10 @@ public class PaneRow : IRow {
         headRow.setColor(blendColor(closedColor, openColor, openF));
         if (headRow.draw(w)) {
             openFrac.setTargetFraction(1 - openFrac.getTargetFraction());
+
+            if (!CrhcSettings.showAnimations) {
+                openFrac.complete();
+            }
         }
 
         float headH = headRow.getPixelHeight(w);

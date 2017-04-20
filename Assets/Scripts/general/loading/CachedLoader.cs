@@ -8,29 +8,29 @@ public class CachedLoader : ILoader {
     private WWWLoader wwwLoader = new WWWLoader();
     private ResourceLoader resourceLoader = new ResourceLoader();
     public static readonly string SERVER_PATH = "https://s3.amazonaws.com/crhc/";
-    //public static readonly string SERVER_PATH = "http://chrc.s3-website.us-east-2.amazonaws.com/";
-    //private static readonly string SERVER_PATH = "http://www3.nd.edu/~rmcgrai1/CRHC/";
 
     //private SourceType defaultSourceType = SourceType.WEB; //SourceType.DEFAULT;
-    private SourceType defaultSourceType = SourceType.DEFAULT;
-    private PathType defaultPathType = PathType.STREAMING_ASSETS;
-
     public override IEnumerator loadCoroutine<T>(Reference<T> reference, string path, bool forceReload) {
         IFileManager iFileManager = ServiceLocator.getIFileManager();
 
         string oriPath = path;
 
+
+        SourceType defaultSourceType = CrhcSettings.offlineMode ? SourceType.OFFLINE : SourceType.WEB;
+        PathType offlinePathType = PathType.STREAMING_ASSETS;
+
+
         SourceType sourceType = defaultSourceType;
-        string 
-            relePath = convertWebToLocalPath(path, PathType.RELATIVE), 
+        string
+            relePath = convertWebToLocalPath(path, PathType.RELATIVE),
             wwwPath = convertWebToLocalPath(path, PathType.WWW),
-            defaultPath = convertWebToLocalPath(path, defaultPathType);
+            offlinePath = convertWebToLocalPath(path, offlinePathType);
 
         // Check if file already exists in local file storage cache.
         if (relePath != null) {
             ServiceLocator.getILog().print(LogType.IO, "Checking for file at " + relePath + "...");
 
-            if (defaultSourceType != SourceType.DEFAULT && !forceReload && iFileManager.fileExists(relePath)) {
+            if (defaultSourceType != SourceType.OFFLINE && !forceReload && iFileManager.fileExists(relePath)) {
                 sourceType = SourceType.CACHE;
                 path = wwwPath;
                 ServiceLocator.getILog().println(LogType.IO, "Using cache!");
@@ -41,12 +41,12 @@ public class CachedLoader : ILoader {
             }
         }
         else {
-            sourceType = SourceType.DEFAULT;
+            sourceType = SourceType.OFFLINE;
         }
 
-        if(sourceType == SourceType.DEFAULT) {
-            if(defaultPathType == PathType.RESOURCES) {
-                yield return resourceLoader.loadCoroutine(reference, defaultPath);
+        if (sourceType == SourceType.OFFLINE) {
+            if (offlinePathType == PathType.RESOURCES) {
+                yield return resourceLoader.loadCoroutine(reference, offlinePath);
             }
             else {
                 yield return wwwLoader.loadCoroutine(reference, path);
@@ -60,7 +60,7 @@ public class CachedLoader : ILoader {
 
         // Backup file in cache if not from there.
         if (!valid) {
-            if(sourceType == SourceType.CACHE) {
+            if (sourceType == SourceType.CACHE) {
                 reference.invalidate();
                 yield return loadCoroutine(reference, oriPath, true);
             }
@@ -138,9 +138,13 @@ public class CachedLoader : ILoader {
         base.clearCache(hardClear);
 
         if (hardClear) {
-            IFileManager iFileManager = ServiceLocator.getIFileManager();
-            iFileManager.deleteDirectory(iFileManager.getBaseDirectory() + "cache/");
+            IFileManager fm = ServiceLocator.getIFileManager();
+            fm.deleteDirectory(fm.getBaseDirectory() + "cache/");
         }
+    }
+
+    public override int getReferenceCount() {
+        return base.getReferenceCount() + wwwLoader.getReferenceCount() + resourceLoader.getReferenceCount();
     }
 }
 
@@ -149,5 +153,5 @@ public enum PathType {
 }
 
 public enum SourceType {
-    WEB, CACHE, DEFAULT
+    WEB, CACHE, OFFLINE
 }

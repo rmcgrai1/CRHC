@@ -1,11 +1,33 @@
 ﻿using System;
+using UnityEngine;
 
 public abstract class IMenuThing : IDisposable {
+    public static int menuElementCount {
+        get { return _menuElementCount; }
+    }
+    private static int _menuElementCount = 0;
+
     // Fix issues with height.
     private static bool doCache = false;
 
     private bool isCacheHValid = false;
     private float cacheHWidth, cacheHHeight;
+
+    private TouchRing touchRing;
+
+    public IMenuThing() {
+        _menuElementCount++;
+    }
+
+    public void setTouchable(bool isTouchable) {
+        if(isTouchable) {
+            touchRing = new TouchRing();
+        }
+        else {
+            touchRing.Dispose();
+            touchRing = null;
+        }
+    }
 
     public virtual bool isPixelHeightValid() {
         return isCacheHValid;
@@ -23,6 +45,20 @@ public abstract class IMenuThing : IDisposable {
 
     public void invalidateHeight() {
         isCacheHValid = false;
+    }
+
+    public virtual void onClick() {
+        if (touchRing != null) {
+            touchRing.click();
+        }
+    }
+
+    public void drawTouchRing(Rect rect) {
+        if (touchRing != null) {
+            GUIX.beginClip(rect);
+            touchRing.draw();
+            GUIX.endClip();
+        }
     }
 
     #region IDisposable Support
@@ -57,5 +93,12 @@ public abstract class IMenuThing : IDisposable {
     }
     #endregion
 
-    public abstract void onDispose();
+    public virtual void onDispose() {
+        _menuElementCount--;
+
+        if (touchRing != null) {
+            touchRing.Dispose();
+            touchRing = null;
+        }
+    }
 }

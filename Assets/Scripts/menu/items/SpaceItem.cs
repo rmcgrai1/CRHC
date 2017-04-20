@@ -6,7 +6,4 @@
     protected override float calcPixelHeight(float w) {
         return 0;
     }
-
-    public override void onDispose() {
-    }
 }

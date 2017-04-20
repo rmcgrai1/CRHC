@@ -15,7 +15,6 @@ public class AppRunner : MonoBehaviour {
     private Material material;
 
     public static readonly bool doDrawLog;
-    public static readonly bool doDrawMemory;
     public static readonly bool doHandleOffscreen;
 
 
@@ -104,7 +103,7 @@ public class AppRunner : MonoBehaviour {
                 scrW = getScreenWidth();
                 scrH = getScreenHeight();
 
-                if (!isUpright) {
+                if (!getIsUpright()) {
                     angle = 90;
                     yOffset = -scrH;
                 }
@@ -118,18 +117,52 @@ public class AppRunner : MonoBehaviour {
             manager.OnGUI();
         }
 
-        if (doDrawMemory || CrhcSettings.doShowFps) {
-            Rect topBar = new Rect(0, 0, Screen.width, 20);
-            GUIX.fillRect(topBar, new Color32(0, 0, 0, 128));
+        Rect topBar = new Rect(0, 0, Screen.width, 20);
 
+        if (CrhcSettings.showMemory) {
             long allocMemory = Profiler.GetTotalAllocatedMemory(), totalMemory = Profiler.GetTotalReservedMemory();
+            GUIX.fillRect(topBar, CrhcConstants.COLOR_BLACK_TRANSPARENT);
+            GUI.Label(topBar, "Memory: " + (allocMemory / (Math.Pow(10, 6))) + "/" + (totalMemory / (Math.Pow(10, 6))) + " MB");
+            topBar.y += 20;
+        }
 
-            if(doDrawMemory) {
-                GUI.Label(topBar, "Memory: " + (allocMemory / (Math.Pow(10, 6))) + "/" + (totalMemory / (Math.Pow(10, 6))) + " MB");
-            }
-            else {
-                GUI.Label(topBar, "FPS: " + (1/Time.deltaTime));
-            }
+        if (CrhcSettings.showFps) {
+            GUIX.fillRect(topBar, CrhcConstants.COLOR_BLACK_TRANSPARENT);
+            GUI.Label(topBar, "FPS: " + m_lastFramerate);
+            topBar.y += 20;
+        }
+
+        if (CrhcSettings.showMenuElementCount) {
+            GUIX.fillRect(topBar, CrhcConstants.COLOR_BLACK_TRANSPARENT);
+            GUI.Label(topBar, "Menu Element Count: " + IMenuThing.menuElementCount);
+            topBar.y += 20;
+        }
+
+        if (CrhcSettings.showReferenceCount) {
+            GUIX.fillRect(topBar, CrhcConstants.COLOR_BLACK_TRANSPARENT);
+            GUI.Label(topBar, "Reference Count: " + ServiceLocator.getILoader().getReferenceCount());
+            topBar.y += 20;
+        }
+
+        if (CrhcSettings.showGuixStackCounts) {
+            GUIX.fillRect(topBar, CrhcConstants.COLOR_BLACK_TRANSPARENT);
+            GUI.Label(topBar, "Clip Stack Count: " + GUIX.getClipStackSize());
+            topBar.y += 20;
+            GUIX.fillRect(topBar, CrhcConstants.COLOR_BLACK_TRANSPARENT);
+            GUI.Label(topBar, "Local Clip Stack Count: " + GUIX.getLocalClipStackSize());
+            topBar.y += 20;
+            GUIX.fillRect(topBar, CrhcConstants.COLOR_BLACK_TRANSPARENT);
+            GUI.Label(topBar, "Color Stack Count: " + GUIX.getColorStackSize());
+            topBar.y += 20;
+            GUIX.fillRect(topBar, CrhcConstants.COLOR_BLACK_TRANSPARENT);
+            GUI.Label(topBar, "Action List Count: " + GUIX.getActionListSize());
+            topBar.y += 20;
+        }
+
+        if (CrhcSettings.showFileManagerStackCount) {
+            GUIX.fillRect(topBar, CrhcConstants.COLOR_BLACK_TRANSPARENT);
+            GUI.Label(topBar, "Directory Stack Count: " + ServiceLocator.getIFileManager().getDirectoryStackSize());
+            topBar.y += 20;
         }
 
         ILog log = ServiceLocator.getILog();
@@ -143,7 +176,7 @@ public class AppRunner : MonoBehaviour {
     }
 
     public static bool getIsUpright() {
-        return instance.isUpright;
+        return !CrhcSettings.forceLandscapeOrientation && instance.isUpright;
     }
 
     public static float getScreenWidth() {
@@ -187,5 +220,24 @@ public class AppRunner : MonoBehaviour {
 
     public static Material getMaterial() {
         return instance.material;
+    }
+
+    //Declare these in your class
+    int m_frameCounter = 0;
+    float m_timeCounter = 0.0f;
+    float m_lastFramerate = 0.0f;
+    public float m_refreshTime = 0.5f;
+
+    void Update() {
+        if (m_timeCounter < m_refreshTime) {
+            m_timeCounter += Time.deltaTime;
+            m_frameCounter++;
+        }
+        else {
+            //This code will break if you set your m_refreshTime to 0, which makes no sense.
+            m_lastFramerate = (float)m_frameCounter / m_timeCounter;
+            m_frameCounter = 0;
+            m_timeCounter = 0.0f;
+        }
     }
 }

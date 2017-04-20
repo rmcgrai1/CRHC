@@ -66,6 +66,8 @@ public class TextItem : IItem {
     }
 
     public override void onDispose() {
+        base.onDispose();
+
         style = null;
         content = null;
     }

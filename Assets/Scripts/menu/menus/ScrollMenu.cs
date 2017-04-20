@@ -62,15 +62,18 @@ public class ScrollMenu : IMenu {
         GUIX.endClip();
 
         // Draw scrollbar.
-        if(heightDiff > 0 && CrhcSettings.doShowScrollbar) {
-            float PADDING = 8, scrollBarWidth = CrhcConstants.PADDING_H.getAs(general.number.NumberType.PIXELS) - PADDING * 2, scrollBarHeight = scrollBarWidth * 2;
+        if(heightDiff > 0 && CrhcSettings.showScrollbar) {
+            float PADDING = 8, scrollBarWidth = CrhcConstants.PADDING_H.getAs(general.number.NumberType.PIXELS) - PADDING * 2;
+            float scrollRegion = h - 4 * PADDING - 2 * scrollBarWidth;
+            float scrollBarHeight = h / menuH * scrollRegion;
+
             GUIX.beginClip(new Rect(w - PADDING - scrollBarWidth, 0, scrollBarWidth, h));
 
             GUIX.beginOpacity(.5f);
             TextureUtility.drawTexture(new Rect(0, PADDING, scrollBarWidth, scrollBarWidth), arrowTexture, AspectType.FIT_IN_REGION, 90);
 
-            float hh = h - 4 * PADDING - 2 * scrollBarWidth - scrollBarHeight / 2;
-            GUIX.fillRect(new Rect(0, 2 * PADDING + scrollBarWidth + hh * scrollFrac, scrollBarWidth, scrollBarWidth));
+            float hh = scrollRegion - scrollBarHeight;
+            GUIX.fillRect(new Rect(0, 2 * PADDING + scrollBarWidth + hh * scrollFrac, scrollBarWidth, scrollBarHeight));
             TextureUtility.drawTexture(new Rect(0, h - PADDING - scrollBarWidth, scrollBarWidth, scrollBarWidth), arrowTexture, AspectType.FIT_IN_REGION, -90);
             GUIX.endOpacity();
             GUIX.endClip();
@@ -92,6 +95,8 @@ public class ScrollMenu : IMenu {
     }
 
     public override void onDispose() {
+        base.onDispose();
+
         menu.Dispose();
         menu = null;
 

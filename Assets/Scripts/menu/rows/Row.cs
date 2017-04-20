@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class Row : IRow {
     private float height;
+    private bool doSupercedeChildClick = false;
 
     public Row() {
         height = 0;
@@ -12,6 +13,10 @@ public class Row : IRow {
 
     public Row(float height) {
         this.height = height;
+    }
+
+    public void setSupercedeChildClick(bool yes) {
+        doSupercedeChildClick = yes;
     }
 
     private struct Pair {
@@ -75,8 +80,16 @@ public class Row : IRow {
             x += sw;
         }
 
-        if (!alreadyClicked) {
-            return GUIX.didTapInsideRect(position);
+        drawTouchRing(position);
+
+        if (doSupercedeChildClick || !alreadyClicked) {
+            if(GUIX.didTapInsideRect(position)) {
+                onClick();
+                return true;
+            }
+            else {
+                return false;
+            }
         }
         else {
             return false;
@@ -121,6 +134,8 @@ public class Row : IRow {
     }
 
     public override void onDispose() {
+        base.onDispose();
+
         for (int i = 0; i < items.Count; i++) {
             items[i].item.Dispose();
         }

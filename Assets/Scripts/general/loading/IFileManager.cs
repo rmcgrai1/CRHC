@@ -37,6 +37,10 @@ public abstract class IFileManager {
     public void popDirectory() {
         Directory.SetCurrentDirectory(directories.Pop());
     }
+
+    public int getDirectoryStackSize() {
+        return directories.Count;
+    }
 }
 
 public enum WorkDirectoryType {

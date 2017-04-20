@@ -21,6 +21,8 @@ namespace general.number.smooth {
             this.endValue = endValue;
         }
 
+        public void setFraction(float fraction) { linearPart.setFraction(fraction); }
+
         public float getTargetFraction() { return linearPart.getTargetFraction(); }
         public void setTargetFraction(float targetFraction) { linearPart.setTargetFraction(targetFraction); }
         public void setDirection(bool forward) { linearPart.setDirection(forward); }
@@ -45,5 +47,6 @@ namespace general.number.smooth {
 
         public void update() { linearPart.update(); }
         public bool isDone() { return linearPart.isDone(); }
+        public void complete() { linearPart.complete(); }
     }
 }

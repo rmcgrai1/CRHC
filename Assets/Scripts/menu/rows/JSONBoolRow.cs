@@ -21,6 +21,8 @@ public class JSONBoolRow : Row {
 
         checkbox = new CheckboxItem(dict.Value<bool>(key));
         addItem(checkbox, 1);
+
+        setTouchable(true);
     }
 
     public static string SplitCamelCase(string input) {

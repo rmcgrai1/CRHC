@@ -48,6 +48,8 @@ public class VuforiaMenu : IMenu {
     }
 
     public override void onDispose() {
+        base.onDispose();
+
         menu.Dispose();
         menu = null;
     }
