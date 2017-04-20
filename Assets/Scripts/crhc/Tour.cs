@@ -1,9 +1,5 @@
 ﻿using Newtonsoft.Json.Linq;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using System;
-using generic;
 using UnityEngine.SceneManagement;
 
 public class Tour : CrhcFolder<Landmark> {
@@ -127,7 +123,7 @@ public class Tour : CrhcFolder<Landmark> {
 
                     Row audioTranscriptionRow = new Row();
                     audioTranscriptionRow.setPadding(true, false, true);
-                    
+
                     TextItem audioTranscriptionItem = new TextItem(audioClip.Value<string>("audioTranscription"));
                     audioTranscriptionItem.setTextAnchor(TextAnchor.UpperLeft);
                     audioTranscriptionRow.addItem(audioTranscriptionItem, 1);
@@ -180,10 +176,10 @@ public class Tour : CrhcFolder<Landmark> {
         menu.addRow(new ClearCacheRow());
 
         IMenu scrollMenu = new ScrollMenu(menu);
-        IMenu fadeInMenu = new FadeInMenu(scrollMenu, CRHC.SPEED_FADE_IN);
+        IMenu fadeInMenu = new FadeInMenu(scrollMenu);
         fadeInMenu.setColor(CRHC.COLOR_GRAY_DARK);
 
-        return new BlackoutTransitionMenu(new TourMenu(fadeInMenu, getUrl() + "header.jpg"), CRHC.SPEED_FADE_IN);
+        return new BlackoutTransitionMenu(new TourMenu(fadeInMenu, getUrl() + "header.jpg"));
     }
 
     private class AudioButton : ImageItem {

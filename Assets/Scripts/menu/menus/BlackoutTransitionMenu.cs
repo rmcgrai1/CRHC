@@ -1,47 +1,29 @@
-﻿using System;
+﻿using general.number.smooth;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using UnityEngine;
 
 public class BlackoutTransitionMenu : IMenu {
     private IMenu menu;
-    private float fadeInAmount = 0, fadeSpeed;
+    private ISmoothNumber fadeAmount;
     private Color color;
 
-    public BlackoutTransitionMenu(IMenu menu, float fadeInSpeed) {
+    public BlackoutTransitionMenu(IMenu menu) {
         this.menu = menu;
-        this.fadeSpeed = fadeInSpeed;
+        fadeAmount = new LinearNumber(0, 1, 1f);
     }
 
     public override bool enter() {
-        bool val = false;
+        fadeAmount.setDirection(true);
+        fadeAmount.update();
 
-        float fadeInDelta = ((1 - fadeInAmount) / fadeSpeed) * Time.fixedDeltaTime;
-        if (fadeInDelta < .05) {
-            fadeInAmount = 1;
-            val = true;
-        }
-        else {
-            fadeInAmount += fadeInDelta;
-        }
-
-        return menu.enter() && val;
+        return menu.enter() && fadeAmount.isDone();
     }
 
     public override bool exit(bool isClosing) {
-        bool val = false;
+        fadeAmount.setDirection(false);
+        fadeAmount.update();
 
-        float fadeInDelta = ((0 - fadeInAmount) / fadeSpeed) * Time.fixedDeltaTime;
-        if (fadeInAmount < .01) {
-            fadeInAmount = 0;
-            val = true;
-        }
-        else {
-            fadeInAmount += fadeInDelta;
-        }
-
-        return menu.exit(isClosing) && val;
+        return menu.exit(isClosing) && fadeAmount.isDone();
     }
 
     public override void addRow(IRow row) {
@@ -51,18 +33,17 @@ public class BlackoutTransitionMenu : IMenu {
     public override void draw(float w, float h) {
         menu.draw(w, h);
 
-        GUIX.beginOpacity(1 - fadeInAmount);
-        //GUIX.fillRect(new Rect(0, 0, w, h), Color.black);
+        GUIX.beginOpacity(1 - fadeAmount.get());
+        GUIX.fillRect(new Rect(0, 0, w, h), Color.black);
         GUIX.endOpacity();
     }
 
-    public override float getHeight(float w) {
-        return menu.getHeight(w);
+    protected override float calcPixelHeight(float w) {
+        return menu.getPixelHeight(w);
     }
 
     public override void reset() {
         menu.reset();
-        fadeInAmount = 0;
     }
 
     public override void setColor(Color color) {

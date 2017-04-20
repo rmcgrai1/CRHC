@@ -4,13 +4,7 @@ All Rights Reserved.
 Confidential and Proprietary - Protected under copyright and other laws.
 ==============================================================================*/
 
-using System;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
-using UnityEngine;
-
-namespace Vuforia
-{
+namespace Vuforia {
     /// <summary>
     /// This Component can be used to create new ImageTargets at runtime. It can be configured to start scanning automatically
     /// or via a call from an external script.

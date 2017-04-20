@@ -1,12 +1,9 @@
 ﻿using UnityEngine;
-using System.Collections.Generic;
 using System.Collections;
 using System;
-using generic;
-using Vuforia;
 using Newtonsoft.Json.Linq;
-using generic.number;
-using generic.rendering;
+using general.number;
+using general.rendering;
 
 public class Landmark : CrhcFolder<Experience>, IComparable<Landmark> {
     private Reference<byte[]> dat;
@@ -186,11 +183,11 @@ public class Landmark : CrhcFolder<Experience>, IComparable<Landmark> {
         row.setPadding(true, true, true);
 
         IMenu scrollMenu = new ScrollMenu(menu);
-        IMenu fadeInMenu = new FadeInMenu(scrollMenu, CRHC.SPEED_FADE_IN);
+        IMenu fadeInMenu = new FadeInMenu(scrollMenu);
 
         fadeInMenu.setColor(CRHC.COLOR_BLUE_LIGHT);
 
-        return new BlackoutTransitionMenu(fadeInMenu, CRHC.SPEED_FADE_IN);
+        return new BlackoutTransitionMenu(fadeInMenu);
     }
 
     public int CompareTo(Landmark other) {
@@ -237,7 +234,7 @@ public class Landmark : CrhcFolder<Experience>, IComparable<Landmark> {
             arrowTexture = null;
         }
 
-        public override float getHeight(float w) {
+        protected override float calcPixelHeight(float w) {
             return CRHC.SIZE_BACK_BUTTON.getAs(NumberType.PIXELS) + 2 * PADDING;
         }
     }

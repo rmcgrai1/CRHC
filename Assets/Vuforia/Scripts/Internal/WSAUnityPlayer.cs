@@ -12,8 +12,6 @@ countries.
 #endif
 #endif
 
-using System;
-using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using UnityEngine;
 #if HOLOLENS_API_AVAILABLE
@@ -21,8 +19,7 @@ using UnityEngine.VR.WSA;
 #endif
 
 
-namespace Vuforia
-{
+namespace Vuforia {
     using TrackableIdPair = VuforiaManager.TrackableIdPair;
 
     /// <summary>
@@ -30,8 +27,7 @@ namespace Vuforia
     /// (size, orientation changed) and delegate this to native.
     /// These are used by Unity Extension code and should usually not be called by app code.
     /// </summary>
-    class WSAUnityPlayer : IUnityPlayer
-    {
+    class WSAUnityPlayer : IUnityPlayer {
 #if HOLOLENS_API_AVAILABLE
         #region NESTED
 
@@ -127,26 +123,22 @@ namespace Vuforia
         /// <summary>
         /// Loads native plugin libraries on platforms where this is explicitly required.
         /// </summary>
-        public void LoadNativeLibraries()
-        {
+        public void LoadNativeLibraries() {
         }
 
         /// <summary>
         /// Initialized platform specific settings
         /// </summary>
-        public void InitializePlatform()
-        {
+        public void InitializePlatform() {
             setPlatFormNative();
         }
 
         /// <summary>
         /// Initializes Vuforia
         /// </summary>
-        public VuforiaUnity.InitError InitializeVuforia(string licenseKey)
-        {
+        public VuforiaUnity.InitError InitializeVuforia(string licenseKey) {
             int errorCode = initVuforiaWSA(licenseKey);
-            if (errorCode >= 0)
-            {
+            if (errorCode >= 0) {
                 InitializeSurface();
 
 #if HOLOLENS_API_AVAILABLE
@@ -167,8 +159,7 @@ namespace Vuforia
         /// <summary>
         /// Called on start each time a new scene is loaded
         /// </summary>
-        public void StartScene()
-        {
+        public void StartScene() {
 #if HOLOLENS_API_AVAILABLE
                 // This determines if we are starting on a holographic device
                 if (UnityEngine.VR.VRSettings.loadedDeviceName.Equals(UNITY_HOLOLENS_IDENTIFIER)
@@ -186,14 +177,11 @@ namespace Vuforia
         /// Called from Update, checks for various life cycle events that need to be forwarded
         /// to Vuforia, e.g. orientation changes
         /// </summary>
-        public void Update()
-        {
-            if (SurfaceUtilities.HasSurfaceBeenRecreated())
-            {
+        public void Update() {
+            if (SurfaceUtilities.HasSurfaceBeenRecreated()) {
                 InitializeSurface();
             }
-            else
-            {
+            else {
                 // if Unity reports that the orientation has changed, set it correctly in native
                 ScreenOrientation currentOrientation = GetActualScreenOrientation();
 
@@ -203,68 +191,59 @@ namespace Vuforia
 
         }
 
-        public void Dispose()
-        {
+        public void Dispose() {
         }
 
         /// <summary>
         /// Pauses Vuforia
         /// </summary>
-        public void OnPause()
-        {
+        public void OnPause() {
             VuforiaUnity.OnPause();
         }
 
         /// <summary>
         /// Resumes Vuforia
         /// </summary>
-        public void OnResume()
-        {
+        public void OnResume() {
             VuforiaUnity.OnResume();
         }
 
         /// <summary>
         /// Deinitializes Vuforia
         /// </summary>
-        public void OnDestroy()
-        {
+        public void OnDestroy() {
             VuforiaUnity.Deinit();
         }
 
 
-        private void InitializeSurface()
-        {
+        private void InitializeSurface() {
             SurfaceUtilities.OnSurfaceCreated();
 
             SetUnityScreenOrientation();
         }
 
-        private void SetUnityScreenOrientation()
-        {
+        private void SetUnityScreenOrientation() {
             mScreenOrientation = GetActualScreenOrientation();
 
             SurfaceUtilities.SetSurfaceOrientation(mScreenOrientation);
 
             // set the native orientation (only required on iOS and WSA)
-            setSurfaceOrientationWSA((int) mScreenOrientation);
-        }        
- 
+            setSurfaceOrientationWSA((int)mScreenOrientation);
+        }
+
         /// <summary>
         /// There is a known Unity issue for Windows 10 UWP apps where the initial orientation is wrongly
         /// reported as AutoRotation instead of the actual orientation.
         /// This method tries to infer the screen orientation from the device orientation if this is the case.
         /// </summary>
         /// <returns></returns>
-        private ScreenOrientation GetActualScreenOrientation()
-        {
+        private ScreenOrientation GetActualScreenOrientation() {
             ScreenOrientation orientation = Screen.orientation;
 
-            if (orientation == ScreenOrientation.AutoRotation)
-            {
+            if (orientation == ScreenOrientation.AutoRotation) {
                 DeviceOrientation devOrientation = Input.deviceOrientation;
 
-                switch (devOrientation)
-                {
+                switch (devOrientation) {
                     case DeviceOrientation.LandscapeLeft:
                         orientation = ScreenOrientation.LandscapeLeft;
                         break;

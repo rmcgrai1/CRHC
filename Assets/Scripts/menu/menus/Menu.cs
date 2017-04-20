@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class Menu : IMenu {
@@ -15,7 +12,7 @@ public class Menu : IMenu {
         rows.Add(row);
     }
 
-    public override float getHeight(float w) {
+    protected override float calcPixelHeight(float w) {
         float h = 0;
         foreach (IRow row in rows) {
             h += row.getPixelHeight(w);
@@ -24,14 +21,14 @@ public class Menu : IMenu {
     }
 
     public override void draw(float w, float h) {
-        bool handleOffscreen = false;
+        bool handleOffscreen = true;
 
         float y = 0;
 
         // TODO: Limit ys to just those onscreen?
         // TODO: Prevent from recalculating getHeight so much?
 
-        float menuH = getHeight(w);
+        float menuH = getPixelHeight(w);
         GUIX.fillRect(new Rect(0, 0, w, menuH), color);
 
         Rect clipRect = GUIX.getClipRect();

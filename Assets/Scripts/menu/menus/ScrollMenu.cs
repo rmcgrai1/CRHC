@@ -1,5 +1,5 @@
-﻿using generic;
-using generic.mobile;
+﻿using general;
+using general.mobile;
 using System;
 using UnityEngine;
 
@@ -25,7 +25,7 @@ public class ScrollMenu : IMenu {
         // TODO: Pass w/h in via draw, or constructor??
         // might not work right?
 
-        float menuH = menu.getHeight(w), scrollY;
+        float menuH = menu.getPixelHeight(w), scrollY;
         float heightDiff = menuH - h;
 
         ITouch iTouch = ServiceLocator.getITouch();
@@ -58,8 +58,8 @@ public class ScrollMenu : IMenu {
         scrollFrac -= (iTouch.getDragVector().y / heightDiff);
     }
 
-    public override float getHeight(float w) {
-        return menu.getHeight(w);
+    protected override float calcPixelHeight(float w) {
+        return menu.getPixelHeight(w);
     }
 
     public override void reset() {

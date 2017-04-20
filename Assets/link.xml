@@ -7,7 +7,7 @@
     </assembly>
     <assembly fullname="System">
         <namespace fullname="System.Runtime.InteropServices" preserve="all"/>
-        <namespace fullname="System.Collections.Generic;" preserve="all"/>
+        <namespace fullname="System.Collections.general;" preserve="all"/>
         <namespace fullname="System.Linq;" preserve="all"/>
         <namespace fullname="System.Text.RegularExpressions;" preserve="all"/>
         <namespace fullname="System.IO;" preserve="all"/>

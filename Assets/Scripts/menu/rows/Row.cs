@@ -1,4 +1,4 @@
-using generic.number;
+using general.number;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -83,7 +83,7 @@ public class Row : IRow {
         }
     }
 
-    public override float getPixelHeight(float w) {
+    protected override float calcPixelHeight(float w) {
         float totalPriority = 0, sw;
         foreach (Pair pair in items) {
             totalPriority += pair.priority;
@@ -101,7 +101,7 @@ public class Row : IRow {
             item = pair.item;
             sw = pair.priority / totalPriority * w;
 
-            h = Math.Max(h, item.getHeight(sw));
+            h = Math.Max(h, item.getPixelHeight(sw));
         }
 
         if (doYPadTop) {

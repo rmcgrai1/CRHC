@@ -1,5 +1,5 @@
-﻿using generic.number;
-using generic.rendering;
+﻿using general.number;
+using general.rendering;
 using System;
 using UnityEngine;
 
@@ -42,13 +42,13 @@ public class PaneRow : IRow {
         }
 
         float headH = headRow.getPixelHeight(w);
-        float padding = CRHC.PADDING_H.getAs(NumberType.PIXELS), s = .6f, arrowW = padding*s;
-        Rect arrowRect = new Rect(padding*(1-s)/2, headH/2 - arrowW/2, arrowW, arrowW);
+        float padding = CRHC.PADDING_H.getAs(NumberType.PIXELS), s = .6f, arrowW = padding * s;
+        Rect arrowRect = new Rect(padding * (1 - s) / 2, headH / 2 - arrowW / 2, arrowW, arrowW);
         float angle = 90 * openFrac;
 
         TextureUtility.drawTexture(arrowRect, arrowTexture, CRHC.COLOR_GRAY_DARK, AspectType.FIT_IN_REGION, angle);
 
-        float h = subMenu.getHeight(w) * openFrac;
+        float h = subMenu.getPixelHeight(w) * openFrac;
         if (h > .01) {
             GUIX.beginClip(new Rect(0, headRow.getPixelHeight(w), w, h));
             subMenu.draw(w, h);
@@ -58,11 +58,13 @@ public class PaneRow : IRow {
         return false;
     }
 
-    public override float getPixelHeight(float w) {
+    protected override float calcPixelHeight(float w) {
+        invalidateHeight();
+
         float h;
         h = headRow.getPixelHeight(w);
 
-        h += subMenu.getHeight(w) * openFrac;
+        h += subMenu.getPixelHeight(w) * openFrac;
         return h;
     }
 

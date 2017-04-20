@@ -1,10 +1,8 @@
-﻿using generic;
-using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json.Linq;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
-using UnityEngine;
 
 public abstract class CrhcItem : Loadable, IDisposable {
     private CrhcItem parent;

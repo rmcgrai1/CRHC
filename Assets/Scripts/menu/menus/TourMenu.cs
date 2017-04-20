@@ -1,5 +1,5 @@
-﻿using generic;
-using generic.rendering;
+﻿using general;
+using general.rendering;
 using UnityEngine;
 
 public class TourMenu : IMenu {
@@ -27,16 +27,19 @@ public class TourMenu : IMenu {
 
         float headerFrac = .3f, menuFrac = 1 - headerFrac;
 
-        // Draw BG.
-        TextureUtility.drawTexture(new Rect(0, 0, w, h * headerFrac), bg, AspectType.CROP_IN_REGION);
-
         GUIX.beginClip(new Rect(0, h * headerFrac, w, h * menuFrac));
         menu.draw(w, h * menuFrac);
         GUIX.endClip();
+
+        // Draw BG.
+        Rect bgRect = new Rect(0, 0, w, h * headerFrac);
+        GUIX.beginClip(bgRect);
+        TextureUtility.drawTexture(bgRect, bg, AspectType.CROP_IN_REGION);
+        GUIX.endClip();
     }
 
-    public override float getHeight(float w) {
-        return menu.getHeight(w);
+    protected override float calcPixelHeight(float w) {
+        return menu.getPixelHeight(w);
     }
 
     public override void reset() {

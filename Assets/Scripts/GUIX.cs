@@ -1,12 +1,7 @@
-﻿using generic;
-using generic.mobile;
-using System;
+﻿using general.mobile;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
 using UnityEngine;
-using UnityEngine.Rendering;
 
 public static class GUIX {
     private static IList<GUIAction> actionList = new List<GUIAction>();
@@ -167,7 +162,7 @@ public static class GUIX {
         }
 
         beginColor(color);
-        _fillRect(position);
+        fillRect(position);
         endColor();
     }
 
@@ -236,6 +231,36 @@ public static class GUIX {
     public static void drawTexture(Rect region, Texture2D tex) {
         standardTextureStyle.normal.background = tex;
         GUI.Box(region, GUIContent.none, standardTextureStyle);
+
+        /*Rect currentRect = getClipRect();
+
+        float cX = currentRect.x, cY = currentRect.y, cW = currentRect.width, cH = currentRect.height;
+        float x = region.x, y = region.y, w = region.width, h = region.height;
+
+        float rX = x, rY = y, rW = w, rH = h;
+
+        if(rX < 0) {
+            rW += rX;
+            rX = 0;
+        }
+        if(rY < 0) {
+            rH += rY;
+            rY = 0;
+        }
+
+        float dX = (rX + rW) - (cW), dY = (rY + rH) - (cH);
+
+        if (dX > 0) {
+            rW -= dX;
+        }
+        if(dY > 0) {
+            rH -= dY;
+        }
+
+        Rect reg = new Rect(rX, rY, rW, rH);
+        Rect src = new Rect(0, 0, 1, 1);
+
+        Graphics.DrawTexture(reg, tex, src, 0, 0, 0, 0);*/
     }
 
     public static void drawTexture(Rect region, Texture2D tex, Rect texCoord) {
@@ -311,14 +336,9 @@ public static class GUIX {
 
         localClipStack.Push(newClipRect);
 
-        newClipRect = fixRect(newClipRect);
-
         Rect currentClipRect = getClipRect();
-        if (currentClipRect == null) {
-            currentClipRect = new Rect(0, 0, Screen.width, Screen.height);
-        }
 
-        newClipRect.position += currentClipRect.position;
+        newClipRect = fixRect(newClipRect);
         newClipRect.position += scrollPosition;
 
         float cW = currentClipRect.width, cH = currentClipRect.height,
@@ -326,12 +346,17 @@ public static class GUIX {
             nW = newClipRect.width, nH = newClipRect.height,
             dX = (nX + nW) - cW, dY = (nY + nH) - cH;
 
+        newClipRect.position += currentClipRect.position;
+
         if (dX > 0) {
             nW -= dX;
         }
         if (dY > 0) {
             nH -= dY;
         }
+
+        newClipRect.width = nW;
+        newClipRect.height = nH;
 
         clipStack.Push(newClipRect);
     }
@@ -364,7 +389,12 @@ public static class GUIX {
     }
 
     public static Rect getClipRect() {
-        return (clipStack.Count > 0) ? clipStack.Peek() : default(Rect);
+        if (clipStack.Count > 0) {
+            return clipStack.Peek();
+        }
+        else {
+            return new Rect(0, 0, AppRunner.getScreenWidth(), AppRunner.getScreenHeight());
+        }
     }
 
     public static Rect getLocalClipRect() {

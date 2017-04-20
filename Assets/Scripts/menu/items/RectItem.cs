@@ -20,7 +20,7 @@ public class RectItem : IItem {
         }
     }
 
-    public override float getHeight(float w) {
+    protected override float calcPixelHeight(float w) {
         return 30;
     }
 

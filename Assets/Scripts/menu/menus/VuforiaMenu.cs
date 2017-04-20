@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class VuforiaMenu : IMenu {
@@ -38,8 +35,8 @@ public class VuforiaMenu : IMenu {
         menu.draw(w, h);
     }
 
-    public override float getHeight(float w) {
-        return menu.getHeight(w);
+    protected override float calcPixelHeight(float w) {
+        return menu.getPixelHeight(w);
     }
 
     public override void reset() {

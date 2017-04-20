@@ -4,10 +4,6 @@ All Rights Reserved.
 Confidential and Proprietary - Protected under copyright and other laws.
 ==============================================================================*/
 
-using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
-
 
 namespace Vuforia
 {

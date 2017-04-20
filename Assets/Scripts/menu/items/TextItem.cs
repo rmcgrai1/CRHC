@@ -1,7 +1,5 @@
-﻿using generic.number;
-using System;
+﻿using general.number;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class TextItem : IItem {
     private GUIStyle style;
@@ -32,6 +30,7 @@ public class TextItem : IItem {
 
     public void setText(string text) {
         content.text = text;
+        //invalidateHeight();
     }
 
     public void setColor(Color color) {
@@ -41,7 +40,7 @@ public class TextItem : IItem {
     public void setFont(Font font) {
         style.font = font;
 
-        Number fontSize = null;
+        DistanceMeasure fontSize = null;
         if (font == CRHC.FONT_NORMAL) {
             fontSize = CRHC.FONT_HEIGHT_NORMAL;
         }
@@ -58,12 +57,12 @@ public class TextItem : IItem {
         if (fontSize != null) {
             style.fontSize = (int)fontSize.getAs(NumberType.PIXELS);
         }
+
+        //invalidateHeight();
     }
 
-    public override float getHeight(float w) {
-        float h = style.CalcHeight(content, w);
-
-        return h;
+    protected override float calcPixelHeight(float w) {
+        return style.CalcHeight(content, w);            
     }
 
     public override void onDispose() {
@@ -73,5 +72,6 @@ public class TextItem : IItem {
 
     public void setTextAnchor(TextAnchor textAnchor) {
         style.alignment = textAnchor;
+        //invalidateHeight();
     }
 }

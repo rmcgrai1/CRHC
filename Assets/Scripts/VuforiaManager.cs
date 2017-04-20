@@ -1,11 +1,11 @@
-﻿using generic;
-using generic.number;
-using generic.rendering;
+﻿using general;
+using general.number;
+using general.rendering;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Vuforia;
-using generic.unity;
+using general.unity;
 
 public class VuforiaManager {
     private static VuforiaManager instance;
@@ -67,12 +67,31 @@ public class VuforiaManager {
             iFileManager.pushDirectory(iFileManager.getBaseDirectory());
 
             // TODO: FIX ISSUE w/ LOADING FROM RESOURCES
-
             if (ds.Load(CachedLoader.convertWebToLocalPath(landmark.getXML().getPath(), PathType.RELATIVE), VuforiaUnity.StorageType.STORAGE_ABSOLUTE)) {
                 dataSets[landmark] = ds;
             }
             else {
-                ds = null;
+                IFileManager fm = ServiceLocator.getIFileManager();
+
+                string paXML = "tmp.xml", paDat = "tmp.dat";
+                Reference<string> fileXML = landmark.getXML();
+                Reference<byte[]> fileDat = landmark.getDat();
+
+                fm.writeToFile(paXML, fileXML.getResource());
+                fm.writeToFile(paDat, fileDat.getResource());
+
+                Debug.Log(fileXML.getPath());
+                Debug.Log(fileDat.getPath());
+
+                if (ds.Load(paXML, VuforiaUnity.StorageType.STORAGE_ABSOLUTE)) {
+                    dataSets[landmark] = ds;
+                }
+                else {
+                    ds = null;
+                }
+
+                fm.deleteFile(paXML);
+                fm.deleteFile(paDat);
             }
 
             iFileManager.popDirectory();
@@ -85,7 +104,7 @@ public class VuforiaManager {
 
             IEnumerable<TrackableBehaviour> tbs = TrackerManager.Instance.GetStateManager().GetTrackableBehaviours();
             foreach (TrackableBehaviour tb in tbs) {
-                // change generic name to include trackable name
+                // change general name to include trackable name
                 GameObject tbg = tb.gameObject;
 
                 DefaultTrackableEventThing dtet = GameObjectUtility.GetComponent<DefaultTrackableEventThing>(tbg);
@@ -136,11 +155,11 @@ public class VuforiaManager {
         t.DeactivateDataSet(ds);
         t.Start();
 
-        if(planeGroup != null) {
+        if (planeGroup != null) {
             planeGroup.SetActive(false);
             planeGroup = null;
         }
-        if(defaultTracker != null) {
+        if (defaultTracker != null) {
             defaultTracker.enabled = false;
             defaultTracker = null;
         }
@@ -256,7 +275,7 @@ public class VuforiaManager {
     }
 
     public void activate(Experience exp) {
-        if(!VuforiaBehaviour.Instance.enabled) {
+        if (!VuforiaBehaviour.Instance.enabled) {
             this.exp = exp;
 
             VuforiaBehaviour.Instance.enabled = true;
@@ -275,7 +294,7 @@ public class VuforiaManager {
             return;
         }
 
-        if(exp == null) {
+        if (exp == null) {
             return;
         }
 

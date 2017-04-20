@@ -1,7 +1,4 @@
-﻿using Newtonsoft.Json.Linq;
-using System.Collections;
-using System.Collections.Generic;
-using System;
+﻿using System;
 
 public class Server : CrhcFolder<Tour> {
     private string url;

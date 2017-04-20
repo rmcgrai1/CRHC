@@ -312,6 +312,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   shader: {fileID: 10753, guid: 0000000000000000f000000000000000, type: 0}
+  subtractiveShader: {fileID: 4800000, guid: dc3ed37f3f471cc4fb583795c2c29c6f, type: 3}
   doDrawLog: 0
   doDrawMemory: 0
   doDrawFPS: 1

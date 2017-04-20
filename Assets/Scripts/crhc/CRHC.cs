@@ -1,41 +1,34 @@
-﻿using generic.number;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using general.number;
 using UnityEngine;
 
 public static class CRHC {
-    public static readonly Color
-        COLOR_BLUE_DARK = new Color32(122, 192, 222, 255),
-        COLOR_BLUE_MEDIUM = new Color32(188, 230, 251, 255),
-        COLOR_BLUE_LIGHT = new Color32(221, 234, 241, 255),
-        COLOR_RED = new Color32(158, 11, 15, 255),
-        COLOR_TRANSPARENT = new Color32(0, 0, 0, 0),
-        COLOR_GRAY_DARK = new Color32(57, 56, 57, 255);
+	public static readonly Color
+		COLOR_BLUE_DARK = new Color32(122, 192, 222, 255),
+		COLOR_BLUE_MEDIUM = new Color32(188, 230, 251, 255),
+		COLOR_BLUE_LIGHT = new Color32(221, 234, 241, 255),
+		COLOR_RED = new Color32(158, 11, 15, 255),
+		COLOR_TRANSPARENT = new Color32(0, 0, 0, 0),
+		COLOR_GRAY_DARK = new Color32(57, 56, 57, 255);
 
-    public static readonly float
-		SPEED_FADE_IN = Time.fixedDeltaTime * 20; //20
+	public static readonly Font
+		FONT_TITLE = Resources.Load<Font>("Fonts/Roboto-Title"),
+		FONT_SUBTITLE = Resources.Load<Font>("Fonts/Roboto-Subtitle"),
+		FONT_NORMAL = Resources.Load<Font>("Fonts/Roboto-Regular"),
+		FONT_SOURCE = Resources.Load<Font>("Fonts/Roboto-Italic");
 
-    public static readonly Font
-        FONT_TITLE = Resources.Load<Font>("Fonts/Roboto-Title"),
-        FONT_SUBTITLE = Resources.Load<Font>("Fonts/Roboto-Subtitle"),
-        FONT_NORMAL = Resources.Load<Font>("Fonts/Roboto-Regular"),
-        FONT_SOURCE = Resources.Load<Font>("Fonts/Roboto-Italic");
+	public static readonly DistanceMeasure
+		FONT_HEIGHT_TITLE = new DistanceMeasure(),
+		FONT_HEIGHT_SUBTITLE = new DistanceMeasure(),
+		FONT_HEIGHT_NORMAL = new DistanceMeasure(),
+		FONT_HEIGHT_SOURCE = new DistanceMeasure(),
 
-    public static readonly Number
-        FONT_HEIGHT_TITLE = new Number(),
-        FONT_HEIGHT_SUBTITLE = new Number(),
-        FONT_HEIGHT_NORMAL = new Number(),
-        FONT_HEIGHT_SOURCE = new Number(),
+		SIZE_BACK_BUTTON = new DistanceMeasure(),
+		SIZE_HOME_BUTTON = new DistanceMeasure(),
+		SIZE_VUFORIA_FRAME = new DistanceMeasure(),
 
-        SIZE_BACK_BUTTON = new Number(),
-        SIZE_HOME_BUTTON = new Number(),
-        SIZE_VUFORIA_FRAME = new Number(),
+		PADDING_H = new DistanceMeasure(.08f, NumberType.SCREEN_WIDTH_FRACTION),
+		PADDING_V = new DistanceMeasure(15, NumberType.PIXELS);
 
-        PADDING_H = new Number(.08f, NumberType.SCREEN_WIDTH_FRACTION),
-        PADDING_V = new Number(15, NumberType.PIXELS);
-
-    public static readonly SortOrder
-        LANDMARK_SORTORDER = SortOrder.NUMBER;
+	public static readonly SortOrder
+		LANDMARK_SORTORDER = SortOrder.NUMBER;
 }

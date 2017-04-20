@@ -3,9 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 using UnityEngine.Profiling;
-using generic;
 using Newtonsoft.Json.Linq;
-using generic.number;
+using general.number;
 
 public class AppRunner : MonoBehaviour {
     // TODO: Use orientation of screen.

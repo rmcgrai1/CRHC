@@ -1,12 +1,16 @@
-﻿using generic;
-using generic.rendering;
-using System;
+﻿using general.number;
+using general.rendering;
 using UnityEngine;
 
 public class ImageItem : IItem {
     private Reference<Texture2D> texture;
     private AspectType aspectType;
     private Color color = Color.white;
+
+    public ImageItem(DistanceMeasure width, DistanceMeasure height, string imageUrl) {
+        texture = ServiceLocator.getILoader().load<Texture2D>(imageUrl);
+        aspectType = AspectType.CROP_IN_REGION;
+    }
 
     public ImageItem(string imageUrl) {
         texture = ServiceLocator.getILoader().load<Texture2D>(imageUrl);
@@ -25,7 +29,7 @@ public class ImageItem : IItem {
         }
     }
 
-    public override float getHeight(float w) {
+    protected override float calcPixelHeight(float w) {
         Texture2D tex = texture.getResource();
 
         if (aspectType == AspectType.HEIGHT_DEPENDENT_ON_WIDTH) {

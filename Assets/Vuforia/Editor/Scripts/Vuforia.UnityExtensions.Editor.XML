@@ -555,7 +555,7 @@
             <param name="insideMaterial">material used for the inside of the cylinder mesh</param>
             <returns></returns>
         </member>
-        <member name="M:Vuforia.EditorClasses.CylinderMeshFactory.AddSealingTriangles(System.Collections.Generic.List{UnityEngine.Vector3},System.Boolean)">
+        <member name="M:Vuforia.EditorClasses.CylinderMeshFactory.AddSealingTriangles(System.Collections.general.List{UnityEngine.Vector3},System.Boolean)">
             <summary>
             Create a circle for top or bottom geometry. Positions, normals, and texture coordinates are added.
             </summary>

@@ -855,7 +855,7 @@
             </summary>
             <param name="newVuMarks">list of new VuMarks from the latest state</param>
         </member>
-        <member name="M:Vuforia.VuMarkManagerImpl.UpdateLostVuMarks(System.Collections.Generic.HashSet{System.Int32})">
+        <member name="M:Vuforia.VuMarkManagerImpl.UpdateLostVuMarks(System.Collections.general.HashSet{System.Int32})">
             <summary>
             Disable VuMark-behaviours whose targets are not tracked anymore.
             Update list of lost VuMark-targets
@@ -2425,35 +2425,35 @@
             Global settings for Vuforia which are used for all scenes
             </summary>
         </member>
-        <member name="P:Vuforia.VuforiaAbstractConfiguration.GenericVuforiaConfiguration.LicenseKey">
+        <member name="P:Vuforia.VuforiaAbstractConfiguration.generalVuforiaConfiguration.LicenseKey">
             <summary>
             The license key can only be changed before the first scene is loaded,
             e.g. with the RuntimeInitializeOnLoadMethod-attribute
             </summary>
         </member>
-        <member name="P:Vuforia.VuforiaAbstractConfiguration.GenericVuforiaConfiguration.DelayedInitialization">
+        <member name="P:Vuforia.VuforiaAbstractConfiguration.generalVuforiaConfiguration.DelayedInitialization">
             <summary>
             If delayed initialization is enabled, the developer has to initialize Vuforia
             manually with <see cref="M:Vuforia.VuforiaRuntime.InitVuforia"/>.
             </summary>
         </member>
-        <member name="P:Vuforia.VuforiaAbstractConfiguration.GenericVuforiaConfiguration.CameraDeviceMode">
+        <member name="P:Vuforia.VuforiaAbstractConfiguration.generalVuforiaConfiguration.CameraDeviceMode">
             <summary>
             The mode used for camera capturing and video rendering.
             </summary>
         </member>
-        <member name="P:Vuforia.VuforiaAbstractConfiguration.GenericVuforiaConfiguration.MaxSimultaneousImageTargets">
+        <member name="P:Vuforia.VuforiaAbstractConfiguration.generalVuforiaConfiguration.MaxSimultaneousImageTargets">
             <summary>
             How many targets to detect and track at the same time
             </summary>
             This setting affects image, cylinder and multi targets
         </member>
-        <member name="P:Vuforia.VuforiaAbstractConfiguration.GenericVuforiaConfiguration.MaxSimultaneousObjectTargets">
+        <member name="P:Vuforia.VuforiaAbstractConfiguration.generalVuforiaConfiguration.MaxSimultaneousObjectTargets">
             <summary>
             How many object targets to detect and track at the same time
             </summary>
         </member>
-        <member name="P:Vuforia.VuforiaAbstractConfiguration.GenericVuforiaConfiguration.UseDelayedLoadingObjectTargets">
+        <member name="P:Vuforia.VuforiaAbstractConfiguration.generalVuforiaConfiguration.UseDelayedLoadingObjectTargets">
             <summary>
             Loading for object target datasets can be delayed upon first detection
             This setting tells the tracker to enable/disable delayed loading 
@@ -2462,12 +2462,12 @@
             but the initial detection time of targets will increase.
             </summary>
         </member>
-        <member name="P:Vuforia.VuforiaAbstractConfiguration.GenericVuforiaConfiguration.CameraDirection">
+        <member name="P:Vuforia.VuforiaAbstractConfiguration.generalVuforiaConfiguration.CameraDirection">
             <summary>
             Camera direction can face in the opposite or the same direction as the screen.
             </summary>
         </member>
-        <member name="P:Vuforia.VuforiaAbstractConfiguration.GenericVuforiaConfiguration.MirrorVideoBackground">
+        <member name="P:Vuforia.VuforiaAbstractConfiguration.generalVuforiaConfiguration.MirrorVideoBackground">
             <summary>
             Whether the video background image is mirrored horizontally
             </summary>
@@ -2712,7 +2712,7 @@
         </member>
         <member name="F:Vuforia.InstanceIdType.BYTES">
             <summary>
-            Generic byte data, stored in little-endian order in the buffer.
+            general byte data, stored in little-endian order in the buffer.
             For example, and ID of 0x123456 would appear as { 0x56, 0x34, 0x12 }
             </summary>
         </member>
@@ -3837,7 +3837,7 @@
         </member>
         <member name="M:Vuforia.VuforiaManagerImpl.UnmarshalTrackables(Vuforia.VuforiaManagerImpl.FrameState)">
             <summary>
-            Unmarshal generic trackables and props from frame state
+            Unmarshal general trackables and props from frame state
             </summary>
         </member>
         <member name="M:Vuforia.VuforiaManagerImpl.UnmarshalWordTrackables(Vuforia.VuforiaManagerImpl.FrameState)">
@@ -4622,13 +4622,13 @@
             create a new instance of the input surface behaviour
             </summary>
         </member>
-        <member name="M:Vuforia.ReconstructionAbstractBehaviour.UnregisterDeletedProps(System.Collections.Generic.List{Vuforia.Prop})">
+        <member name="M:Vuforia.ReconstructionAbstractBehaviour.UnregisterDeletedProps(System.Collections.general.List{Vuforia.Prop})">
             <summary>
             Unregisters no longer existing Props in SmartTerrainManager and StateManager (as TrackableBehaviours),
             deletes the game objects
             </summary>
         </member>
-        <member name="M:Vuforia.ReconstructionAbstractBehaviour.UnregisterDeletedSurfaces(System.Collections.Generic.List{Vuforia.Surface})">
+        <member name="M:Vuforia.ReconstructionAbstractBehaviour.UnregisterDeletedSurfaces(System.Collections.general.List{Vuforia.Surface})">
             <summary>
             Unregisters no longer existing Surfaces in SmartTerrainManager and StateManager (as TrackableBehaviours),
             deletes the game objects
@@ -5665,7 +5665,7 @@
             <summary>
             Define a VuMark template as world center. The first detected VuMark-target with this template
             is considered as world center.
-            If only a specific VuMark-behaviour should be used as world center, use the generic WorldCenter-property.
+            If only a specific VuMark-behaviour should be used as world center, use the general WorldCenter-property.
             </summary>
         </member>
         <member name="P:Vuforia.VuforiaManager.ARCameraTransform">
@@ -6245,7 +6245,7 @@
             Setup word list, custom word list, and filter list based on information from editor inspector
             </summary>
         </member>
-        <member name="M:Vuforia.TextRecoAbstractBehaviour.NotifyEventHandlersOfChanges(System.Collections.Generic.IEnumerable{Vuforia.Word},System.Collections.Generic.IEnumerable{Vuforia.WordResult})">
+        <member name="M:Vuforia.TextRecoAbstractBehaviour.NotifyEventHandlersOfChanges(System.Collections.general.IEnumerable{Vuforia.Word},System.Collections.general.IEnumerable{Vuforia.WordResult})">
             <summary>
             Notifies all registered text reco event handlers about new and lost words
             </summary>
@@ -6946,7 +6946,7 @@
         </member>
         <member name="T:Vuforia.WordTemplateMode">
             <summary>
-            Specifies if a word prefab is used as generic template or only for specific words
+            Specifies if a word prefab is used as general template or only for specific words
             </summary>
         </member>
         <member name="T:Vuforia.WordAbstractBehaviour">
