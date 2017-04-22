@@ -4,13 +4,17 @@ using UnityEngine;
 
 public class TourMenu : IMenu {
     private IMenu menu;
-    private Reference<Texture2D> bg;
+    private Reference<Texture2D> bg, logo;
 
     public TourMenu(IMenu menu, string bgPath) {
         this.menu = menu;
 
-        ILoader loader = ServiceLocator.getILoader();
-        bg = loader.load<Texture2D>(bgPath);
+        ILoader il = ServiceLocator.getILoader();
+        bg = il.load<Texture2D>(bgPath);
+        logo = il.load<Texture2D>(CachedLoader.SERVER_PATH + "logo.png");
+
+        setTouchable(true);
+
     }
 
     public override bool enter() { return menu.enter(); }
@@ -38,6 +42,18 @@ public class TourMenu : IMenu {
         TextureUtility.drawTexture(bgRect, bg, AspectType.CROP_IN_REGION);
         GUIX.endColor();
         GUIX.endClip();
+
+        // Draw logo.
+        float aspect = TextureUtility.getAspectRatio(logo);
+
+        float logoW = w/3, logoH = logoW / aspect;
+        Rect logoRegion = new Rect(w - logoW, 0, logoW, logoH);
+        logoRegion = TextureUtility.drawTexture(logoRegion, logo, AspectType.FIT_IN_REGION);
+        if(GUIX.didTapInsideRect(logoRegion)) {
+            onClick();
+            Application.OpenURL("https://www.iusb.edu/civil-rights/");
+        }
+        drawTouchRing(logoRegion);
     }
 
     protected override float calcPixelHeight(float w) {

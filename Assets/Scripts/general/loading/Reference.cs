@@ -104,7 +104,7 @@ public class Reference<T> : Reference where T : class {
 
         byteData = null;
 
-        if(loadOperation.getLoadType() == LoadType.WWW) {
+        if(loadOperation.getStoreType() == StoreType.WWW) {
             Type type = typeof(T);
             if (type == typeof(Texture2D)) {
                 UnityEngine.Object.Destroy(data as Texture2D);

@@ -3,7 +3,7 @@ using System.Collections;
 using UnityEngine;
 
 public class ResourceLoader : ILoader {
-	public override IEnumerator loadCoroutine<T>(Reference<T> reference, string path, bool forceReload) {
+	public override IEnumerator loadCoroutine<T>(Reference<T> reference, string path, LoadType loadType) {
 		ServiceLocator.getILog().println(LogType.IO, "Loading " + typeof(T) + " from \"" + path + "\"...");
 
 		Type type = typeof(T), assetType = type;

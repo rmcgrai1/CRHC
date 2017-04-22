@@ -38,7 +38,7 @@ public class Tour : CrhcFolder<Landmark> {
         TextItem titleText = new TextItem(getName().ToUpper());
         titleText.setColor(CrhcConstants.COLOR_RED);
         titleText.setFont(CrhcConstants.FONT_TITLE);
-        headerTitle.addItem(titleText, 1);
+        headerTitle.addItem(titleText);
 
         menu.addRow(headerTitle);
 
@@ -47,19 +47,11 @@ public class Tour : CrhcFolder<Landmark> {
         headerDesc.setColor(CrhcConstants.COLOR_BLUE_LIGHT);
 
         TextItem descText = new TextItem(getDescription());
-        headerDesc.addItem(descText, 1);
+        headerDesc.addItem(descText);
 
         menu.addRow(headerDesc);
 
         Row paddingRow = new Row(5);
-
-        menu.addRow(paddingRow);
-        menu.addRow(new HomePageRow());
-        menu.addRow(paddingRow);
-        menu.addRow(new SettingsRow());
-        menu.addRow(paddingRow);
-        menu.addRow(new SurveyRow());
-
         foreach (Landmark child in this) {
             if (!child.isVisible()) {
                 continue;
@@ -179,6 +171,11 @@ public class Tour : CrhcFolder<Landmark> {
             menu.addRow(panerow);
         }
 
+        menu.addRow(paddingRow);
+        menu.addRow(new SurveyRow());
+        menu.addRow(paddingRow);
+        menu.addRow(new SettingsRow());
+
         IMenu scrollMenu = new ScrollMenu(menu);
         IMenu fadeInMenu = new FadeInMenu(scrollMenu);
         fadeInMenu.setColor(CrhcConstants.COLOR_GRAY_DARK);
@@ -215,16 +212,6 @@ public class Tour : CrhcFolder<Landmark> {
         public override void onClick() {
             base.onClick();
             landmark.load();
-        }
-    }
-
-    private class HomePageRow : IImageButtonRow {
-        public HomePageRow() : base(CachedLoader.SERVER_PATH + "logo.png") {
-        }
-
-        public override void onClick() {
-            base.onClick();
-            Application.OpenURL("https://www.iusb.edu/civil-rights/");
         }
     }
 
@@ -273,7 +260,7 @@ public class Tour : CrhcFolder<Landmark> {
             SpaceItem padding = new SpaceItem();
 
             Row backRow = new Row();
-            backRow.addItem(new SettingsBackButton(), 1);
+            backRow.addItem(new SettingsBackButton());
             menu.addRow(backRow);
 
             Row titleRow = new Row();
@@ -281,8 +268,9 @@ public class Tour : CrhcFolder<Landmark> {
 
             TextItem titleText = new TextItem("Settings");
             titleText.setColor(CrhcConstants.COLOR_RED);
-            titleText.setFont(CrhcConstants.FONT_SUBTITLE);
-            titleRow.addItem(titleText, 1);
+            titleText.setFont(CrhcConstants.FONT_TITLE);
+            titleText.setTextAnchor(TextAnchor.MiddleCenter);
+            titleRow.addItem(titleText);
 
             menu.addRow(titleRow);
 
@@ -295,6 +283,8 @@ public class Tour : CrhcFolder<Landmark> {
                 menu.addRow(paddingRow);
                 menu.addRow(new JSONBoolRow(dict, key));
             }
+
+            jsonData.Clear();
 
             menu.addRow(paddingRow);
             menu.addRow(new ClearCacheRow());

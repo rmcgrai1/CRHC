@@ -37,10 +37,9 @@ public class TouchRing : IDisposable {
         float f = number.get(), s = CrhcConstants.SIZE_TOUCH_RING.getAs(general.number.NumberType.PIXELS) * f, b = 10000;
         GUIX.beginOpacity(1 - f);
         GUIX.drawTexture(new Rect(x - s / 2, y - s / 2, s, s), tex.getResource());
-        //GUIX.fillRect(new Rect(x - s / 2, y - s / 2, s, s));
         GUIX.endOpacity();
         GUIX.beginOpacity(f*(1 - f));
-        GUIX.fillRect(new Rect(-b/2, -b/2, b, b), Color.white);
+        GUIX.fillRect(new Rect(Vector2.zero, GUIX.getClipRect().size), Color.white);
         GUIX.endOpacity();
     }
 

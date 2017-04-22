@@ -33,6 +33,7 @@ public class Row : IRow {
     private Color color = CrhcConstants.COLOR_TRANSPARENT;
     private bool doXPad, doYPadTop, doYPadBottom;
 
+    public void addItem(IItem item) { addItem(item, 1); }
     public void addItem(IItem item, float priority) {
         items.Add(new Pair(item, priority));
     }
@@ -83,7 +84,7 @@ public class Row : IRow {
         drawTouchRing(position);
 
         if (doSupercedeChildClick || !alreadyClicked) {
-            if(GUIX.didTapInsideRect(position)) {
+            if (GUIX.didTapInsideRect(position)) {
                 onClick();
                 return true;
             }

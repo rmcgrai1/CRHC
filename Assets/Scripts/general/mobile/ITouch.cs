@@ -51,7 +51,7 @@ namespace general.mobile {
 
                 // TODO: Tweak these values.
                 // TODO: Change to be based on # inches.
-                if (Epoch.MillisElapsed(startTouchTime) < HOLD_TIME && dragDistance/Screen.dpi < .5) {
+                if (Epoch.MillisElapsed(startTouchTime) < HOLD_TIME && dragDistance / Screen.dpi < .5) {
                     _didTap = true;
                 }
                 else {
@@ -73,11 +73,11 @@ namespace general.mobile {
         }
 
         public Vector2 getDragVector() {
-            if(AppRunner.getIsUpright()) {
+            if (AppRunner.getIsUpright()) {
                 return new Vector2(dragVector.x * coolDownFrac, dragVector.y * coolDownFrac);
             }
             else {
-                return new Vector2(dragVector.y * coolDownFrac, - dragVector.x * coolDownFrac);
+                return new Vector2(dragVector.y * coolDownFrac, -dragVector.x * coolDownFrac);
             }
         }
 
@@ -86,12 +86,18 @@ namespace general.mobile {
         }
 
         public Vector2 getTouchPosition() {
+            float x, y;
+
             if (AppRunner.getIsUpright()) {
-                return touchPosition;
+                x = touchPosition.x;
+                y = touchPosition.y;
             }
             else {
-                return new Vector2(touchPosition.y, AppRunner.getScreenHeight()-touchPosition.x);
+                x = touchPosition.y;
+                y = AppRunner.getScreenHeight() - touchPosition.x;
             }
+
+            return new Vector2(x, y);
         }
 
         protected abstract Vector2 queryTouchPosition();

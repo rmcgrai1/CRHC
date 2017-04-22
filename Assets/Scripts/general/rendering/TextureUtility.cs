@@ -17,11 +17,21 @@ namespace general.rendering {
             return getUseRect(drawRect, contentSize, aspectType);
         }
 
+        public static float getAspectRatio(Reference<Texture2D> texture) {
+            return getAspectRatio(texture.getResource());
+        }
+        public static float getAspectRatio(Texture2D texture) {
+            return (texture != null) ? 1f * texture.width / texture.height : 1;
+        }
+        public static float getAspectRatio(Vector2 contentSize) {
+            return 1f * contentSize.x / contentSize.y;
+        }
+
         public static Rect getUseRect(Rect drawRect, Vector2 contentSize, AspectType aspectType) {
             float x = drawRect.x, y = drawRect.y, w = drawRect.width, h = drawRect.height;
             float texAspect, regionAspect;
 
-            texAspect = 1f * contentSize.x / contentSize.y;
+            texAspect = getAspectRatio(contentSize);
 
             if (h == 0) {
                 regionAspect = 1;
@@ -73,7 +83,8 @@ namespace general.rendering {
 
         private static IDictionary<Texture2D, Texture2D> targetTextures = new Dictionary<Texture2D, Texture2D>();
 
-        private static int INDEX_COUNT = 45;
+        private static int X_COUNT = 9, Y_COUNT = 5, INDEX_COUNT = X_COUNT * Y_COUNT;
+
         private static int angleToIndex(float angle) {
             return (int)Math.Round((angle + 90) / 180 * (INDEX_COUNT - 1));
         }
@@ -102,22 +113,8 @@ namespace general.rendering {
                 if (targetTextures.ContainsKey(texture)) {
                     targetTexture = targetTextures[texture];
 
-                    float pad = (s - sf) / 2;
-                    float xO = pad, yO = pad, f = (1f * sf) / s, xF = f / INDEX_COUNT, yF = f;
-
-                    /*if (angle > 270) {
-                        yF *= -1;
-                        angle = 360 - angle;
-                    }
-                    else if (angle > 180) {
-                        xF *= -1;
-                        yF *= -1;
-                        angle -= 180;
-                    }
-                    else if (angle > 90) {
-                        xF *= -1;
-                        angle = 180 - angle;
-                    }*/
+                    float pad = (s - sf) / 2f;
+                    float xO = pad, yO = pad, f = (1f * sf) / s, xF = f / X_COUNT, yF = f / Y_COUNT;
 
                     if (angle > 270) {
                         angle = angle - 360;
@@ -130,23 +127,27 @@ namespace general.rendering {
                     if (xF < 0) {
                         xO += sf;
                     }
-                    if (yF < 0) {
-                        float ff = -1f;
 
-                        yF = -yF * ff;
-                        yO += sf * ff;
-                    }
+                    int i = angleToIndex(angle);
+                    int xamt, yamt;
+                    xamt = i % X_COUNT;
+                    yamt = (i - xamt)/X_COUNT;
 
-                    xO += angleToIndex(angle) * s;
+                    xO += xamt * s;
+                    yO += yamt * s;
 
+                    float x0, y0;
+                    x0 = xO / (s * X_COUNT);
+                    y0 = yO / (s * Y_COUNT);
+                   
                     Rect coords;
-                    coords = new Rect((1f * xO) / (s * INDEX_COUNT), (1f * yO) / s, xF, yF);
+                    coords = new Rect(x0, y0, xF, yF);
 
                     GUIX.drawTexture(useRect, targetTexture, coords);
                 }
                 else {
-                    RenderTexture rotateTexture = new RenderTexture(s * INDEX_COUNT, s, 0);
-                    targetTextures[texture] = targetTexture = new Texture2D(s * INDEX_COUNT, s);
+                    RenderTexture rotateTexture = new RenderTexture(s * X_COUNT, s * Y_COUNT, 0);
+                    targetTextures[texture] = targetTexture = new Texture2D(s * X_COUNT, s * Y_COUNT);
 
                     RenderTexture.active = rotateTexture;
 
@@ -156,22 +157,24 @@ namespace general.rendering {
 
                     GL.PushMatrix();
                     GL.LoadOrtho();
-                    GL.LoadPixelMatrix(0, s * INDEX_COUNT, s, 0);
+                    GL.LoadPixelMatrix(0, s * X_COUNT, s * Y_COUNT, 0);
 
-                    for (int i = 0; i < INDEX_COUNT; i++) {
-                        Rect rect = new Rect(new Vector2(-sf / 2, -sf / 2), new Vector2(sf, sf));
+                    for (int y = 0; y < Y_COUNT; y++) {
+                        for (int x = 0; x < X_COUNT; x++) {
+                            Rect rect = new Rect(new Vector2(-sf / 2, -sf / 2), new Vector2(sf, sf));
 
-                        float ang = indexToAngle(i);
+                            float ang = indexToAngle(y*X_COUNT + x);
 
-                        GL.PushMatrix();
-                        GL.MultMatrix(Matrix4x4.TRS(new Vector3(s * i + s / 2, s / 2, 0), Quaternion.Euler(0, 0, ang), Vector3.one));
-                        Graphics.DrawTexture(rect, texture);
-                        GL.PopMatrix();
+                            GL.PushMatrix();
+                            GL.MultMatrix(Matrix4x4.TRS(new Vector3(s * x + s / 2, s * y + s / 2, 0), Quaternion.Euler(0, 0, ang), Vector3.one));
+                            Graphics.DrawTexture(rect, texture);
+                            GL.PopMatrix();
+                        }
                     }
 
                     GL.PopMatrix();
 
-                    targetTexture.ReadPixels(new Rect(0, 0, s * INDEX_COUNT, s), 0, 0);
+                    targetTexture.ReadPixels(new Rect(0, 0, s * X_COUNT, s * Y_COUNT), 0, 0);
                     targetTexture.Apply();
                     GUIX.redoAllActions();
 
@@ -179,8 +182,6 @@ namespace general.rendering {
 
                     rotateTexture.Release();
                     GameObject.Destroy(rotateTexture);
-
-                    File.WriteAllBytes("temp.png", targetTexture.EncodeToPNG());
                 }
 
                 return useRect;

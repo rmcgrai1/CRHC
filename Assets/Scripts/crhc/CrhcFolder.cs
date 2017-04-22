@@ -72,7 +72,7 @@ public abstract class CrhcItem : Loadable, IDisposable {
 
 public abstract class CrhcFolder<CHILD_TYPE> : CrhcItem, IEnumerable where CHILD_TYPE : CrhcItem {
     private List<CHILD_TYPE> children;
-    private Reference<string> childInfo;
+    private Reference<JArray> childInfo;
     private string targetId;
 
     public CrhcFolder(CrhcItem parent, JObject data) : base(parent, data) {
@@ -95,15 +95,13 @@ public abstract class CrhcFolder<CHILD_TYPE> : CrhcItem, IEnumerable where CHILD
         ILoader loader = ServiceLocator.getILoader();
 
         ServiceLocator.getILog().println(LogType.JUNK, "Loading info...");
-        childInfo = loader.getReference<string>(getUrl() + "list.json");
+        childInfo = loader.getReference<JArray>(getUrl() + "list.json");
         yield return loader.loadCoroutine(childInfo);
-
-        string returnedString = childInfo.getResource();
 
         // TODO: Change this to a cleaner method.
         ConstructorInfo constr = typeof(CHILD_TYPE).GetConstructor(new Type[] { typeof(CrhcItem), typeof(JObject) });
 
-        JArray dataList = JArray.Parse(returnedString);
+        JArray dataList = childInfo.getResource();
         foreach (JObject data in dataList) {
             CHILD_TYPE child;
 

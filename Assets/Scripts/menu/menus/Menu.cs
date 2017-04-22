@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class Menu : IMenu {
     private IList<IRow> rows = new List<IRow>();
+    private IList<float> rowHeights = new List<float>();
     private Color color;
 
     public override bool enter() { return true; }
@@ -10,6 +11,7 @@ public class Menu : IMenu {
 
     public override void addRow(IRow row) {
         rows.Add(row);
+        rowHeights.Add(-1);
     }
 
     protected override float calcPixelHeight(float w) {
@@ -25,8 +27,21 @@ public class Menu : IMenu {
 
         float y = 0;
 
-        // TODO: Limit ys to just those onscreen?
-        // TODO: Prevent from recalculating getHeight so much?
+        // If any of heights different, recalculate all.
+        bool didChange = false;
+        for(int i = 0, len = rows.Count; i < len; i++) {
+            IRow row = rows[i];
+            float height = rowHeights[i], calcHeight = row.getPixelHeight(w);
+
+            if(height != calcHeight) {
+                rowHeights[i] = height;
+                didChange = true;
+            }
+        }
+
+        if(didChange) {
+            invalidateHeight();
+        }
 
         float menuH = getPixelHeight(w);
         GUIX.fillRect(new Rect(0, 0, w, menuH), color);
@@ -37,7 +52,7 @@ public class Menu : IMenu {
         float sH = AppRunner.getScreenHeight();
 
         foreach (IRow row in rows) {
-            if (AppRunner.doHandleOffscreen && cY+y > sH) {
+            if (AppRunner.doHandleOffscreen && cY + y > sH) {
                 return;
             }
 
@@ -67,6 +82,8 @@ public class Menu : IMenu {
             rows[i].Dispose();
         }
         rows.Clear();
+        rowHeights.Clear();
         rows = null;
+        rowHeights = null;
     }
 }

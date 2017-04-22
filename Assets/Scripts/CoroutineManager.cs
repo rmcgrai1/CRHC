@@ -12,12 +12,11 @@ public class CoroutineManager : MonoBehaviour {
         mainThreadId = System.Threading.Thread.CurrentThread.ManagedThreadId;
     }
 
-    void Update() {
-    }
+    void Update() { }
 
     public static bool isMainThread() {
         return System.Threading.Thread.CurrentThread.ManagedThreadId == mainThreadId;
-    } 
+    }
 
     public static void startCoroutine(IEnumerator routine) {
         instance.StartCoroutine(routine);

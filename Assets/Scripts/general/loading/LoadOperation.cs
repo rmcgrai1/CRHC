@@ -1,30 +1,30 @@
 ﻿using UnityEngine;
 
 public class LoadOperation {
-    private LoadType loadType;
+    private StoreType storeType;
 
     private WWW www;
     private ResourceRequest req;
 
     public LoadOperation(WWW www) {
         this.www = www;
-        loadType = LoadType.WWW;
+        storeType = StoreType.WWW;
     }
 
     public LoadOperation(ResourceRequest req) {
         this.req = req;
-        loadType = LoadType.RESOURCE;
+        storeType = StoreType.RESOURCE;
     }
 
-    public LoadType getLoadType() {
-        return loadType;
+    public StoreType getStoreType() {
+        return storeType;
     }
 
     public float getProgress() {
-        switch (loadType) {
-            case LoadType.WWW:
+        switch (storeType) {
+            case StoreType.WWW:
                 return www.progress;
-            case LoadType.RESOURCE:
+            case StoreType.RESOURCE:
                 return req.progress;
             default:
                 return 0;
@@ -32,6 +32,6 @@ public class LoadOperation {
     }
 }
 
-public enum LoadType {
+public enum StoreType {
     WWW, RESOURCE
 }

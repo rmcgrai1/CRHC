@@ -12,7 +12,8 @@ public static class GUIX {
     private static Texture2D whiteTexture;
     private static GUIStyle whiteTextureStyle, standardTextureStyle;
 
-    // TODO: Alpha blending not working.
+    private static Color glColor;
+
     // TODO: Outline drawn after frame gone.
     // TODO: White box in camera view????
 
@@ -119,12 +120,13 @@ public static class GUIX {
         endColor();
     }
 
-    /*public static void fillRect(Rect region) {
-        _fillRect(region);
-        return;
+    public static void clear() {
+        fillRect(new Rect(0, 0, AppRunner.getScreenWidth(), AppRunner.getScreenHeight()), Color.black);
+    }
 
+    /*public static void fillRect(Rect region) {
         float sW = AppRunner.getScreenWidth(), sH = AppRunner.getScreenHeight();
-        float cX = 0, cY = 0, cW = sW, cH = sH, d = GUI.depth;
+        float cX = 0, cY = 0, cW = sW, cH = sH, d = 0;
 
         if (clipStack.Count > 0) {
             Rect clipRect = clipStack.Peek();
@@ -133,7 +135,6 @@ public static class GUIX {
             cW = clipRect.width;
             cH = clipRect.height;
         }
-
 
         float
             x = cX + region.x,
@@ -146,20 +147,21 @@ public static class GUIX {
         w /= sW;
         h /= -sH;
 
+        AppRunner.getMaterial().SetPass(0);
+
         GL.LoadOrtho();
         GL.Begin(GL.QUADS);
 
-        float f = 8;
-
-        GL.Color(new Color(color.r * f, color.g * f, color.b * f));
+        GL.Color(glColor);
         GL.Vertex3(x, y, d);
         GL.Vertex3(x + w, y, d);
         GL.Vertex3(x + w, y + h, d);
         GL.Vertex3(x, y + h, d);
         GL.End();
     }
+
     public static void fillRect(Rect position, Color color) {
-        if (color == CRHC.COLOR_TRANSPARENT) {
+        if (color == null || color == CrhcConstants.COLOR_TRANSPARENT) {
             return;
         }
 
@@ -169,7 +171,7 @@ public static class GUIX {
     }*/
 
     private static void setColor(Color color) {
-        GUI.backgroundColor = color;
+        GUIX.glColor = GUI.backgroundColor = color;
     }
 
     public static void beginColor(Color toColor) {

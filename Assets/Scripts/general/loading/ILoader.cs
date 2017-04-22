@@ -63,16 +63,16 @@ public abstract class ILoader {
 	}
 
 	public IEnumerator loadCoroutine<T>(Reference<T> reference) where T : class {
-		yield return loadCoroutine<T>(reference, reference.getPath(), false);
+		yield return loadCoroutine<T>(reference, reference.getPath(), LoadType.LOAD);
 	}
 	public IEnumerator loadCoroutine<T>(Reference<T> reference, string path) where T : class {
-		yield return loadCoroutine<T>(reference, path, false);
+		yield return loadCoroutine<T>(reference, path, LoadType.LOAD);
 	}
 
-	public abstract IEnumerator loadCoroutine<T>(Reference<T> reference, string path, bool forceReload) where T : class;
+	public abstract IEnumerator loadCoroutine<T>(Reference<T> reference, string path, LoadType loadType) where T : class;
 
 	public IEnumerator reloadCoroutine<T>(Reference<T> reference, string path) where T : class {
-		yield return loadCoroutine<T>(reference, reference.getPath(), true);
+		yield return loadCoroutine<T>(reference, reference.getPath(), LoadType.FORCE_RELOAD);
 	}
 
 	public IEnumerator reloadCoroutine<T>(Reference<T> reference) where T : class {
@@ -82,4 +82,12 @@ public abstract class ILoader {
 	public virtual int getReferenceCount() {
         return runTimeCache.Count;
     }
+}
+
+public enum SourceType {
+    DEFAULT, WEB, CACHE, OFFLINE
+}
+
+public enum LoadType {
+    LOAD, FORCE_RELOAD, BACKUP
 }

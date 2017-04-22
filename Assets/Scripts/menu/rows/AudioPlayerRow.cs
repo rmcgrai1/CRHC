@@ -5,193 +5,249 @@ using System.Collections;
 using UnityEngine;
 
 public class AudioPlayerRow : IRow {
-	private readonly DistanceMeasure AUDIO_PLAYER_HEIGHT = new DistanceMeasure(.5f, NumberType.INCHES);
-	private Reference<AudioClip> audioClip;
-	private AudioSource audioSource;
-	private Texture2D waveformTexture;
-	private bool hasWaveformTexture = false;
-	private float progress = 0;
-	private int stepsPerFrame = 20;
-	private bool wasHeld = false, isScrubbing = false;
+    private readonly DistanceMeasure AUDIO_PLAYER_HEIGHT = new DistanceMeasure(.5f, NumberType.INCHES);
+    private Reference<AudioClip> audioClip;
+    private AudioSource audioSource;
+    private Texture2D waveformTexture;
+    private bool hasWaveformTexture = false;
+    private float progress = 0;
+    private int stepsPerFrame = 20;
+    private bool wasHeld = false, isScrubbing = false;
 
-	private PlayState playState = PlayState.STOPPED;
+    private PlayState playState = PlayState.STOPPED;
 
-	private enum PlayState {
-		STOPPED, PLAYING, PAUSED
-	}
+    private enum PlayState {
+        STOPPED, PLAYING, PAUSED
+    }
 
-	public AudioPlayerRow(string audioURL) {
-		ILoader iLoader = ServiceLocator.getILoader();
-		audioClip = iLoader.getReference<AudioClip>(audioURL);
-		//audioClip.onLoad += AudioClip_onLoad;
-		iLoader.load(audioClip);
-	}
+    public AudioPlayerRow(string audioURL) {
+        ILoader iLoader = ServiceLocator.getILoader();
+        audioClip = iLoader.getReference<AudioClip>(audioURL);
+        //audioClip.onLoad += AudioClip_onLoad;
+        iLoader.load(audioClip);
 
-	private void AudioClip_onLoad() {
-		int iW, iH;
-		iW = (int)(Screen.width - 2 * CrhcConstants.PADDING_H.getAs(NumberType.PIXELS));
-		iH = (int)getPixelHeight(0);
+        setTouchable(true);
+    }
 
-		CoroutineManager.startCoroutine(createTextureCoroutine(iW / 2, iH / 2));
-	}
+    private void AudioClip_onLoad() {
+        int iW, iH;
+        iW = (int)(Screen.width - 2 * CrhcConstants.PADDING_H.getAs(NumberType.PIXELS));
+        iH = (int)getPixelHeight(0);
 
-	private IEnumerator createTextureCoroutine(int iW, int iH) {
-		if (waveformTexture == null) {
-			waveformTexture = new Texture2D(iW, iH);
+        CoroutineManager.startCoroutine(createTextureCoroutine(iW / 2, iH / 2));
+    }
 
-			AudioClip clip;
-			audioSource = AppRunner.get().AddComponent<AudioSource>();
-			audioSource.clip = clip = audioClip.getResource();
+    private IEnumerator createTextureCoroutine(int iW, int iH) {
+        if (waveformTexture == null) {
+            waveformTexture = new Texture2D(iW, iH);
 
-			float[] samples = new float[clip.samples * clip.channels];
-			clip.GetData(samples, 0);
+            AudioClip clip;
+            audioSource = AppRunner.get().AddComponent<AudioSource>();
+            audioSource.clip = clip = audioClip.getResource();
 
-			float resolution = samples.Length / iW;
+            float[] samples = new float[clip.samples * clip.channels];
+            clip.GetData(samples, 0);
 
-			float[] waveForm = new float[iW];
+            float resolution = samples.Length / iW;
 
-			float maxAmp = 0;
+            float[] waveForm = new float[iW];
 
-			int steps = 0;
+            float maxAmp = 0;
 
-			for (int i = 0; i < waveForm.Length; i++) {
-				waveForm[i] = 0;
+            int steps = 0;
 
-				for (int ii = 0; ii < resolution; ii++) {
-					waveForm[i] += Mathf.Abs(samples[(int)((i * resolution) + ii)]);
-				}
+            /*for (int i = 0; i < waveForm.Length; i++) {
+                waveForm[i] = 0;
 
-				waveForm[i] /= resolution;
+                for (int ii = 0; ii < resolution; ii++) {
+                    waveForm[i] += Mathf.Abs(samples[(int)((i * resolution) + ii)]);
+                }
 
-				maxAmp = Math.Max(maxAmp, Math.Abs(waveForm[i]));
+                waveForm[i] /= resolution;
 
-				if (steps++ % stepsPerFrame == 0) {
-					progress = .5f * i / waveForm.Length;
-					yield return null;
-				}
-			}
+                maxAmp = Math.Max(maxAmp, Math.Abs(waveForm[i]));
 
-			Debug.Log(maxAmp);
+                if (steps++ % stepsPerFrame == 0) {
+                    progress = .5f * i / waveForm.Length;
+                    yield return null;
+                }
+            }
+           
+            // Generate texture.
+            for (int x = 0; x < iW; x++) {
+                float amp = waveForm[x] / maxAmp;
 
-			// Generate texture.
-			for (int x = 0; x < iW; x++) {
-				float amp = waveForm[x] / maxAmp;
+                for (int y = 0; y < iH; y++) {
+                    float relAmp = 2 * (1f * y / iH - .5f);
 
-				for (int y = 0; y < iH; y++) {
-					float relAmp = 2 * (1f * y / iH - .5f);
+                    if (Math.Abs(relAmp) <= Math.Abs(amp)) {
+                        waveformTexture.SetPixel(x, y, CrhcConstants.COLOR_GRAY_DARK);
+                    }
+                    else {
+                        waveformTexture.SetPixel(x, y, CrhcConstants.COLOR_TRANSPARENT);
+                    }
+                }
 
-					if (Math.Abs(relAmp) <= Math.Abs(amp)) {
-						waveformTexture.SetPixel(x, y, CrhcConstants.COLOR_GRAY_DARK);
-					}
-					else {
-						waveformTexture.SetPixel(x, y, CrhcConstants.COLOR_TRANSPARENT);
-					}
-				}
+                if (steps++ % stepsPerFrame == 0) {
+                    progress = .5f + .5f * x / iW;
+                    yield return null;
+                }
+            }
 
-				if (steps++ % stepsPerFrame == 0) {
-					progress = .5f + .5f * x / iW;
-					yield return null;
-				}
-			}
+            waveformTexture.Apply();
+            hasWaveformTexture = true;*/
 
-			waveformTexture.Apply();
-			hasWaveformTexture = true;
-		}
-	}
+            RenderTexture rotateTexture = new RenderTexture(iW, iH, 0);
 
-	public override bool draw(float w) {
-		// Create player.
+            RenderTexture.active = rotateTexture;
 
-		float padding = CrhcConstants.PADDING_H.getAs(NumberType.PIXELS);
-		w -= 2 * padding;
-		float h = getPixelHeight(w);
+            AppRunner.getMaterial().SetPass(0);
 
-		if (hasWaveformTexture) {
-			Rect region = new Rect(padding, 0, w, h);
-			GUIX.drawTexture(region, waveformTexture);
+            GL.Clear(true, true, CrhcConstants.COLOR_TRANSPARENT);
 
-			ITouch iTouch = ServiceLocator.getITouch();
-			if (GUIX.isTouchInsideRect(region)) {
-				if (iTouch.checkTap()) {
-					togglePlayPause();
-				}
-				else if (!wasHeld && iTouch.isHeld()) {
-					if (!isScrubbing) {
-						isScrubbing = true;
-						pause();
-					}
-				}
-			}
-			wasHeld = iTouch.isHeld();
+            GUIX.undoAllActions();
+            GL.PushMatrix();
+            GL.LoadOrtho();
+            GL.LoadPixelMatrix(0, iW, iH, 0);
 
-			if (iTouch.isDown()) {
-				if (isScrubbing) {
-					float len = audioClip.getResource().length;
+            for (int i = 0; i < waveForm.Length; i++) {
+                waveForm[i] = 0;
 
-					audioSource.time = Math.Max(0, Math.Min(len * (iTouch.getTouchPosition().x - padding) / w, len));
-					iTouch.clearDragVector();
-				}
-			}
-			else {
-				if (isScrubbing) {
-					isScrubbing = false;
-					play();
-				}
-			}
+                for (int ii = 0; ii < resolution; ii++) {
+                    waveForm[i] += Mathf.Abs(samples[(int)((i * resolution) + ii)]);
+                }
 
-			if (!audioSource.isPlaying && playState == PlayState.PLAYING) {
-				stop();
-			}
+                waveForm[i] /= resolution;
 
-			if (playState != PlayState.STOPPED) {
-				Color color = (playState == PlayState.PLAYING) ? CrhcConstants.COLOR_RED : CrhcConstants.COLOR_BLUE_DARK;
-				float frac = audioSource.time / audioSource.clip.length, bx = w * frac, bw = 5;
-				GUIX.fillRect(new Rect(padding + bx - bw / 2, 0, bw, h), color);
-			}
-		}
-		else {
-			if(audioClip.isLoaded() && waveformTexture == null) {
-				AudioClip_onLoad();
-			}
+                maxAmp = Math.Max(maxAmp, Math.Abs(waveForm[i]));
+            }
 
-			GUIX.strokeRect(new Rect(padding, 0, w, h), CrhcConstants.COLOR_GRAY_DARK, 1);
-			GUIX.fillRect(new Rect(padding, 0, w * progress, h), CrhcConstants.COLOR_GRAY_DARK);
-		}
+            float y = iH / 2f, d = 0;
 
-		return false;
-	}
+            GL.Begin(GL.LINES);
+            GL.Color(CrhcConstants.COLOR_GRAY_DARK);
+            for (int x = 0; x < iW; x++) {
+                float amp = waveForm[x] / maxAmp;
+                GL.Vertex3(x, y - amp * y, d);
+                GL.Vertex3(x, y + amp * y, d);
+            }
+            GL.End();
 
-	protected override float calcPixelHeight(float w) {
-		return AUDIO_PLAYER_HEIGHT.getAs(NumberType.PIXELS);
-	}
+            GL.PopMatrix();
 
-	public override void onDispose() {
-		audioClip.removeOwner();
-		audioClip = null;
-	}
+            waveformTexture.ReadPixels(new Rect(0, 0, iW, iH), 0, 0);
+            waveformTexture.Apply();
+            GUIX.redoAllActions();
 
-	private void stop() {
-		playState = PlayState.STOPPED;
-		audioSource.Stop();
-		audioSource.time = 0;
-	}
+            RenderTexture.active = null;
 
-	private void pause() {
-		playState = PlayState.PAUSED;
-		audioSource.Pause();
-	}
+            rotateTexture.Release();
+            GameObject.Destroy(rotateTexture);
 
-	private void play() {
-		playState = PlayState.PLAYING;
-		audioSource.Play();
-	}
+            hasWaveformTexture = true;
+        }
 
-	private void togglePlayPause() {
-		if (playState == PlayState.PAUSED || playState == PlayState.STOPPED) {
-			play();
-		}
-		else if (playState == PlayState.PLAYING) {
-			pause();
-		}
-	}
+        yield return null;
+    }
+
+    public override bool draw(float w) {
+        // Create player.
+
+        float padding = CrhcConstants.PADDING_H.getAs(NumberType.PIXELS);
+
+        w -= 2 * padding;
+        float h = getPixelHeight(w);
+
+        Rect region = new Rect(0, 0, w, h), paddingRegion = new Rect(padding, 0, w, h);
+        GUIX.beginClip(paddingRegion);
+
+        if (hasWaveformTexture) {
+            GUIX.drawTexture(region, waveformTexture);
+
+            ITouch iTouch = ServiceLocator.getITouch();
+            if (GUIX.isTouchInsideRect(region)) {
+                if (iTouch.checkTap()) {
+                    onClick();
+                    togglePlayPause();
+                }
+                else if (!wasHeld && iTouch.isHeld()) {
+                    if (!isScrubbing) {
+                        onClick();
+                        isScrubbing = true;
+                        pause();
+                    }
+                }
+            }
+            wasHeld = iTouch.isHeld();
+
+            if (iTouch.isDown()) {
+                if (isScrubbing) {
+                    float len = audioClip.getResource().length;
+
+                    audioSource.time = Math.Max(0, Math.Min(len * (iTouch.getTouchPosition().x - padding) / w, len));
+                    iTouch.clearDragVector();
+                }
+            }
+            else {
+                if (isScrubbing) {
+                    isScrubbing = false;
+                    play();
+                }
+            }
+
+            if (!audioSource.isPlaying && playState == PlayState.PLAYING) {
+                stop();
+            }
+
+            if (playState != PlayState.STOPPED) {
+                Color color = (playState == PlayState.PLAYING) ? CrhcConstants.COLOR_RED : CrhcConstants.COLOR_BLUE_DARK;
+                float frac = audioSource.time / audioSource.clip.length, bx = w * frac, bw = 5;
+                GUIX.fillRect(new Rect(bx - bw / 2, 0, bw, h), color);
+            }
+
+            drawTouchRing(region);
+        }
+        else {
+            if (audioClip.isLoaded() && waveformTexture == null) {
+                AudioClip_onLoad();
+            }
+
+            GUIX.strokeRect(region, CrhcConstants.COLOR_GRAY_DARK, 1);
+            GUIX.fillRect(new Rect(0, 0, w * progress, h), CrhcConstants.COLOR_GRAY_DARK);
+        }
+
+        GUIX.endClip();
+
+        return false;
+    }
+
+    protected override float calcPixelHeight(float w) {
+        return AUDIO_PLAYER_HEIGHT.getAs(NumberType.PIXELS);
+    }
+
+    public override void onDispose() {
+        audioClip.removeOwner();
+        audioClip = null;
+    }
+
+    private void stop() {
+        playState = PlayState.STOPPED;
+        audioSource.Stop();
+        audioSource.time = 0;
+    }
+
+    private void pause() {
+        playState = PlayState.PAUSED;
+        audioSource.Pause();
+    }
+
+    private void play() {
+        playState = PlayState.PLAYING;
+        audioSource.Play();
+    }
+
+    private void togglePlayPause() {
+        if (playState == PlayState.PAUSED || playState == PlayState.STOPPED) { play(); }
+        else if (playState == PlayState.PLAYING) { pause(); }
+    }
 }

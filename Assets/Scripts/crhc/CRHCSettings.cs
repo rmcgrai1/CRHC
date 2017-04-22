@@ -17,6 +17,12 @@ public static class CrhcSettings {
     }
 
     public static bool
+        showTouchPosition {
+        set { data["showTouchPosition"] = value; }
+        get { return data.Value<bool>("showTouchPosition"); }
+    }
+
+    public static bool
         showAnimations {
         set { data["showAnimations"] = value; }
         get { return data.Value<bool>("showAnimations"); }
@@ -82,6 +88,7 @@ public static class CrhcSettings {
 
             offlineMode = false;
             forceLandscapeOrientation = false;
+            showTouchPosition = false;
             showAnimations = true;
             showFps = false;
             showMemory = false;

@@ -8,7 +8,7 @@ public abstract class IMenuThing : IDisposable {
     private static int _menuElementCount = 0;
 
     // Fix issues with height.
-    private static bool doCache = false;
+    private static bool doCache = true;
 
     private bool isCacheHValid = false;
     private float cacheHWidth, cacheHHeight;

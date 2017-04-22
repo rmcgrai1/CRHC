@@ -51,7 +51,7 @@ public class Experience : CrhcItem {
         Menu menu = new Menu();
 
         Row backRow = new Row();
-        backRow.addItem(new Landmark.BackButton(this), 1);
+        backRow.addItem(new Landmark.BackButton(this));
         menu.addRow(backRow);
 
         //AppRunner.enterMenu(new VuforiaMenu(new BlackoutTransitionMenu(menu, CRHC.SPEED_FADE_IN), this));

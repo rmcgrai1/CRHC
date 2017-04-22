@@ -10,7 +10,7 @@ public class CachedLoader : ILoader {
     public static readonly string SERVER_PATH = "https://s3.amazonaws.com/crhc/";
 
     //private SourceType defaultSourceType = SourceType.WEB; //SourceType.DEFAULT;
-    public override IEnumerator loadCoroutine<T>(Reference<T> reference, string path, bool forceReload) {
+    public override IEnumerator loadCoroutine<T>(Reference<T> reference, string path, LoadType loadType) {
         IFileManager iFileManager = ServiceLocator.getIFileManager();
 
         string oriPath = path;
@@ -27,10 +27,10 @@ public class CachedLoader : ILoader {
             offlinePath = convertWebToLocalPath(path, offlinePathType);
 
         // Check if file already exists in local file storage cache.
-        if (relePath != null) {
+        if (relePath != null && loadType != LoadType.BACKUP) {
             ServiceLocator.getILog().print(LogType.IO, "Checking for file at " + relePath + "...");
 
-            if (defaultSourceType != SourceType.OFFLINE && !forceReload && iFileManager.fileExists(relePath)) {
+            if (defaultSourceType != SourceType.OFFLINE && loadType == LoadType.LOAD && iFileManager.fileExists(relePath)) {
                 sourceType = SourceType.CACHE;
                 path = wwwPath;
                 ServiceLocator.getILog().println(LogType.IO, "Using cache!");
@@ -49,7 +49,7 @@ public class CachedLoader : ILoader {
                 yield return resourceLoader.loadCoroutine(reference, offlinePath);
             }
             else {
-                yield return wwwLoader.loadCoroutine(reference, path);
+                yield return wwwLoader.loadCoroutine(reference, offlinePath);
             }
         }
         else {
@@ -62,12 +62,18 @@ public class CachedLoader : ILoader {
         if (!valid) {
             if (sourceType == SourceType.CACHE) {
                 reference.invalidate();
-                yield return loadCoroutine(reference, oriPath, true);
+                yield return loadCoroutine(reference, oriPath, LoadType.FORCE_RELOAD);
+            }
+            else if (sourceType == SourceType.WEB) {
+                reference.invalidate();
+                yield return loadCoroutine(reference, oriPath, LoadType.BACKUP);
             }
         }
-        else if (sourceType == SourceType.WEB) {
-            ServiceLocator.getILog().println(LogType.IO, "Backing up " + typeof(T) + " at " + relePath + "...");
-            reference.save(relePath);
+        else {
+            if (sourceType == SourceType.WEB) {
+                ServiceLocator.getILog().println(LogType.IO, "Backing up " + typeof(T) + " at " + relePath + "...");
+                reference.save(relePath);
+            }
         }
     }
 
@@ -76,6 +82,10 @@ public class CachedLoader : ILoader {
         if(s != null) {
             return (s[0] != '<');
         }*/
+
+        if(!refer.isLoaded()) {
+            return false;
+        }
 
         return true;
     }
@@ -121,8 +131,6 @@ public class CachedLoader : ILoader {
             }
             else if (type == PathType.STREAMING_ASSETS) {
                 path = fm.getWWWPrefix() + fm.getStreamingAssetsDirectory() + "DefaultServer/" + oriPath.Replace(SERVER_PATH, "");
-
-                Debug.Log(path);
             }
             else {
                 path = "cache/" + path;
@@ -150,8 +158,4 @@ public class CachedLoader : ILoader {
 
 public enum PathType {
     WWW, RELATIVE, ABSOLUTE, RESOURCES, STREAMING_ASSETS
-}
-
-public enum SourceType {
-    WEB, CACHE, OFFLINE
 }

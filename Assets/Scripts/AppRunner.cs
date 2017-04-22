@@ -15,8 +15,7 @@ public class AppRunner : MonoBehaviour {
     private Material material;
 
     public static readonly bool doDrawLog;
-    public static readonly bool doHandleOffscreen;
-
+    public static readonly bool doHandleOffscreen = true;
 
     private static AppRunner instance;
     private VuforiaManager manager;
@@ -45,10 +44,10 @@ public class AppRunner : MonoBehaviour {
         // TODO: Speed up app loading overall (compress files?).
         // TODO: FORCE RELOAD!!
         ILoader iLoader = ServiceLocator.getILoader();
-        Reference<string> styleText = iLoader.getReference<string>(CachedLoader.SERVER_PATH + "style.json");
+        Reference<JObject> styleText = iLoader.getReference<JObject>(CachedLoader.SERVER_PATH + "style.json");
         yield return iLoader.reloadCoroutine(styleText);
 
-        JObject json = JObject.Parse(styleText.getResource());
+        JObject json = styleText.getResource();
 
         ServiceLocator.getILog().print(LogType.IO, "Setting styles... ");
         CrhcConstants.FONT_HEIGHT_NORMAL.set(json.Value<float>("FONT_NORMAL_HEIGHT"), NumberType.INCHES);
@@ -71,6 +70,12 @@ public class AppRunner : MonoBehaviour {
     public void OnGUI() {
         // TODO: REMOVE ME
         ServiceLocator.getITouch().OnGUI();
+
+        float scrW, scrH;
+        scrW = getScreenWidth();
+        scrH = getScreenHeight();
+
+        GUIX.clear();
 
         if (menuStack.Count > 0) {
             IMenu menu = menuStack.Peek();
@@ -97,11 +102,8 @@ public class AppRunner : MonoBehaviour {
                     menu.enter();
                 }
 
-                float angle = 0, scrW, scrH, xOffset = 0, yOffset = 0;
+                float angle = 0, xOffset = 0, yOffset = 0;
                 Vector2 pivot = Vector2.zero;
-
-                scrW = getScreenWidth();
-                scrH = getScreenHeight();
 
                 if (!getIsUpright()) {
                     angle = 90;
@@ -118,6 +120,24 @@ public class AppRunner : MonoBehaviour {
         }
 
         Rect topBar = new Rect(0, 0, Screen.width, 20);
+
+        if(false) {
+            GUIX.fillRect(topBar, CrhcConstants.COLOR_BLACK_TRANSPARENT);
+            GUI.Label(topBar, "Platform: " + Application.platform);
+            topBar.y += 20;
+        }
+
+        if (CrhcSettings.showTouchPosition) {
+            GUIX.fillRect(topBar, CrhcConstants.COLOR_BLACK_TRANSPARENT);
+
+            Vector2 pos = ServiceLocator.getITouch().getTouchPosition();
+            int x, y;
+            x = (int)pos.x;
+            y = (int)pos.y;
+
+            GUI.Label(topBar, "Touch Position: (" + x + ", " + y + ") / (" + (int) (100f*x/scrW) + " %, " + (int) (100f*y/scrH) + " %)");
+            topBar.y += 20;
+        }
 
         if (CrhcSettings.showMemory) {
             long allocMemory = Profiler.GetTotalAllocatedMemory(), totalMemory = Profiler.GetTotalReservedMemory();

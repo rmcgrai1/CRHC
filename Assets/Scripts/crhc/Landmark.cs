@@ -112,7 +112,7 @@ public class Landmark : CrhcFolder<Experience>, IComparable<Landmark> {
         SpaceItem padding = new SpaceItem();
 
         Row backRow = new Row();
-        backRow.addItem(new BackButton(this), 1);
+        backRow.addItem(new BackButton(this));
         menu.addRow(backRow);
 
         Row titleRow = new Row();
@@ -129,7 +129,7 @@ public class Landmark : CrhcFolder<Experience>, IComparable<Landmark> {
         descRow.setPadding(true, false, true);
 
         TextItem descText = new TextItem(getDescription());
-        descRow.addItem(descText, 1);
+        descRow.addItem(descText);
 
         menu.addRow(descRow);
 
@@ -164,12 +164,12 @@ public class Landmark : CrhcFolder<Experience>, IComparable<Landmark> {
             }
 
             ImageItem img = new ARButton(child);
-            curRow.addItem(img, 1);
+            curRow.addItem(img);
 
             TextItem sourceText = new TextItem(child.getSource());
             sourceText.setFont(CrhcConstants.FONT_SOURCE);
             sourceText.setTextAnchor(TextAnchor.UpperLeft);
-            sourceRow.addItem(sourceText, 1);
+            sourceRow.addItem(sourceText);
         }
 
         if (inRow == 1) {
@@ -178,7 +178,7 @@ public class Landmark : CrhcFolder<Experience>, IComparable<Landmark> {
         }
 
         Row row = new Row();
-        row.addItem(new TextItem(getLongDescription()), 1);
+        row.addItem(new TextItem(getLongDescription()));
         menu.addRow(row);
         row.setPadding(true, true, true);
 
