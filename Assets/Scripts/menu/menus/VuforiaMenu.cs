@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class VuforiaMenu : IMenu {
@@ -43,9 +44,8 @@ public class VuforiaMenu : IMenu {
         menu.reset();
     }
 
-    public override void setColor(Color color) {
-        menu.setColor(color);
-    }
+    public override void setColor(Color color) { menu.setColor(color); }
+    public override Color getColor() { return menu.getColor(); }
 
     public override void onDispose() {
         base.onDispose();

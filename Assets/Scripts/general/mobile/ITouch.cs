@@ -5,7 +5,10 @@ namespace general.mobile {
         // TODO: Ensure that tap only lasts for one frame.
         // TODO: Enable observer pattern?
 
-        private static Vector2 previousTouchPosition, touchPosition, dragVector;
+        private static readonly int DRAG_VECTOR_FRAME_COUNT = 10;
+        private int dragVectorFrameIndex;
+        private Vector2[] dragVectorFrames = new Vector2[DRAG_VECTOR_FRAME_COUNT];
+        private static Vector2 previousTouchPosition, touchPosition;
         private static bool _isDown = false, _didTap = false, _isHeld = false;
 
         private readonly float HOLD_TIME = 250;
@@ -23,10 +26,14 @@ namespace general.mobile {
             upStart = queryUpStart();
             downStart = queryDownStart();
 
-
             if (_isDown) {
                 dragDistance += getDragVector().magnitude;
-                dragVector = touchPosition - previousTouchPosition;
+                dragVectorFrames[dragVectorFrameIndex++] = (touchPosition - previousTouchPosition);
+
+                if(dragVectorFrameIndex >= DRAG_VECTOR_FRAME_COUNT) {
+                    dragVectorFrameIndex -= DRAG_VECTOR_FRAME_COUNT;
+                }
+
                 coolDownFrac = 1;
             }
             else {
@@ -45,13 +52,17 @@ namespace general.mobile {
 
                 startTouchTime = Epoch.CurrentMillis();
                 dragDistance = 0;
+
+                // Clear drag vector frames.
+                for(int i = 0; i < DRAG_VECTOR_FRAME_COUNT; i++) {
+                    dragVectorFrames[i] = Vector2.zero;
+                }
             }
             else if (upStart && _isDown) {
                 _isDown = false;
 
                 // TODO: Tweak these values.
-                // TODO: Change to be based on # inches.
-                if (Epoch.MillisElapsed(startTouchTime) < HOLD_TIME && dragDistance / Screen.dpi < .5) {
+                if (Epoch.MillisElapsed(startTouchTime) < HOLD_TIME && dragDistance / Screen.dpi < .25) {
                     _didTap = true;
                 }
                 else {
@@ -73,6 +84,20 @@ namespace general.mobile {
         }
 
         public Vector2 getDragVector() {
+            Vector2 dragVector = Vector2.zero;
+
+            int ii = 0;
+            for(int i = 0; i < DRAG_VECTOR_FRAME_COUNT; i++) {
+                Vector2 subDragVector = dragVectorFrames[i];
+
+                if(subDragVector != null) {
+                    dragVector += subDragVector;
+                    ii++;
+                }
+            }
+
+            dragVector /= ii;
+
             if (AppRunner.getIsUpright()) {
                 return new Vector2(dragVector.x * coolDownFrac, dragVector.y * coolDownFrac);
             }

@@ -4,7 +4,7 @@ using UnityEngine;
 public class FadeInMenu : IMenu {
     private IMenu menu;
     private ISmoothNumber fadeAmount = new PolynomialNumber(0, 1, .5f, 3);
-    private Color color;
+    private Color color = CrhcConstants.COLOR_TRANSPARENT;
     private float fadeDis;
     private bool hasEntered = false, isClosing = false;
 
@@ -88,10 +88,10 @@ public class FadeInMenu : IMenu {
 
         if (CrhcSettings.showAnimations) {
             if (!hasEntered || isClosing) {
-                fadeX = -fadeDis * (1 - fadeAmount);
+                fadeX = fadeDis * (1 - fadeAmount);
             }
             else {
-                fadeX = fadeDis * (1 - fadeAmount);
+                fadeX = -fadeDis * (1 - fadeAmount);
             }
         }
         menuRect = new Rect(fadeX, 0, w, menuH);
@@ -113,9 +113,8 @@ public class FadeInMenu : IMenu {
         menu.reset();
     }
 
-    public override void setColor(Color color) {
-        this.color = color;
-    }
+    public override void setColor(Color color) {this.color = color;}
+    public override Color getColor() { return color; }
 
     public override void onDispose() {
         base.onDispose();

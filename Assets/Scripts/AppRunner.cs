@@ -75,8 +75,6 @@ public class AppRunner : MonoBehaviour {
         scrW = getScreenWidth();
         scrH = getScreenHeight();
 
-        GUIX.clear();
-
         if (menuStack.Count > 0) {
             IMenu menu = menuStack.Peek();
 
@@ -110,6 +108,8 @@ public class AppRunner : MonoBehaviour {
                     yOffset = -scrH;
                 }
 
+                GUIX.clear(menu.getColor());
+
                 GUIX.beginRotate(pivot, angle);
                 GUI.BeginClip(new Rect(xOffset, yOffset, scrW, scrH));
                 menu.draw(scrW, scrH);
@@ -120,12 +120,6 @@ public class AppRunner : MonoBehaviour {
         }
 
         Rect topBar = new Rect(0, 0, Screen.width, 20);
-
-        if(false) {
-            GUIX.fillRect(topBar, CrhcConstants.COLOR_BLACK_TRANSPARENT);
-            GUI.Label(topBar, "Platform: " + Application.platform);
-            topBar.y += 20;
-        }
 
         if (CrhcSettings.showTouchPosition) {
             GUIX.fillRect(topBar, CrhcConstants.COLOR_BLACK_TRANSPARENT);

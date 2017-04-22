@@ -1,4 +1,5 @@
-﻿using general;
+﻿using System;
+using general;
 using general.rendering;
 using UnityEngine;
 
@@ -46,10 +47,10 @@ public class TourMenu : IMenu {
         // Draw logo.
         float aspect = TextureUtility.getAspectRatio(logo);
 
-        float logoW = w/3, logoH = logoW / aspect;
+        float logoW = w / 3, logoH = logoW / aspect;
         Rect logoRegion = new Rect(w - logoW, 0, logoW, logoH);
         logoRegion = TextureUtility.drawTexture(logoRegion, logo, AspectType.FIT_IN_REGION);
-        if(GUIX.didTapInsideRect(logoRegion)) {
+        if (GUIX.didTapInsideRect(logoRegion)) {
             onClick();
             Application.OpenURL("https://www.iusb.edu/civil-rights/");
         }
@@ -64,9 +65,8 @@ public class TourMenu : IMenu {
         menu.reset();
     }
 
-    public override void setColor(Color color) {
-        menu.setColor(color);
-    }
+    public override void setColor(Color color) { menu.setColor(color); }
+    public override Color getColor() { return menu.getColor(); }
 
     public override void onDispose() {
         base.onDispose();

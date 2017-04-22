@@ -107,13 +107,13 @@ public class Landmark : CrhcFolder<Experience>, IComparable<Landmark> {
     public override IMenu buildMenu() {
         CoroutineManager.startCoroutine(loadCoroutine());
 
-        Menu menu = new Menu();
+        Menu fullmenu = new Menu(), menu = new Menu();
 
         SpaceItem padding = new SpaceItem();
 
         Row backRow = new Row();
         backRow.addItem(new BackButton(this));
-        menu.addRow(backRow);
+        fullmenu.addRow(backRow);
 
         Row titleRow = new Row();
         titleRow.setPadding(true, true, false);
@@ -182,12 +182,12 @@ public class Landmark : CrhcFolder<Experience>, IComparable<Landmark> {
         menu.addRow(row);
         row.setPadding(true, true, true);
 
-        IMenu scrollMenu = new ScrollMenu(menu);
-        IMenu fadeInMenu = new FadeInMenu(scrollMenu);
+        IRow submenuRow = new MenuRow(new FadeInMenu(new ScrollMenu(menu)));
+        fullmenu.addRow(submenuRow);
 
-        fadeInMenu.setColor(CrhcConstants.COLOR_BLUE_LIGHT);
+        fullmenu.setColor(CrhcConstants.COLOR_BLUE_LIGHT);
 
-        return new BlackoutTransitionMenu(fadeInMenu);
+        return new BlackoutTransitionMenu(fullmenu);
     }
 
     public int CompareTo(Landmark other) {

@@ -78,7 +78,7 @@ namespace general.rendering {
                 GUIX.drawTexture(useRect, texture);
             }
 
-            return useRect;
+            return (aspectType == AspectType.CROP_IN_REGION) ? drawRect : useRect;
         }
 
         private static IDictionary<Texture2D, Texture2D> targetTextures = new Dictionary<Texture2D, Texture2D>();

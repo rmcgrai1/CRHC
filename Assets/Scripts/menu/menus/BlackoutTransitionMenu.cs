@@ -5,7 +5,6 @@ using UnityEngine;
 public class BlackoutTransitionMenu : IMenu {
     private IMenu menu;
     private ISmoothNumber fadeAmount;
-    private Color color;
 
     public BlackoutTransitionMenu(IMenu menu) {
         this.menu = menu;
@@ -47,7 +46,7 @@ public class BlackoutTransitionMenu : IMenu {
     public override void draw(float w, float h) {
         menu.draw(w, h);
 
-        if(CrhcSettings.showAnimations && fadeAmount.get() < 1) {
+        if (CrhcSettings.showAnimations && fadeAmount.get() < 1) {
             GUIX.beginOpacity(1 - fadeAmount.get());
             GUIX.fillRect(new Rect(0, 0, w, h), Color.black);
             GUIX.endOpacity();
@@ -62,9 +61,8 @@ public class BlackoutTransitionMenu : IMenu {
         menu.reset();
     }
 
-    public override void setColor(Color color) {
-        this.color = color;
-    }
+    public override void setColor(Color color) { menu.setColor(color); }
+    public override Color getColor() { return menu.getColor(); }
 
     public override void onDispose() {
         base.onDispose();

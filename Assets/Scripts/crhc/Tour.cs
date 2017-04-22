@@ -255,19 +255,19 @@ public class Tour : CrhcFolder<Landmark> {
         public override void onClick() {
             base.onClick();
 
-            Menu menu = new Menu();
+            Menu fullmenu = new Menu(), menu = new Menu();
+            fullmenu.setColor(CrhcConstants.COLOR_BLUE_DARK);
 
             SpaceItem padding = new SpaceItem();
 
             Row backRow = new Row();
             backRow.addItem(new SettingsBackButton());
-            menu.addRow(backRow);
+            fullmenu.addRow(backRow);
 
             Row titleRow = new Row();
             titleRow.setPadding(true, true, false);
 
             TextItem titleText = new TextItem("Settings");
-            titleText.setColor(CrhcConstants.COLOR_RED);
             titleText.setFont(CrhcConstants.FONT_TITLE);
             titleText.setTextAnchor(TextAnchor.MiddleCenter);
             titleRow.addItem(titleText);
@@ -289,12 +289,10 @@ public class Tour : CrhcFolder<Landmark> {
             menu.addRow(paddingRow);
             menu.addRow(new ClearCacheRow());
 
-            IMenu scrollMenu = new ScrollMenu(menu);
-            IMenu fadeInMenu = new FadeInMenu(scrollMenu);
+            IRow submenuRow = new MenuRow(new FadeInMenu(new ScrollMenu(menu)));
+            fullmenu.addRow(submenuRow);
 
-            fadeInMenu.setColor(CrhcConstants.COLOR_BLUE_DARK);
-
-            AppRunner.enterMenu(new BlackoutTransitionMenu(fadeInMenu));
+            AppRunner.enterMenu(new BlackoutTransitionMenu(fullmenu));
         }
     }
 }

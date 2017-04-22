@@ -4,10 +4,7 @@ using UnityEngine;
 public class Menu : IMenu {
     private IList<IRow> rows = new List<IRow>();
     private IList<float> rowHeights = new List<float>();
-    private Color color;
-
-    public override bool enter() { return true; }
-    public override bool exit(bool isClosing) { return true; }
+    private Color color = CrhcConstants.COLOR_TRANSPARENT;
 
     public override void addRow(IRow row) {
         rows.Add(row);
@@ -71,9 +68,8 @@ public class Menu : IMenu {
     public override void reset() {
     }
 
-    public override void setColor(Color color) {
-        this.color = color;
-    }
+    public override void setColor(Color color) { this.color = color; }
+    public override Color getColor() { return color; }
 
     public override void onDispose() {
         base.onDispose();
@@ -85,5 +81,25 @@ public class Menu : IMenu {
         rowHeights.Clear();
         rows = null;
         rowHeights = null;
+    }
+
+    public override bool enter() {
+        bool done = true;
+
+        foreach(IRow row in rows) {
+            done &= row.enter();
+        }
+
+        return done;
+    }
+
+    public override bool exit(bool isClosing) {
+        bool done = true;
+
+        foreach (IRow row in rows) {
+            done &= row.exit(isClosing);
+        }
+
+        return done;
     }
 }

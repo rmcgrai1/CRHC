@@ -8,7 +8,7 @@ public abstract class IMenuThing : IDisposable {
     private static int _menuElementCount = 0;
 
     // Fix issues with height.
-    private static bool doCache = true;
+    private bool doCache = true;
 
     private bool isCacheHValid = false;
     private float cacheHWidth, cacheHHeight;
@@ -19,8 +19,12 @@ public abstract class IMenuThing : IDisposable {
         _menuElementCount++;
     }
 
+    public void setCache(bool doCache) {
+        this.doCache = doCache;
+    }
+
     public void setTouchable(bool isTouchable) {
-        if(isTouchable) {
+        if (isTouchable) {
             touchRing = new TouchRing();
         }
         else {
@@ -99,6 +103,18 @@ public abstract class IMenuThing : IDisposable {
         if (touchRing != null) {
             touchRing.Dispose();
             touchRing = null;
+        }
+    }
+
+    public virtual bool enter() {
+        return true;
+    }
+    public virtual bool exit(bool isClosing) {
+        if (touchRing != null) {
+            return touchRing.isDone();
+        }
+        else {
+            return true;
         }
     }
 }

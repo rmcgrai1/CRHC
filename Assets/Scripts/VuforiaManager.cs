@@ -58,7 +58,6 @@ public class VuforiaManager {
 
         if (dataSets.ContainsKey(landmark)) {
             ds = dataSets[landmark];
-            debugMessage = "Loaded successfully!";
         }
         else {
             ds = t.CreateDataSet();
@@ -79,9 +78,6 @@ public class VuforiaManager {
 
                 fm.writeToFile(paXML, fileXML.getResource());
                 fm.writeToFile(paDat, fileDat.getResource());
-
-                Debug.Log(fileXML.getPath());
-                Debug.Log(fileDat.getPath());
 
                 if (ds.Load(paXML, VuforiaUnity.StorageType.STORAGE_ABSOLUTE)) {
                     dataSets[landmark] = ds;
@@ -140,8 +136,6 @@ public class VuforiaManager {
                     }
                 }
             }
-
-            debugMessage = "Loaded successfully!";
         }
         else {
             debugMessage = "Failed to load Vuforia!";
@@ -203,8 +197,6 @@ public class VuforiaManager {
                 newStatus == TrackableBehaviour.Status.EXTENDED_TRACKED) {
                 OnTrackingFound();
                 instance.isMatching = instance.didMatch = true;
-
-                Debug.Log("MATCHING!!!");
             }
             else {
                 OnTrackingLost();
@@ -233,8 +225,6 @@ public class VuforiaManager {
             foreach (Collider component in colliderComponents) {
                 component.enabled = true;
             }
-
-            Debug.Log("Trackable " + mTrackableBehaviour.TrackableName + " found");
         }
 
 
@@ -251,8 +241,6 @@ public class VuforiaManager {
             foreach (Collider component in colliderComponents) {
                 component.enabled = false;
             }
-
-            Debug.Log("Trackable " + mTrackableBehaviour.TrackableName + " lost");
         }
 
         #endregion // PRIVATE_METHODS
@@ -335,6 +323,7 @@ public class VuforiaManager {
 
         Vector2 pivot = Vector2.zero;
         GUIX.beginRotate(pivot, angle);
+
         GUIX.beginOpacity(frameAlpha);
 
         if (img != null) {
@@ -394,14 +383,17 @@ public class VuforiaManager {
             GUIX.endColor();
         }
 
-        float x, y, w, h;
-        w = scrW;
-        h = 30;
-        x = xOffset;
-        y = yOffset + scrH - h;
+        if(debugMessage != null && debugMessage != "") {
+            float x, y, w, h;
+            w = scrW;
+            h = 20;
+            x = xOffset;
+            y = yOffset + scrH - h;
 
-        GUIX.fillRect(new Rect(x, y, w, h), Color.black);
-        GUI.Label(new Rect(x, y, w, h), debugMessage);
+            GUIX.fillRect(new Rect(x, y, w, h), Color.black);
+            GUI.Label(new Rect(x, y, w, h), debugMessage);
+        }
+
         GUIX.endRotate();
     }
 }

@@ -11,7 +11,7 @@ public class AudioPlayerRow : IRow {
     private Texture2D waveformTexture;
     private bool hasWaveformTexture = false;
     private float progress = 0;
-    private int stepsPerFrame = 20;
+    private int stepsPerFrame = 60;
     private bool wasHeld = false, isScrubbing = false;
 
     private PlayState playState = PlayState.STOPPED;
@@ -34,7 +34,7 @@ public class AudioPlayerRow : IRow {
         iW = (int)(Screen.width - 2 * CrhcConstants.PADDING_H.getAs(NumberType.PIXELS));
         iH = (int)getPixelHeight(0);
 
-        CoroutineManager.startCoroutine(createTextureCoroutine(iW / 2, iH / 2));
+        CoroutineManager.startCoroutine(createTextureCoroutine(iW, iH));
     }
 
     private IEnumerator createTextureCoroutine(int iW, int iH) {
@@ -97,8 +97,33 @@ public class AudioPlayerRow : IRow {
             waveformTexture.Apply();
             hasWaveformTexture = true;*/
 
-            RenderTexture rotateTexture = new RenderTexture(iW, iH, 0);
+            int dither = 80;
+            float desolution = resolution / dither;
 
+            for (int i = 0; i < waveForm.Length; i++) {
+                waveForm[i] = 0;
+
+                /*for (int ii = 0; ii < resolution; ii++) {
+                    waveForm[i] += Mathf.Abs(samples[(int)((i * resolution) + ii)]);
+                }
+
+                waveForm[i] /= resolution;*/
+
+                for (int ii = 0; ii < resolution; ii += dither) {
+                    waveForm[i] += Mathf.Abs(samples[(int)((i * resolution) + ii)]);
+                }
+
+                waveForm[i] /= desolution;
+
+                maxAmp = Math.Max(maxAmp, Math.Abs(waveForm[i]));
+
+                /*if (steps++ % stepsPerFrame == 0) {
+                    progress = .5f * i / waveForm.Length;
+                    yield return null;
+                }*/
+            }
+
+            RenderTexture rotateTexture = new RenderTexture(iW, iH, 0);
             RenderTexture.active = rotateTexture;
 
             AppRunner.getMaterial().SetPass(0);
@@ -109,18 +134,6 @@ public class AudioPlayerRow : IRow {
             GL.PushMatrix();
             GL.LoadOrtho();
             GL.LoadPixelMatrix(0, iW, iH, 0);
-
-            for (int i = 0; i < waveForm.Length; i++) {
-                waveForm[i] = 0;
-
-                for (int ii = 0; ii < resolution; ii++) {
-                    waveForm[i] += Mathf.Abs(samples[(int)((i * resolution) + ii)]);
-                }
-
-                waveForm[i] /= resolution;
-
-                maxAmp = Math.Max(maxAmp, Math.Abs(waveForm[i]));
-            }
 
             float y = iH / 2f, d = 0;
 
@@ -249,5 +262,14 @@ public class AudioPlayerRow : IRow {
     private void togglePlayPause() {
         if (playState == PlayState.PAUSED || playState == PlayState.STOPPED) { play(); }
         else if (playState == PlayState.PLAYING) { pause(); }
+    }
+
+    public override bool enter() {
+        return true;
+    }
+
+    public override bool exit(bool isClosing) {
+        stop();
+        return true;
     }
 }

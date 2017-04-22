@@ -38,11 +38,18 @@ public class TouchRing : IDisposable {
         GUIX.beginOpacity(1 - f);
         GUIX.drawTexture(new Rect(x - s / 2, y - s / 2, s, s), tex.getResource());
         GUIX.endOpacity();
-        GUIX.beginOpacity(f*(1 - f));
-        GUIX.fillRect(new Rect(Vector2.zero, GUIX.getClipRect().size), Color.white);
+        GUIX.beginOpacity(f * (1 - f));
+        GUIX.fillRect(new Rect(-b / 2, -b / 2, b, b), Color.white);
         GUIX.endOpacity();
     }
 
+    public bool isDone() {
+        return number.isDone();
+    }
+
+    public float getFractionDone() {
+        return number.get();
+    }
 
     #region IDisposable Support
     private bool disposedValue = false; // To detect redundant calls

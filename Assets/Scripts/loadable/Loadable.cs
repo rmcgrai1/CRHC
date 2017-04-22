@@ -19,7 +19,7 @@ public abstract class Loadable {
     private IEnumerator loadCoroutine() {
         // TODO: Figure out how to check for success.
 
-        Debug.Log(this + ".loadCoroutine()");
+        //Debug.Log(this + ".loadCoroutine()");
 
         if (!isLoaded()) {
             yield return tryLoad();
@@ -50,7 +50,7 @@ public abstract class Loadable {
 
             Debug.Log(msg.Substring(i, curSize));
         }*/
-        Debug.Log(msg);
+        //Debug.Log(msg);
     }
 
     private IEnumerator unloadCoroutine() {

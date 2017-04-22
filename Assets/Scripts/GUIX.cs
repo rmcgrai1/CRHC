@@ -106,22 +106,10 @@ public static class GUIX {
         endColor();
     }
 
-    public static void fillRect(Rect region) {
-        GUI.Box(region, GUIContent.none, whiteTextureStyle);
-    }
-
-    public static void fillRect(Rect position, Color color) {
-        if (color == null || color == CrhcConstants.COLOR_TRANSPARENT) {
-            return;
-        }
-
-        beginColor(color);
-        fillRect(position);
-        endColor();
-    }
-
-    public static void clear() {
-        fillRect(new Rect(0, 0, AppRunner.getScreenWidth(), AppRunner.getScreenHeight()), Color.black);
+    // TODO: Fix so it actually clears the screen (i.e. transparent actually does something).
+    public static void clear() { clear(Color.black); }
+    public static void clear(Color color) {
+        fillRect(new Rect(0, 0, AppRunner.getScreenWidth(), AppRunner.getScreenHeight()), color);
     }
 
     /*public static void fillRect(Rect region) {
@@ -168,6 +156,59 @@ public static class GUIX {
         beginColor(color);
         fillRect(position);
         endColor();
+    }
+
+    private static Rect standardTexCoord = new Rect(0, 0, 1, 1);
+    public static void drawTexture(Rect region, Texture2D tex) {
+        drawTexture(region, tex, standardTexCoord);
+    }
+
+    public static void drawTexture(Rect region, Texture2D tex, Rect texCoord) {
+        float sW = AppRunner.getScreenWidth(), sH = AppRunner.getScreenHeight();
+        float cX = 0, cY = 0, cW = sW, cH = sH, d = 0;
+
+        float u = texCoord.x, v = texCoord.y, uw = texCoord.width, vh = texCoord.height;
+
+        if (clipStack.Count > 0) {
+            Rect clipRect = clipStack.Peek();
+            cX = clipRect.x;
+            cY = clipRect.y;
+            cW = clipRect.width;
+            cH = clipRect.height;
+        }
+
+        float
+            x = cX + region.x,
+            y = cY + region.y,
+            w = region.width,
+            h = region.height;
+
+        x /= sW;
+        y = 1 - y / sH;
+        w /= sW;
+        h /= -sH;
+
+        Material mat = AppRunner.getMaterial();
+        mat.mainTexture = tex;
+        mat.SetPass(0);
+
+        GL.LoadOrtho();
+        GL.Begin(GL.QUADS);
+
+        GL.Color(glColor);
+        GL.TexCoord2(u, v + vh);
+        GL.Vertex3(x, y, d);
+        GL.TexCoord2(u + uw, v + vh);
+        GL.Vertex3(x + w, y, d);
+        GL.TexCoord2(u + uw, v);
+        GL.Vertex3(x + w, y + h, d);
+        GL.TexCoord2(u, v);
+        GL.Vertex3(x, y + h, d);
+        GL.End();
+    }
+
+    public static void drawTexture(Vector2 position, Texture2D tex) {
+        drawTexture(new Rect(position, new Vector2(tex.width, tex.height)), tex);
     }*/
 
     private static void setColor(Color color) {
@@ -251,39 +292,24 @@ public static class GUIX {
         endColor();
     }
 
+
+    public static void fillRect(Rect region) {
+        GUI.Box(region, GUIContent.none, whiteTextureStyle);
+    }
+
+    public static void fillRect(Rect position, Color color) {
+        if (color == null || color == CrhcConstants.COLOR_TRANSPARENT) {
+            return;
+        }
+
+        beginColor(color);
+        fillRect(position);
+        endColor();
+    }
+
     public static void drawTexture(Rect region, Texture2D tex) {
         standardTextureStyle.normal.background = tex;
         GUI.Box(region, GUIContent.none, standardTextureStyle);
-
-        /*Rect currentRect = getClipRect();
-
-        float cX = currentRect.x, cY = currentRect.y, cW = currentRect.width, cH = currentRect.height;
-        float x = region.x, y = region.y, w = region.width, h = region.height;
-
-        float rX = x, rY = y, rW = w, rH = h;
-
-        if(rX < 0) {
-            rW += rX;
-            rX = 0;
-        }
-        if(rY < 0) {
-            rH += rY;
-            rY = 0;
-        }
-
-        float dX = (rX + rW) - (cW), dY = (rY + rH) - (cH);
-
-        if (dX > 0) {
-            rW -= dX;
-        }
-        if(dY > 0) {
-            rH -= dY;
-        }
-
-        Rect reg = new Rect(rX, rY, rW, rH);
-        Rect src = new Rect(0, 0, 1, 1);
-
-        Graphics.DrawTexture(reg, tex, src, 0, 0, 0, 0);*/
     }
 
     public static void drawTexture(Rect region, Texture2D tex, Rect texCoord) {
