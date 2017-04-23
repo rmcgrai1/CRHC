@@ -108,7 +108,7 @@ public class VuforiaManager {
 
                 if (tb.TrackableName == exp.getId()) {
                     defaultTracker = dtet;
-                    dtet.gameObject.SetActive(true);
+                    dtet.enabled = true;
 
                     if (tb.name != tb.TrackableName) {
                         tb.name = tb.TrackableName;
@@ -129,7 +129,7 @@ public class VuforiaManager {
                     planeGroup.SetActive(true);
                 }
                 else {
-                    dtet.gameObject.SetActive(true);
+                    dtet.enabled = false;
                     GameObject planeGroup = GameObjectUtility.GetChild(tbg, "planeGroup");
                     if (planeGroup != null) {
                         planeGroup.SetActive(false);
@@ -196,18 +196,21 @@ public class VuforiaManager {
                 newStatus == TrackableBehaviour.Status.TRACKED ||
                 newStatus == TrackableBehaviour.Status.EXTENDED_TRACKED) {
                 OnTrackingFound();
-                instance.isMatching = instance.didMatch = true;
+
+                if(this == instance.defaultTracker) {
+                    instance.isMatching = instance.didMatch = true;
+                }
             }
             else {
                 OnTrackingLost();
 
-                instance.isMatching = false;
+                if (this == instance.defaultTracker) {
+                    instance.isMatching = false;
+                }
             }
         }
 
         #endregion // PUBLIC_METHODS
-
-
 
         #region PRIVATE_METHODS
 
@@ -274,7 +277,7 @@ public class VuforiaManager {
 
     public void deactivate() {
         VuforiaBehaviour.Instance.enabled = false;
-        AppRunner.setUpright(true);
+        //AppRunner.setUpright(true);
     }
 
     public void OnGUI() {
@@ -301,7 +304,7 @@ public class VuforiaManager {
         float s = CrhcConstants.SIZE_VUFORIA_FRAME.getAs(NumberType.PIXELS), p = 30;
         aspect = 1f * imgTex.width / imgTex.height;
 
-        AppRunner.setUpright(aspect < 1);
+        //AppRunner.setUpright(aspect < 1);
         if (aspect < 1) {
             xOffset = yOffset = angle = 0;
         }

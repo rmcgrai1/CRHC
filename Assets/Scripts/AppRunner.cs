@@ -129,7 +129,7 @@ public class AppRunner : MonoBehaviour {
             x = (int)pos.x;
             y = (int)pos.y;
 
-            GUI.Label(topBar, "Touch Position: (" + x + ", " + y + ") / (" + (int) (100f*x/scrW) + " %, " + (int) (100f*y/scrH) + " %)");
+            GUI.Label(topBar, "Touch Position: (" + x + ", " + y + ") / (" + (int)(100f * x / scrW) + " %, " + (int)(100f * y / scrH) + " %)");
             topBar.y += 20;
         }
 
@@ -185,9 +185,9 @@ public class AppRunner : MonoBehaviour {
         }
     }
 
-    public static void setUpright(bool isUpright) {
+    /*public static void setUpright(bool isUpright) {
         instance.isUpright = isUpright;
-    }
+    }*/
 
     public static bool getIsUpright() {
         return !CrhcSettings.forceLandscapeOrientation && instance.isUpright;
@@ -214,14 +214,16 @@ public class AppRunner : MonoBehaviour {
             instance.menuStack.Push(menu);
             instance.menuStack.Peek().reset();
         }
-        else {
+        else if (instance._enterMenu == false && instance._exitMenu == false) {
             instance._enterMenu = true;
             instance.nextMenu = menu;
         }
     }
 
     public static void exitMenu() {
-        instance._exitMenu = true;
+        if (instance._enterMenu == false && instance._exitMenu == false) {
+            instance._exitMenu = true;
+        }
     }
 
     public static GameObject get() {
@@ -253,5 +255,16 @@ public class AppRunner : MonoBehaviour {
             m_frameCounter = 0;
             m_timeCounter = 0.0f;
         }
+
+        if(Input.deviceOrientation == DeviceOrientation.Portrait) {
+            isUpright = true;
+        }
+        else if (Input.deviceOrientation == DeviceOrientation.LandscapeLeft) {
+            isUpright = false;
+        }
     }
+}
+
+public enum Orientation {
+    PORTRAIT_UP, PORTRAIT_DOWN, LANDSCAPE_LEFT, LANDSCAPE_RIGHT
 }
