@@ -27,7 +27,9 @@ public class AppRunner : MonoBehaviour {
     private bool _enterMenu = false, _exitMenu = false;
     private IMenu nextMenu;
 
-    private bool isUpright = true;
+    private Orientation orientation = Orientation.PORTRAIT_UP;
+    //private Orientation orientation = Orientation.LANDSCAPE_LEFT;
+    //private Orientation orientation = Orientation.LANDSCAPE_RIGHT;
 
     // Use this for initialization
     IEnumerator Start() {
@@ -82,7 +84,6 @@ public class AppRunner : MonoBehaviour {
                 if (_enterMenu) {
                     if (menu.exit(false)) {
                         instance.menuStack.Push(nextMenu);
-                        instance.menuStack.Peek().reset();
                         _enterMenu = false;
                     }
                 }
@@ -92,7 +93,6 @@ public class AppRunner : MonoBehaviour {
                         menuStack.Pop();
 
                         menu = menuStack.Peek();
-                        menu.reset();
                         _exitMenu = false;
                     }
                 }
@@ -103,9 +103,18 @@ public class AppRunner : MonoBehaviour {
                 float angle = 0, xOffset = 0, yOffset = 0;
                 Vector2 pivot = Vector2.zero;
 
-                if (!getIsUpright()) {
+                if (orientation == Orientation.PORTRAIT_DOWN) {
+                    angle = 180;
+                    xOffset = -scrW;
+                    yOffset = -scrH;
+                }
+                else if (orientation == Orientation.LANDSCAPE_LEFT) {
                     angle = 90;
                     yOffset = -scrH;
+                }
+                else if (orientation == Orientation.LANDSCAPE_RIGHT) {
+                    angle = 270;
+                    xOffset = -scrW;
                 }
 
                 GUIX.clear(menu.getColor());
@@ -121,7 +130,7 @@ public class AppRunner : MonoBehaviour {
 
         Rect topBar = new Rect(0, 0, Screen.width, 20);
 
-        if (CrhcSettings.showTouchPosition) {
+        if (CrhcSettings.debugShowTouchPosition) {
             GUIX.fillRect(topBar, CrhcConstants.COLOR_BLACK_TRANSPARENT);
 
             Vector2 pos = ServiceLocator.getITouch().getTouchPosition();
@@ -133,32 +142,32 @@ public class AppRunner : MonoBehaviour {
             topBar.y += 20;
         }
 
-        if (CrhcSettings.showMemory) {
+        if (CrhcSettings.debugShowMemory) {
             long allocMemory = Profiler.GetTotalAllocatedMemory(), totalMemory = Profiler.GetTotalReservedMemory();
             GUIX.fillRect(topBar, CrhcConstants.COLOR_BLACK_TRANSPARENT);
             GUI.Label(topBar, "Memory: " + (allocMemory / (Math.Pow(10, 6))) + "/" + (totalMemory / (Math.Pow(10, 6))) + " MB");
             topBar.y += 20;
         }
 
-        if (CrhcSettings.showFps) {
+        if (CrhcSettings.debugShowFps) {
             GUIX.fillRect(topBar, CrhcConstants.COLOR_BLACK_TRANSPARENT);
             GUI.Label(topBar, "FPS: " + m_lastFramerate);
             topBar.y += 20;
         }
 
-        if (CrhcSettings.showMenuElementCount) {
+        if (CrhcSettings.debugShowMenuElementCount) {
             GUIX.fillRect(topBar, CrhcConstants.COLOR_BLACK_TRANSPARENT);
             GUI.Label(topBar, "Menu Element Count: " + IMenuThing.menuElementCount);
             topBar.y += 20;
         }
 
-        if (CrhcSettings.showReferenceCount) {
+        if (CrhcSettings.debugShowReferenceCount) {
             GUIX.fillRect(topBar, CrhcConstants.COLOR_BLACK_TRANSPARENT);
             GUI.Label(topBar, "Reference Count: " + ServiceLocator.getILoader().getReferenceCount());
             topBar.y += 20;
         }
 
-        if (CrhcSettings.showGuixStackCounts) {
+        if (CrhcSettings.debugShowGuixStackCounts) {
             GUIX.fillRect(topBar, CrhcConstants.COLOR_BLACK_TRANSPARENT);
             GUI.Label(topBar, "Clip Stack Count: " + GUIX.getClipStackSize());
             topBar.y += 20;
@@ -173,7 +182,7 @@ public class AppRunner : MonoBehaviour {
             topBar.y += 20;
         }
 
-        if (CrhcSettings.showFileManagerStackCount) {
+        if (CrhcSettings.debugShowFileManagerStackCount) {
             GUIX.fillRect(topBar, CrhcConstants.COLOR_BLACK_TRANSPARENT);
             GUI.Label(topBar, "Directory Stack Count: " + ServiceLocator.getIFileManager().getDirectoryStackSize());
             topBar.y += 20;
@@ -185,20 +194,16 @@ public class AppRunner : MonoBehaviour {
         }
     }
 
-    /*public static void setUpright(bool isUpright) {
-        instance.isUpright = isUpright;
-    }*/
-
-    public static bool getIsUpright() {
-        return !CrhcSettings.forceLandscapeOrientation && instance.isUpright;
+    public static Orientation getOrientation() {
+        return instance.orientation;
     }
 
     public static float getScreenWidth() {
-        return (getIsUpright()) ? Screen.width : Screen.height;
+        return (instance.orientation == Orientation.PORTRAIT_UP || instance.orientation == Orientation.PORTRAIT_DOWN) ? Screen.width : Screen.height;
     }
 
     public static float getScreenHeight() {
-        return (getIsUpright()) ? Screen.height : Screen.width;
+        return (instance.orientation == Orientation.PORTRAIT_UP || instance.orientation == Orientation.PORTRAIT_DOWN) ? Screen.height : Screen.width;
     }
 
     public static float getScreenWidthInches() {
@@ -209,19 +214,22 @@ public class AppRunner : MonoBehaviour {
         return getScreenHeight() / Screen.dpi;
     }
 
+    public static bool inTransition() {
+        return instance._enterMenu == true || instance._exitMenu == true;
+    }
+
     public static void enterMenu(IMenu menu) {
         if (instance.menuStack.Count == 0) {
             instance.menuStack.Push(menu);
-            instance.menuStack.Peek().reset();
         }
-        else if (instance._enterMenu == false && instance._exitMenu == false) {
+        else if (!inTransition()) {
             instance._enterMenu = true;
             instance.nextMenu = menu;
         }
     }
 
     public static void exitMenu() {
-        if (instance._enterMenu == false && instance._exitMenu == false) {
+        if (!inTransition()) {
             instance._exitMenu = true;
         }
     }
@@ -256,11 +264,19 @@ public class AppRunner : MonoBehaviour {
             m_timeCounter = 0.0f;
         }
 
-        if(Input.deviceOrientation == DeviceOrientation.Portrait) {
-            isUpright = true;
-        }
-        else if (Input.deviceOrientation == DeviceOrientation.LandscapeLeft) {
-            isUpright = false;
+        if(CrhcSettings.autoRotate) {
+            if (Input.deviceOrientation == DeviceOrientation.Portrait) {
+                orientation = Orientation.PORTRAIT_UP;
+            }
+            else if (Input.deviceOrientation == DeviceOrientation.PortraitUpsideDown) {
+                orientation = Orientation.PORTRAIT_DOWN;
+            }
+            else if (Input.deviceOrientation == DeviceOrientation.LandscapeLeft) {
+                orientation = Orientation.LANDSCAPE_LEFT;
+            }
+            else if (Input.deviceOrientation == DeviceOrientation.LandscapeRight) {
+                orientation = Orientation.LANDSCAPE_RIGHT;
+            }
         }
     }
 }

@@ -65,9 +65,6 @@ public class Menu : IMenu {
         }
     }
 
-    public override void reset() {
-    }
-
     public override void setColor(Color color) { this.color = color; }
     public override Color getColor() { return color; }
 
@@ -77,8 +74,10 @@ public class Menu : IMenu {
         for (int i = 0; i < rows.Count; i++) {
             rows[i].Dispose();
         }
+
         rows.Clear();
         rowHeights.Clear();
+
         rows = null;
         rowHeights = null;
     }

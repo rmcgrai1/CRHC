@@ -11,7 +11,7 @@ public class JSONBoolRow : Row {
         this.key = key;
 
         setColor(CrhcConstants.COLOR_BLUE_MEDIUM);
-        setPadding(true, true, true);
+        setPadding(true, false, false);
 
         // Break up key into separate words.
         TextItem textItem = new TextItem(splitCamelCase(key));
@@ -37,5 +37,12 @@ public class JSONBoolRow : Row {
         }
 
         return false;
+    }
+
+    public override void onDispose() {
+        base.onDispose();
+
+        checkbox.Dispose();
+        checkbox = null;
     }
 }

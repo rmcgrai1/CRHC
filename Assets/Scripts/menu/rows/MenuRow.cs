@@ -28,6 +28,8 @@ public class MenuRow : IRow {
     }
 
     public override void onDispose() {
+        base.onDispose();
+
         subMenu.Dispose();
         subMenu = null;
     }

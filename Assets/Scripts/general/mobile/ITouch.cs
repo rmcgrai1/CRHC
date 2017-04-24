@@ -30,7 +30,7 @@ namespace general.mobile {
                 dragDistance += getDragVector().magnitude;
                 dragVectorFrames[dragVectorFrameIndex++] = (touchPosition - previousTouchPosition);
 
-                if(dragVectorFrameIndex >= DRAG_VECTOR_FRAME_COUNT) {
+                if (dragVectorFrameIndex >= DRAG_VECTOR_FRAME_COUNT) {
                     dragVectorFrameIndex -= DRAG_VECTOR_FRAME_COUNT;
                 }
 
@@ -54,7 +54,7 @@ namespace general.mobile {
                 dragDistance = 0;
 
                 // Clear drag vector frames.
-                for(int i = 0; i < DRAG_VECTOR_FRAME_COUNT; i++) {
+                for (int i = 0; i < DRAG_VECTOR_FRAME_COUNT; i++) {
                     dragVectorFrames[i] = Vector2.zero;
                 }
             }
@@ -87,10 +87,10 @@ namespace general.mobile {
             Vector2 dragVector = Vector2.zero;
 
             int ii = 0;
-            for(int i = 0; i < DRAG_VECTOR_FRAME_COUNT; i++) {
+            for (int i = 0; i < DRAG_VECTOR_FRAME_COUNT; i++) {
                 Vector2 subDragVector = dragVectorFrames[i];
 
-                if(subDragVector != null) {
+                if (subDragVector != null) {
                     dragVector += subDragVector;
                     ii++;
                 }
@@ -98,11 +98,21 @@ namespace general.mobile {
 
             dragVector /= ii;
 
-            if (AppRunner.getIsUpright()) {
+            Orientation orientation = AppRunner.getOrientation();
+            if (orientation == Orientation.PORTRAIT_UP) {
                 return new Vector2(dragVector.x * coolDownFrac, dragVector.y * coolDownFrac);
             }
-            else {
+            else if (orientation == Orientation.PORTRAIT_DOWN) {
+                return new Vector2(-dragVector.x * coolDownFrac, -dragVector.y * coolDownFrac);
+            }
+            else if (orientation == Orientation.LANDSCAPE_LEFT) {
                 return new Vector2(dragVector.y * coolDownFrac, -dragVector.x * coolDownFrac);
+            }
+            else if (orientation == Orientation.LANDSCAPE_RIGHT) {
+                return new Vector2(-dragVector.y * coolDownFrac, dragVector.x * coolDownFrac);
+            }
+            else {
+                return Vector2.zero;
             }
         }
 
@@ -111,16 +121,26 @@ namespace general.mobile {
         }
 
         public Vector2 getTouchPosition() {
-            float x, y;
+            float x = 0, y = 0, scrW = AppRunner.getScreenWidth(), scrH = AppRunner.getScreenHeight();
 
-            if (AppRunner.getIsUpright()) {
+            Orientation orientation = AppRunner.getOrientation();
+            if (orientation == Orientation.PORTRAIT_UP) {
                 x = touchPosition.x;
                 y = touchPosition.y;
             }
-            else {
-                x = touchPosition.y;
-                y = AppRunner.getScreenHeight() - touchPosition.x;
+            else if (orientation == Orientation.PORTRAIT_DOWN) {
+                x = scrW - touchPosition.x;
+                y = scrH - touchPosition.y;
             }
+            else if (orientation == Orientation.LANDSCAPE_LEFT) {
+                x = touchPosition.y;
+                y = scrH - touchPosition.x;
+            }
+            else if (orientation == Orientation.LANDSCAPE_RIGHT) {
+                x = scrW - touchPosition.y;
+                y = touchPosition.x;
+            }
+
 
             return new Vector2(x, y);
         }

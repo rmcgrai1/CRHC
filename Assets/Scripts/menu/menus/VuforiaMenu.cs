@@ -40,10 +40,6 @@ public class VuforiaMenu : IMenu {
         return menu.getPixelHeight(w);
     }
 
-    public override void reset() {
-        menu.reset();
-    }
-
     public override void setColor(Color color) { menu.setColor(color); }
     public override Color getColor() { return menu.getColor(); }
 

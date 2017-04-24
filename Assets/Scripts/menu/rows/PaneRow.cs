@@ -88,6 +88,8 @@ public class PaneRow : IRow {
     }
 
     public override void onDispose() {
+        base.onDispose();
+
         headRow.Dispose();
         headRow = null;
 

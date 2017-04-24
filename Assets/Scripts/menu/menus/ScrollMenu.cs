@@ -90,10 +90,6 @@ public class ScrollMenu : IMenu {
         return menu.getPixelHeight(w);
     }
 
-    public override void reset() {
-        menu.reset();
-    }
-
     public override void setColor(Color color) { this.color = color; }
     public override Color getColor() { return color; }
 

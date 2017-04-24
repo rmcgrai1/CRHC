@@ -11,15 +11,15 @@ public static class CrhcSettings {
     }
 
     public static bool
-        forceLandscapeOrientation {
-        set { data["forceLandscapeOrientation"] = value; }
-        get { return data.Value<bool>("forceLandscapeOrientation"); }
+        autoRotate {
+        set { data["autoRotate"] = value; }
+        get { return data.Value<bool>("autoRotate"); }
     }
 
     public static bool
-        showTouchPosition {
-        set { data["showTouchPosition"] = value; }
-        get { return data.Value<bool>("showTouchPosition"); }
+        debugShowTouchPosition {
+        set { data["debugShowTouchPosition"] = value; }
+        get { return data.Value<bool>("debugShowTouchPosition"); }
     }
 
     public static bool
@@ -28,40 +28,45 @@ public static class CrhcSettings {
         get { return data.Value<bool>("showAnimations"); }
     }
     public static bool
-        showFps {
-        set { data["showFps"] = value; }
-        get { return data.Value<bool>("showFps"); }
+        debugShowFps {
+        set { data["debugShowFps"] = value; }
+        get { return data.Value<bool>("debugShowFps"); }
     }
     public static bool
-        showMemory {
-        set { data["showMemory"] = value; }
-        get { return data.Value<bool>("showMemory"); }
+        debugShowMemory {
+        set { data["debugShowMemory"] = value; }
+        get { return data.Value<bool>("debugShowMemory"); }
     }
     public static bool
-        showGuixStackCounts {
-        set { data["showGuixStackCounts"] = value; }
-        get { return data.Value<bool>("showGuixStackCounts"); }
+        debugShowGuixStackCounts {
+        set { data["debugShowGuixStackCounts"] = value; }
+        get { return data.Value<bool>("debugShowGuixStackCounts"); }
     }
 
     public static bool
-        showFileManagerStackCount {
-        set { data["showFileManagerStackCount"] = value; }
-        get { return data.Value<bool>("showFileManagerStackCount"); }
+        debugShowFileManagerStackCount {
+        set { data["debugShowFileManagerStackCount"] = value; }
+        get { return data.Value<bool>("debugShowFileManagerStackCount"); }
     }
     public static bool
-        showMenuElementCount {
-        set { data["showMenuElementCount"] = value; }
-        get { return data.Value<bool>("showMenuElementCount"); }
+        debugShowMenuElementCount {
+        set { data["debugShowMenuElementCount"] = value; }
+        get { return data.Value<bool>("debugShowMenuElementCount"); }
     }
     public static bool
-        showReferenceCount {
-        set { data["showReferenceCount"] = value; }
-        get { return data.Value<bool>("showReferenceCount"); }
+        debugShowReferenceCount {
+        set { data["debugShowReferenceCount"] = value; }
+        get { return data.Value<bool>("debugShowReferenceCount"); }
     }
     public static bool
         showScrollbar {
         set { data["showScrollbar"] = value; }
         get { return data.Value<bool>("showScrollbar"); }
+    }
+    public static bool
+        showDebugSettings {
+        set { data["showDebugSettings"] = value; }
+        get { return data.Value<bool>("showDebugSettings"); }
     }
 
 
@@ -77,6 +82,14 @@ public static class CrhcSettings {
         fm.writeToFile(settingsFilePath, data.ToString());
     }
 
+    public static void clearSettings() {
+        IFileManager fm = ServiceLocator.getIFileManager();
+
+        if (fm.fileExists(settingsFilePath)) {
+            fm.deleteFile(settingsFilePath);
+        }
+    }
+
     public static void loadSettings() {
         IFileManager fm = ServiceLocator.getIFileManager();
 
@@ -87,16 +100,17 @@ public static class CrhcSettings {
             data = new JObject();
 
             offlineMode = false;
-            forceLandscapeOrientation = false;
-            showTouchPosition = false;
+            autoRotate = true;
+            debugShowTouchPosition = false;
             showAnimations = true;
-            showFps = false;
-            showMemory = false;
-            showGuixStackCounts = false;
-            showFileManagerStackCount = false;
-            showMenuElementCount = false;
-            showReferenceCount = false;
+            debugShowFps = false;
+            debugShowMemory = false;
+            debugShowGuixStackCounts = false;
+            debugShowFileManagerStackCount = false;
+            debugShowMenuElementCount = false;
+            debugShowReferenceCount = false;
             showScrollbar = true;
+            showDebugSettings = false;
 
             saveSettings();
         }

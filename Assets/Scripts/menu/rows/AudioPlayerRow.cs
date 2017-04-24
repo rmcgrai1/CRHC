@@ -239,6 +239,8 @@ public class AudioPlayerRow : IRow {
     }
 
     public override void onDispose() {
+        base.onDispose();
+
         audioClip.removeOwner();
         audioClip = null;
     }

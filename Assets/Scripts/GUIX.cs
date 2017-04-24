@@ -109,7 +109,8 @@ public static class GUIX {
     // TODO: Fix so it actually clears the screen (i.e. transparent actually does something).
     public static void clear() { clear(Color.black); }
     public static void clear(Color color) {
-        fillRect(new Rect(0, 0, AppRunner.getScreenWidth(), AppRunner.getScreenHeight()), color);
+        float b = 10000;
+        fillRect(new Rect(-b/2, -b/2, b, b), color);
     }
 
     /*public static void fillRect(Rect region) {

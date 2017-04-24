@@ -1,5 +1,6 @@
 ﻿using general.number.smooth;
 using general.rendering;
+using System;
 using UnityEngine;
 
 public class CheckboxItem : IItem {
@@ -13,13 +14,20 @@ public class CheckboxItem : IItem {
     public override bool draw(float w, float h) {
         Rect rect = TextureUtility.getUseRect(new Rect(0, 0, w, h), AspectType.FIT_IN_REGION);
 
+        float s = CrhcConstants.FONT_HEIGHT_NORMAL.getAs(general.number.NumberType.PIXELS);
+
         float x = rect.x, y = rect.y;
-        w = rect.width;
-        h = rect.height;
+        w = Math.Min(s, rect.width);
+        h = Math.Min(s, rect.height);
+
+        x += rect.width / 2 - w / 2;
+        y += rect.height / 2 - h / 2;
+
+        rect = new Rect(x, y, w, h);
 
         filledAmount.update();
 
-        float th = 4, p = 1.5f * th, f = filledAmount.get(), sx = (w - 2 * p) * f, sy = (h - 2 * p) * f;
+        float th = w/10, p = 1.5f * th, f = filledAmount.get(), sx = (w - 2 * p) * f, sy = (h - 2 * p) * f;
 
         GUIX.fillRect(rect, Color.white);
         GUIX.strokeRect(rect, Color.black, th);

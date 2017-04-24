@@ -197,7 +197,7 @@ public class VuforiaManager {
                 newStatus == TrackableBehaviour.Status.EXTENDED_TRACKED) {
                 OnTrackingFound();
 
-                if(this == instance.defaultTracker) {
+                if (this == instance.defaultTracker) {
                     instance.isMatching = instance.didMatch = true;
                 }
             }
@@ -300,19 +300,25 @@ public class VuforiaManager {
 
         Texture2D imgTex = img.getResource();
 
-        float aspect, scrW = AppRunner.getScreenWidth(), scrH = AppRunner.getScreenHeight(), angle, xOffset, yOffset;
+        float scrW = AppRunner.getScreenWidth(), scrH = AppRunner.getScreenHeight(), angle = 0, xOffset = 0, yOffset = 0;
         float s = CrhcConstants.SIZE_VUFORIA_FRAME.getAs(NumberType.PIXELS), p = 30;
-        aspect = 1f * imgTex.width / imgTex.height;
 
-        //AppRunner.setUpright(aspect < 1);
-        if (aspect < 1) {
-            xOffset = yOffset = angle = 0;
-        }
-        else {
-            angle = 90;
-            xOffset = 0;
+        Orientation orientation = AppRunner.getOrientation();
+
+        if (orientation == Orientation.PORTRAIT_DOWN) {
+            angle = 180;
+            xOffset = -scrW;
             yOffset = -scrH;
         }
+        else if (orientation == Orientation.LANDSCAPE_LEFT) {
+            angle = 90;
+            yOffset = -scrH;
+        }
+        else if (orientation == Orientation.LANDSCAPE_RIGHT) {
+            angle = 270;
+            xOffset = -scrW;
+        }
+
 
         Rect region = TextureUtility.getUseRect(new Rect(xOffset + scrW - s - p, yOffset + p, s, s), imgTex, AspectType.FIT_IN_REGION);
 
@@ -386,7 +392,7 @@ public class VuforiaManager {
             GUIX.endColor();
         }
 
-        if(debugMessage != null && debugMessage != "") {
+        if (debugMessage != null && debugMessage != "") {
             float x, y, w, h;
             w = scrW;
             h = 20;

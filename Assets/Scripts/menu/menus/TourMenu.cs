@@ -61,10 +61,6 @@ public class TourMenu : IMenu {
         return menu.getPixelHeight(w);
     }
 
-    public override void reset() {
-        menu.reset();
-    }
-
     public override void setColor(Color color) { menu.setColor(color); }
     public override Color getColor() { return menu.getColor(); }
 
@@ -72,6 +68,8 @@ public class TourMenu : IMenu {
         base.onDispose();
 
         bg.removeOwner();
+        logo.removeOwner();
+        bg = logo = null;
 
         menu.Dispose();
         menu = null;

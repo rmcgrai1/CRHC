@@ -255,10 +255,14 @@ public class Tour : CrhcFolder<Landmark> {
         public override void onClick() {
             base.onClick();
 
+            if(AppRunner.inTransition()) {
+                return;
+            }
+
             Menu fullmenu = new Menu(), menu = new Menu();
             fullmenu.setColor(CrhcConstants.COLOR_BLUE_DARK);
 
-            SpaceItem padding = new SpaceItem();
+            //SpaceItem padding = new SpaceItem();
 
             Row backRow = new Row();
             backRow.addItem(new SettingsBackButton());
@@ -280,8 +284,10 @@ public class Tour : CrhcFolder<Landmark> {
             Dictionary<string, string> jsonData = JsonConvert.DeserializeObject<Dictionary<string, string>>(dict.ToString());
 
             foreach (string key in jsonData.Keys) {
-                menu.addRow(paddingRow);
-                menu.addRow(new JSONBoolRow(dict, key));
+                if(!key.StartsWith("debug") || CrhcSettings.showDebugSettings) {
+                    menu.addRow(paddingRow);
+                    menu.addRow(new JSONBoolRow(dict, key));
+                }
             }
 
             jsonData.Clear();

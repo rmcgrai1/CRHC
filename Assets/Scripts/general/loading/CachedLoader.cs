@@ -148,6 +148,9 @@ public class CachedLoader : ILoader {
         if (hardClear) {
             IFileManager fm = ServiceLocator.getIFileManager();
             fm.deleteDirectory(fm.getBaseDirectory() + "cache/");
+
+            CrhcSettings.clearSettings();
+            CrhcSettings.loadSettings();            
         }
     }
 
